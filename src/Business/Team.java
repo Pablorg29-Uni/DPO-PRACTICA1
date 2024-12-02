@@ -1,13 +1,15 @@
 package Business;
 
+import java.util.ArrayList;
+
 public class Team {
     private String name;
-    private String[] members;
+    private ArrayList<String> members;
     private String[] strategy;
 
     public Team(String name) {
         this.name = name;
-        this.members = new String[0]; // Inicializa un array vacío
+        this.members = new ArrayList<>(); // Inicializa un array vacío
         this.strategy = new String[0]; // Inicializa un array vacío
     }
 
@@ -16,8 +18,7 @@ public class Team {
         return name;
     }
 
-    // Getter para 'members'
-    public String[] getMembers() {
+    public ArrayList<String> getMembers() {
         return members;
     }
 
