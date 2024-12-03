@@ -2,29 +2,38 @@ package Business;
 
 public class Character {
 
-        private int id;       // Identificador único
-        private String name;   // Nombre único
-        private int weight;    // Peso del personaje
+    private int id;
+    private String name;
+    private int weight;
 
-        public Character(int id, String name, int weight) {
-            this.id = id;
-            this.name = name;
-            this.weight = weight;
-        }
+    public Character(int id, String name, int weight) {
+        this.id = id;
+        this.name = name;
+        this.weight = weight;
+    }
 
-        // Getter para 'id'
-        public int getId() {
-            return id;
-        }
+    public int getId() {
+        return id;
+    }
 
-        // Getter para 'name'
-        public String getName() {
-            return name;
-        }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-        // Getter para 'weight'
-        public int getWeight() {
-            return weight;
-        }
+    public String getName() {
+        return name;
+    }
 
+    public int getWeight() {
+        return weight;
+    }
+
+    @Override
+    public String toString() {
+        return "Character{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", weight=" + weight +
+                '}';
+    }
 }
