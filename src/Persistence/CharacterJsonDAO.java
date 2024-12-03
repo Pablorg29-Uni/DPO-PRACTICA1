@@ -1,9 +1,11 @@
 package Persistence;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-import Business.Character;
+import Business.Entities.Character;
+
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.lang.reflect.Type;
@@ -12,7 +14,8 @@ import java.util.List;
 
 public class CharacterJsonDAO {
 
-    private final String path = "\\src\\Files\\characters.json";
+    private final String path = "./src/Files/characters.json";
+
 
     public void verifyJsonCharacter() {
         try {
@@ -26,7 +29,8 @@ public class CharacterJsonDAO {
         try {
             FileReader reader = new FileReader(this.path);
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            Type c = new TypeToken<ArrayList<Character>>(){}.getType();
+            Type c = new TypeToken<ArrayList<Character>>() {
+            }.getType();
             return gson.fromJson(reader, c);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
@@ -36,7 +40,7 @@ public class CharacterJsonDAO {
     public Character getCharacter(int id) {
         List<Character> characters = getAllCharacters();
         for (Character c : characters) {
-            if (c.getId() == id){
+            if (c.getId() == id) {
                 return c;
             }
         }

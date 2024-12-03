@@ -1,4 +1,4 @@
-package Business;
+package Business.Entities;
 
 public class Items {
     private int id;

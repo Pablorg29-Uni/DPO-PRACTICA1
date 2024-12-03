@@ -1,5 +1,6 @@
 package Business;
 
+import Business.Entities.Character;
 import Persistence.CharacterJsonDAO;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public class CharacterManager {
         this.characterJsonDAO.verifyJsonCharacter();
     }
 
-    public List<Character> getCharacters() {
+    public List<Business.Entities.Character> getCharacters() {
         return this.characterJsonDAO.getAllCharacters();
     }
 

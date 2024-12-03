@@ -1,4 +1,0 @@
-package Persistence
-
-class StatsJsonDAO {
-}
