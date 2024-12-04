@@ -46,7 +46,7 @@ public class Menu {
     }
     private void mostrarNombresDePersonajes() {
         int posicion= 1;
-        System.out.println("\nNombres de los Personajes:");
+        System.out.println("\n");
         for (Character character : characterJsonDAO.getAllCharacters()) { // Uso explícito de getAllCharacters
 
             System.out.println(posicion + ") " + character.getName());
