@@ -44,7 +44,7 @@ public class TeamJsonDAO {
         return null;
     }
 
-    public void saveTeam(Team team) {
+    public boolean saveTeam(Team team) {
         try {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             List<Team> teams = getAllTeams();
@@ -52,12 +52,13 @@ public class TeamJsonDAO {
             try (FileWriter writer = new FileWriter(this.path)) {
                 gson.toJson(teams, writer);
             }
+            return true;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            return false;
         }
     }
 
-    public void eliminateTeam(String name) {
+    public boolean eliminateTeam(String name) {
         try {
             List<Team> teams = getAllTeams();
             boolean done = teams.remove(getTeam(name));
@@ -67,9 +68,10 @@ public class TeamJsonDAO {
             FileWriter writer = new FileWriter(this.path);
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             gson.toJson(teams, writer);
+            return true;
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            return false;
         }
     }
 }
