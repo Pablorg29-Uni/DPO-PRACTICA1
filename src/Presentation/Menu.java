@@ -46,12 +46,19 @@ public class Menu {
     }
     private void mostrarNombresDePersonajes() {
         int posicion= 1;
-        System.out.println("\n");
+        System.out.println("");
         for (Character character : characterJsonDAO.getAllCharacters()) { // Uso explícito de getAllCharacters
 
             System.out.println(posicion + ") " + character.getName());
             posicion++;
         }
+        posicion=1;
+        System.out.println("\n" + (posicion-1) + ") Back");
+        Scanner scanner = new Scanner(System.in); // Crear el objeto Scanner
+        posicion = scanner.nextInt();
+        if (posicion != 0){
+            System.out.println("info de 1 pj");
 
+        }
     }
 }
