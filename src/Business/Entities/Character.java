@@ -2,21 +2,21 @@ package Business.Entities;
 
 public class Character {
 
-    private int id;
+    private long  id;
     private String name;
     private int weight;
 
-    public Character(int id, String name, int weight) {
+    public Character(long  id, String name, int weight) {
         this.id = id;
         this.name = name;
         this.weight = weight;
     }
 
-    public int getId() {
+    public long Character() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

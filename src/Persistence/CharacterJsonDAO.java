@@ -40,7 +40,7 @@ public class CharacterJsonDAO {
     public Character getCharacter(int id) {
         List<Character> characters = getAllCharacters();
         for (Character c : characters) {
-            if (c.getId() == id) {
+            if (c.Character() == id) {
                 return c;
             }
         }
