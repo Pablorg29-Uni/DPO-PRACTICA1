@@ -1,15 +1,15 @@
 package Business.Entities;
 
 public class Member {
-    private int id;
+    private long id;
     private String strategy;
 
-    public Member(int id, String strategy) {
+    public Member(long id, String strategy) {
         this.id = id;
         this.strategy = strategy;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 

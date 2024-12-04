@@ -1,7 +1,7 @@
 package Business.Entities;
 
 public class Items {
-    private int id;
+    private long id;
     private String name;
     private int power;
     private int durability;
@@ -9,7 +9,7 @@ public class Items {
 
 
 
-    public Items(int id, String name, int power, int durability, String classe) {
+    public Items(long id, String name, int power, int durability, String classe) {
         this.id = id;
         this.name = name;
         this.power = power;
@@ -18,7 +18,7 @@ public class Items {
     }
 
     // Métodos getters
-    public int getId() {
+    public long getId() {
         return id;
     }
 

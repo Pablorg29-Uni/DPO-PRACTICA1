@@ -3,11 +3,21 @@ package Presentation;
 import java.util.Scanner;
 import Persistence.CharacterJsonDAO;
 import Business.Entities.Character;
+import Persistence.TeamJsonDAO;
+import Business.Entities.Team;
+import Persistence.ItemsJsonDAO;
+import Business.Entities.Items;
 
 public class Menu {
     private final CharacterJsonDAO characterJsonDAO;
+    private final TeamJsonDAO teamJsonDAO;
+    private final ItemsJsonDAO itemsJsonDAO;
+
+
     public Menu() {
         this.characterJsonDAO = new CharacterJsonDAO();
+        this.teamJsonDAO = new TeamJsonDAO();
+        this.itemsJsonDAO = new ItemsJsonDAO();
     }
 
 
@@ -26,11 +36,11 @@ public class Menu {
         }
 
         else if (opcion == 2) {
-
+            mostrarEquipos();
         }
 
         else if (opcion == 3) {
-
+            mostrarItems();
         }
 
         else if (opcion == 4) {
@@ -59,6 +69,36 @@ public class Menu {
         if (posicion != 0){
             System.out.println("info de 1 pj");
 
+        }
+    }
+
+    private void mostrarEquipos() {
+        int posicion = 1;
+        System.out.println("");
+        for (Team team : teamJsonDAO.getAllTeams()) { // Uso directo de TeamJsonDAO
+            System.out.println(posicion + ") " + team.getName());
+            posicion++;
+        }
+        System.out.println("\n" + posicion + ") Back");
+        Scanner scanner = new Scanner(System.in); // Crear el objeto Scanner
+        posicion = scanner.nextInt();
+        if (posicion != 0) {
+            System.out.println("gestionar equipos");
+        }
+    }
+    private void mostrarItems() {
+        int posicion = 1;
+        System.out.println("");
+        for (Items item : itemsJsonDAO.getAllItems()) { // Uso directo de ItemsJsonDAO
+            System.out.println(posicion + ") " + item.getName());
+            posicion++;
+        }
+        posicion=1;
+        System.out.println("\n" + (posicion-1) + ") Back");
+        Scanner scanner = new Scanner(System.in); // Crear el objeto Scanner
+        posicion = scanner.nextInt();
+        if (posicion != 0) {
+            System.out.println("gestionar item");
         }
     }
 }
