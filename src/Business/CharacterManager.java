@@ -8,8 +8,8 @@ import java.util.List;
 public class CharacterManager {
     private final CharacterJsonDAO characterJsonDAO;
 
-    public CharacterManager(CharacterJsonDAO characterJsonDAO) {
-        this.characterJsonDAO = characterJsonDAO;
+    public CharacterManager() {
+        this.characterJsonDAO = new CharacterJsonDAO();
     }
 
     public void checkCharacterFile() {

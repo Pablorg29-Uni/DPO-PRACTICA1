@@ -8,8 +8,9 @@ import java.util.ArrayList;
 public class TeamManager {
     private final TeamJsonDAO teamJsonDAO;
 
-    public TeamManager(TeamJsonDAO teamJsonDAO) {
-        this.teamJsonDAO = teamJsonDAO;
+
+    public TeamManager() {
+        this.teamJsonDAO = new TeamJsonDAO();
     }
 
     public boolean eliminateTeam(String name) {

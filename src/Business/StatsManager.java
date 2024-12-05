@@ -8,8 +8,8 @@ import java.util.ArrayList;
 public class StatsManager {
     private final StatsJsonDAO statsJsonDAO;
 
-    public StatsManager(StatsJsonDAO statsJsonDAO) {
-        this.statsJsonDAO = statsJsonDAO;
+    public StatsManager() {
+        this.statsJsonDAO = new StatsJsonDAO();
     }
 
     public ArrayList<Stats> getStats() {

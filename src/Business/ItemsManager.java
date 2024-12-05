@@ -8,8 +8,8 @@ import java.util.ArrayList;
 public class ItemsManager {
     private final ItemsJsonDAO itemsJsonDAO;
 
-    public ItemsManager(ItemsJsonDAO itemsJsonDAO) {
-        this.itemsJsonDAO = itemsJsonDAO;
+    public ItemsManager() {
+        this.itemsJsonDAO = new ItemsJsonDAO();
     }
 
     public ArrayList<Items> showItems() {
