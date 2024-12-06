@@ -2,10 +2,14 @@ package Presentation;
 
 import Business.Entities.Character;
 import Business.Entities.Items;
+import Business.Entities.Member;
 import Business.Entities.Team;
+import Business.Entities.Stats;
 import Persistence.CharacterJsonDAO;
 import Persistence.ItemsJsonDAO;
 import Persistence.TeamJsonDAO;
+import Persistence.StatsJsonDAO;
+
 
 import java.util.List;
 import java.util.Scanner;
@@ -14,12 +18,15 @@ public class Controller {
     private final CharacterJsonDAO characterJsonDAO;
     private final TeamJsonDAO teamJsonDAO;
     private final ItemsJsonDAO itemsJsonDAO;
+    private final StatsJsonDAO statsJsonDAO;  // Asegúrate de tener este campo
 
     public Controller() {
         this.characterJsonDAO = new CharacterJsonDAO();
         this.teamJsonDAO = new TeamJsonDAO();
         this.itemsJsonDAO = new ItemsJsonDAO();
+        this.statsJsonDAO = new StatsJsonDAO(); // Asegúrate de inicializar statsJsonDAO aquí
     }
+
 
     public void mostrarNombresDePersonajes() {
         Scanner scanner = new Scanner(System.in);
@@ -100,21 +107,80 @@ public class Controller {
     }
 
     public void mostrarEquipos() {
-        int posicion = 1;
-        System.out.println("");
+        Scanner scanner = new Scanner(System.in);
 
+        // Obtener la lista de equipos
         List<Team> teams = teamJsonDAO.getAllTeams();
+
+        if (teams.isEmpty()) {
+            System.out.println("\nNo teams available.");
+            return;
+        }
+
+        // Mostrar la lista de equipos
+        int posicion = 1;
+        System.out.println("\nAvailable Teams:");
         for (Team team : teams) {
             System.out.println("\t" + posicion + ") " + team.getName());
             posicion++;
         }
-        posicion = 1;
-        System.out.println("\n\t" + (posicion - 1) + ") Back\n\nChoose an option: ");
-        Scanner scanner = new Scanner(System.in);
-        posicion = scanner.nextInt();
-        while (posicion != 0) {
-            System.out.println("info de 1 team");
-            posicion = scanner.nextInt();
+        System.out.println("\n\t0) Back\n\nChoose an option: ");
+
+        int opcion = scanner.nextInt();
+
+        // Validar la selección
+        if (opcion == 0) {
+            System.out.println("Returning to the previous menu...");
+            return;
+        }
+
+        if (opcion > 0 && opcion <= teams.size()) {
+            // Obtener el equipo seleccionado
+            Team selectedTeam = teams.get(opcion - 1);
+
+            // Mostrar detalles del equipo
+            System.out.println("\nTeam name: " + selectedTeam.getName() + "\n");
+
+            // Mostrar miembros del equipo
+            Member[] members = selectedTeam.getMembers();
+            for (int i = 0; i < members.length; i++) {
+                Member member = members[i];
+                Character character = characterJsonDAO.getCharacterById(member.getId());
+                if (character != null) {
+                    System.out.println("Character #" + (i + 1) + ": " + character.getName() + "\t\t(BALANCED)");
+
+                }
+
+                else {
+                    System.out.println("Character #" + (i + 1) + ": Unknown Character (ID: " + member.getId() + ")");
+                }
+            }
+
+            // Mostrar estadísticas del equipo
+            Stats teamStats = statsJsonDAO.getStat(selectedTeam.getName());
+            System.out.println("");
+            if (teamStats != null) {
+                System.out.println("Combats played: " + teamStats.getGamesPlayed());
+                System.out.println("Combats won: " + teamStats.getGamesWon());
+
+                // Calcular y mostrar la tasa de victorias
+                double winRate = teamStats.getGamesPlayed() > 0
+                        ? ((double) teamStats.getGamesWon() / teamStats.getGamesPlayed()) * 100
+                        : 0.0;
+                System.out.printf("Win rate: %.0f%%%n", winRate);
+
+                System.out.println("KOs done: " + teamStats.getKoDone());
+                System.out.println("KOs received: " + teamStats.getKoRecieved());
+            } else {
+                System.out.println("\nNo statistics available for this team.");
+            }
+
+            // Esperar a que el usuario continúe
+            System.out.println("\n<Press any key to continue...>");
+            scanner.nextLine(); // Consumir el salto de línea
+            scanner.nextLine(); // Esperar entrada del usuario
+        } else {
+            System.out.println("\nInvalid option. Returning to the previous menu...");
         }
     }
     public void eliminarEquipo() {
