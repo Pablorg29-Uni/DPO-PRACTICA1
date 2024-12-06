@@ -19,6 +19,15 @@ public class Team {
         return members;
     }
 
+    public boolean containsCharacter(long characterId) {
+        for (Member member : members) {
+            if (member.getId() == characterId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public String getName() {
         return name;
     }
