@@ -10,7 +10,7 @@ import Persistence.ItemsJsonDAO;
 import Persistence.TeamJsonDAO;
 import Persistence.StatsJsonDAO;
 
-
+import java.util.ArrayList; // Ensure this import is included
 import java.util.List;
 import java.util.Scanner;
 
@@ -126,6 +126,7 @@ public class Controller {
         }
         System.out.println("\n\t0) Back\n\nChoose an option: ");
 
+        // Leer opción seleccionada
         int opcion = scanner.nextInt();
 
         // Validar la selección
@@ -135,7 +136,6 @@ public class Controller {
         }
 
         if (opcion > 0 && opcion <= teams.size()) {
-            // Obtener el equipo seleccionado
             Team selectedTeam = teams.get(opcion - 1);
 
             // Mostrar detalles del equipo
@@ -146,20 +146,22 @@ public class Controller {
             for (int i = 0; i < members.length; i++) {
                 Member member = members[i];
                 Character character = characterJsonDAO.getCharacterById(member.getId());
+
                 if (character != null) {
-                    System.out.println("Character #" + (i + 1) + ": " + character.getName() + "\t\t(BALANCED)");
+                    // Establecer el rol (por defecto "Balanced")
+                    String role = member.getRole() != null ? member.getRole() : "Balanced";
 
-                }
-
-                else {
+                    // Alinear la salida con el nombre y el rol
+                    System.out.printf("Character #%d: %-30s (%s)%n", (i + 1), character.getName(), role);
+                } else {
                     System.out.println("Character #" + (i + 1) + ": Unknown Character (ID: " + member.getId() + ")");
                 }
             }
 
             // Mostrar estadísticas del equipo
             Stats teamStats = statsJsonDAO.getStat(selectedTeam.getName());
-            System.out.println("");
             if (teamStats != null) {
+                System.out.println("\nTeam Statistics:");
                 System.out.println("Combats played: " + teamStats.getGamesPlayed());
                 System.out.println("Combats won: " + teamStats.getGamesWon());
 
@@ -175,9 +177,9 @@ public class Controller {
                 System.out.println("\nNo statistics available for this team.");
             }
 
-            // Esperar a que el usuario continúe
+            // Esperar que el usuario presione una tecla para continuar
             System.out.println("\n<Press any key to continue...>");
-            scanner.nextLine(); // Consumir el salto de línea
+            scanner.nextLine(); // Consumir el salto de línea pendiente
             scanner.nextLine(); // Esperar entrada del usuario
         } else {
             System.out.println("\nInvalid option. Returning to the previous menu...");
@@ -207,20 +209,63 @@ public class Controller {
     }
 
     public void mostrarItems() {
+        Scanner scanner = new Scanner(System.in);
+
+        // Obtener la lista de items
+        List<Items> items = itemsJsonDAO.getAllItems();
+
+        // Si no hay items disponibles
+        if (items.isEmpty()) {
+            System.out.println("\nNo items available.");
+            return;
+        }
+
+        // Mostrar la lista de items
         int posicion = 1;
         System.out.println("");
-        List<Items> items = itemsJsonDAO.getAllItems();
         for (Items item : items) {
             System.out.println("\t" + posicion + ") " + item.getName());
             posicion++;
         }
-        posicion = 1;
-        System.out.println("\n\t" + (posicion - 1) + ") Back\n\nChoose an option: ");
-        Scanner scanner = new Scanner(System.in);
-        posicion = scanner.nextInt();
-        while (posicion != 0) {
-            System.out.println("info de 1 team");
-            posicion = scanner.nextInt();
+        System.out.println("\n\t0) Back\n\nChoose an option: ");
+
+        // Leer la opción seleccionada
+        int opcion = scanner.nextInt();
+
+        // Validar la selección
+        while (opcion != 0) {
+            if (opcion > 0 && opcion <= items.size()) {
+                // Obtener el item seleccionado
+                Items selectedItem = items.get(opcion - 1);
+
+                // Mostrar detalles del item
+                System.out.println("");
+                System.out.println("\tID: " + selectedItem.getId());
+                System.out.println("\tNAME: " + selectedItem.getName());
+                System.out.println("\tCLASS: " + selectedItem.getClasse());
+                System.out.println("\tPOWER: " + selectedItem.getPower());
+                System.out.println("\tDURABILITY: " + selectedItem.getDurability());
+
+                // Esperar que el usuario presione una tecla para continuar
+                System.out.println("\n<Press any key to continue...>");
+                scanner.nextLine(); // Consumir el salto de línea pendiente
+                scanner.nextLine(); // Esperar la entrada del usuario
+            } else {
+                System.out.println("\nInvalid option. Please choose again.");
+            }
+
+            // Mostrar nuevamente la lista de items y permitir la selección
+            System.out.println("\nAvailable Items:");
+            posicion = 1;
+            for (Items item : items) {
+                System.out.println("\t" + posicion + ") " + item.getName());
+                posicion++;
+            }
+            System.out.println("\n\t0) Back\n\nChoose an option: ");
+            opcion = scanner.nextInt();  // Leer la opción seleccionada
         }
+
+        // Regresar al menú anterior si la opción es 0
+        System.out.println("Returning to the previous menu...");
     }
 }

@@ -5,13 +5,6 @@ public class Member {
     private String strategy;
     private String role;
 
-    public String getRole() {
-        return role;
-    }
-
-
-
-
     public Member(long id, String strategy) {
         this.id = id;
         this.strategy = strategy;
@@ -23,6 +16,10 @@ public class Member {
 
     public String getStrategy() {
         return strategy;
+    }
+
+    public String getRole() {
+        return role;
     }
 
 }
