@@ -18,11 +18,6 @@ public class Character {
         return id;
     }
 
-    // Setter para id
-    public void setId(long id) {
-        this.id = id;
-    }
-
     // Getter para name
     public String getName() {
         return name;
@@ -33,12 +28,4 @@ public class Character {
         return weight;
     }
 
-    @Override
-    public String toString() {
-        return "Character{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", weight=" + weight +
-                '}';
-    }
 }

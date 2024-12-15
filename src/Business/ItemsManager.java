@@ -16,7 +16,5 @@ public class ItemsManager {
         return (ArrayList<Items>) itemsJsonDAO.getAllItems();
     }
 
-    public Items showOneItem(int id) {
-        return itemsJsonDAO.getItem(id);
-    }
+    public Items showOneItem(long id) { return itemsJsonDAO.getItem(id); }
 }

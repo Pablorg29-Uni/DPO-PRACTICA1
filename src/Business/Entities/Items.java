@@ -1,6 +1,6 @@
 package Business.Entities;
 
-public class Items {
+public class    Items {
     private long id;
     private String name;
     private int power;

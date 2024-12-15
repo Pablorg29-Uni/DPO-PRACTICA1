@@ -36,7 +36,7 @@ public class ItemsJsonDAO {
         }
     }
 
-    public Items getItem(int id) {
+    public Items getItem(long id) {
         List<Items> items = getAllItems();
         for (Items item : items) {
             if (item.getId() == id) {
