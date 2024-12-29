@@ -59,7 +59,7 @@ public class CharacterJsonDAO {
     }
 
     // Método para obtener un personaje por id, el id es un long en lugar de int
-    public Character getCharacter(int id) {
-        return getCharacterById((long) id);  // Llamamos a getCharacterById pasando el id como long
+    public Character getCharacter(long id) {
+        return getCharacterById(id);  // Llamamos a getCharacterById pasando el id como long
     }
 }

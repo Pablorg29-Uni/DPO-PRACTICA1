@@ -21,7 +21,7 @@ public class Team {
 
     public boolean containsCharacter(long characterId) {
         for (Member member : members) {
-            if (member.getId() == characterId) {
+            if (member.getCharacter().getId() == characterId) {
                 return true;
             }
         }

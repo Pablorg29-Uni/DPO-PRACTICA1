@@ -145,7 +145,7 @@ public class Controller {
             Member[] members = selectedTeam.getMembers();
             for (int i = 0; i < members.length; i++) {
                 Member member = members[i];
-                Character character = characterJsonDAO.getCharacterById(member.getId());
+                Character character = characterJsonDAO.getCharacterById(member.getCharacter().getId());
 
                 if (character != null) {
                     // Establecer el rol (por defecto "Balanced")
@@ -154,7 +154,7 @@ public class Controller {
                     // Alinear la salida con el nombre y el rol
                     System.out.printf("Character #%d: %-30s (%s)%n", (i + 1), character.getName(), role);
                 } else {
-                    System.out.println("Character #" + (i + 1) + ": Unknown Character (ID: " + member.getId() + ")");
+                    System.out.println("Character #" + (i + 1) + ": Unknown Character (ID: " + member.getCharacter().getId() + ")");
                 }
             }
 

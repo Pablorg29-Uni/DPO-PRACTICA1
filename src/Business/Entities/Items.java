@@ -34,6 +34,10 @@ public class    Items {
         return durability;
     }
 
+    public void setDurability(int durability) {
+        this.durability = durability;
+    }
+
     public String getClasse() {
         return classe;
     }

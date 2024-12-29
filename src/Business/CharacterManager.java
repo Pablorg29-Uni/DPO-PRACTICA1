@@ -20,7 +20,7 @@ public class CharacterManager {
         return this.characterJsonDAO.getAllCharacters();
     }
 
-    public Character getCharacter(int id) {
+    public Character getCharacter(long id) {
         return this.characterJsonDAO.getCharacter(id);
     }
 }
