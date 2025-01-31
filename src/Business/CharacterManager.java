@@ -21,6 +21,8 @@ public class CharacterManager {
     }
 
     public Character getCharacter(long id) {
-        return this.characterJsonDAO.getCharacter(id);
+        return this.characterJsonDAO.getCharacterById(id);
     }
-}
+    public Character getCharacter2(String name) {
+        return this.characterJsonDAO.getCharacterByName(name)
+    }

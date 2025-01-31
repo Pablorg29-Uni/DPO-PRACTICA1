@@ -1,10 +1,14 @@
 package Presentation;
 
 import Business.Entities.Character;
+import Business.CharacterManager;
 import Business.Entities.Items;
+import Business.ItemsManager;
 import Business.Entities.Member;
 import Business.Entities.Team;
+import Business.TeamManager;
 import Business.Entities.Stats;
+import Business.StatsManager;
 import Persistence.CharacterJsonDAO;
 import Persistence.ItemsJsonDAO;
 import Persistence.TeamJsonDAO;
@@ -15,16 +19,24 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Controller {
+    private final TeamManager teammanager;
+    private final StatsManager statsmanager;
+    private final ItemsManager itemmanager;
+    private final CharacterManager charactermanager;
     private final CharacterJsonDAO characterJsonDAO;
     private final TeamJsonDAO teamJsonDAO;
     private final ItemsJsonDAO itemsJsonDAO;
-    private final StatsJsonDAO statsJsonDAO;  // Asegúrate de tener este campo
+    private final StatsJsonDAO statsJsonDAO;
 
     public Controller() {
+        this.statsmanager = new StatsManager();
+        this.itemmanager = new ItemsManager();
+        this.charactermanager = new CharacterManager();
+        this.teammanager = new TeamManager();
         this.characterJsonDAO = new CharacterJsonDAO();
         this.teamJsonDAO = new TeamJsonDAO();
         this.itemsJsonDAO = new ItemsJsonDAO();
-        this.statsJsonDAO = new StatsJsonDAO(); // Asegúrate de inicializar statsJsonDAO aquí
+        this.statsJsonDAO = new StatsJsonDAO();
     }
 
 
@@ -32,7 +44,7 @@ public class Controller {
         Scanner scanner = new Scanner(System.in);
         int posicion = 1;
         System.out.println("");
-        List<Character> characters = characterJsonDAO.getAllCharacters();
+        List<Character> characters = charactermanager.getCharacters();
         for (Character character : characters) {
             System.out.println("\t" + posicion + ") " + character.getName());
             posicion++;
@@ -55,7 +67,7 @@ public class Controller {
             System.out.println("WEIGHT: " + selectedCharacter.getWeight() + " kg");
 
             // Obtener los equipos a los que pertenece este personaje
-            List<Team> teams = teamJsonDAO.getAllTeams();
+            List<Team> teams = teammanager.showTeams();
             System.out.println("TEAMS:");
             for (Team team : teams) {
                 if (team.containsCharacter(selectedCharacter.getId())) {
@@ -83,14 +95,14 @@ public class Controller {
             String input = scanner.nextLine();
             try {
                 long id = Long.parseLong(input);
-                Character character = characterJsonDAO.getCharacterById(id);
+                Character character = charactermanager.getCharacter(id);
                 if (character == null) {
                     System.out.println("Error: Character with ID " + id + " not found.");
                     return;
                 }
                 ids[i] = id;
             } catch (NumberFormatException e) {
-                Character character = characterJsonDAO.getCharacterByName(input);
+                Character character = charactermanager.getCharacter2(input);
                 if (character == null) {
                     System.out.println("Error: Character with name " + input + " not found.");
                     return;
@@ -99,7 +111,7 @@ public class Controller {
             }
         }
 
-        if (teamJsonDAO.saveTeam(new Team(teamName, ids[0], ids[1], ids[2], ids[3]))) {
+        if (teammanager.createTeam(teamName, ids[0], ids[1], ids[2], ids[3])) {
             System.out.println("\nTeam " + teamName + " has been successfully created!");
         } else {
             System.out.println("\nError: Failed to save the team. Please try again.");
@@ -110,7 +122,7 @@ public class Controller {
         Scanner scanner = new Scanner(System.in);
 
         // Obtener la lista de equipos
-        List<Team> teams = teamJsonDAO.getAllTeams();
+        List<Team> teams = teammanager.showTeams();
 
         if (teams.isEmpty()) {
             System.out.println("\nNo teams available.");
@@ -145,7 +157,7 @@ public class Controller {
             Member[] members = selectedTeam.getMembers();
             for (int i = 0; i < members.length; i++) {
                 Member member = members[i];
-                Character character = characterJsonDAO.getCharacterById(member.getCharacter().getId());
+                Character character = charactermanager.getCharacter(member.getCharacter().getId());
 
                 if (character != null) {
                     // Establecer el rol (por defecto "Balanced")
@@ -159,7 +171,7 @@ public class Controller {
             }
 
             // Mostrar estadísticas del equipo
-            Stats teamStats = statsJsonDAO.getStat(selectedTeam.getName());
+            Stats teamStats = statsmanager.getStat(selectedTeam.getName());
             if (teamStats != null) {
                 System.out.println("\nTeam Statistics:");
                 System.out.println("Combats played: " + teamStats.getGamesPlayed());
@@ -190,7 +202,7 @@ public class Controller {
         System.out.print("\nEnter the name of the team to remove: ");
         String teamName = scanner.nextLine();
 
-        if (teamJsonDAO.getTeam(teamName) == null) {
+        if (teammanager.getTeam(teamName) == null) {
             System.out.println("Error: Team not found.");
             return;
         }
@@ -198,7 +210,7 @@ public class Controller {
         System.out.print("Are you sure you want to remove \"" + teamName + "\"? (Yes/No): ");
         String confirmation = scanner.nextLine();
         if (confirmation.equalsIgnoreCase("yes")) {
-            if (teamJsonDAO.eliminateTeam(teamName)) {
+            if (teammanager.eliminateTeam(teamName)) {
                 System.out.println("\nTeam \"" + teamName + "\" has been removed.");
             } else {
                 System.out.println("\nError: Failed to remove the team.");
@@ -212,7 +224,7 @@ public class Controller {
         Scanner scanner = new Scanner(System.in);
 
         // Obtener la lista de items
-        List<Items> items = itemsJsonDAO.getAllItems();
+        List<Items> items = itemmanager.showItems();
 
         // Si no hay items disponibles
         if (items.isEmpty()) {

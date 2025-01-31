@@ -19,7 +19,7 @@ public class TeamManager {
     }
 
     // Crea un nuevo equipo
-    public boolean createTeam(String name, int id1, int id2, int id3, int id4) {
+    public boolean createTeam(String name, long id1, long id2, long id3, long id4) {
         Team team = new Team(name, id1, id2, id3, id4);
         return teamJsonDAO.saveTeam(team);
     }
@@ -27,5 +27,8 @@ public class TeamManager {
     // Muestra todos los equipos
     public List<Team> showTeams() {
         return teamJsonDAO.getAllTeams();
+    }
+    public Team getTeam(String name) {
+        return teamJsonDAO.getTeam(name);
     }
 }

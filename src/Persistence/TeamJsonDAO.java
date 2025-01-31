@@ -31,7 +31,7 @@ public class TeamJsonDAO {
         }
     }
 
-    // Obtiene todos los equipos desde el archivo JSON
+
     public List<Team> getAllTeams() {
         verifyJsonTeams(); // Asegura que el archivo exista
         try (FileReader reader = new FileReader(this.path)) {
@@ -43,7 +43,6 @@ public class TeamJsonDAO {
         }
     }
 
-    // Busca un equipo por nombre
     public Team getTeam(String name) {
         return getAllTeams().stream()
                 .filter(team -> team.getName().equalsIgnoreCase(name))
@@ -51,7 +50,7 @@ public class TeamJsonDAO {
                 .orElse(null);
     }
 
-    // Guarda un nuevo equipo
+
     public boolean saveTeam(Team team) {
         try {
             List<Team> teams = getAllTeams();
@@ -64,7 +63,7 @@ public class TeamJsonDAO {
         }
     }
 
-    // Elimina un equipo por nombre
+
     public boolean eliminateTeam(String name) {
         try {
             List<Team> teams = getAllTeams();
@@ -84,7 +83,6 @@ public class TeamJsonDAO {
         }
     }
 
-    // Método auxiliar para escribir los equipos en el archivo JSON
     private void writeTeamsToFile(List<Team> teams) throws IOException {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         try (FileWriter writer = new FileWriter(this.path)) {

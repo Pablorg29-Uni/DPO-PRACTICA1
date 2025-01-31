@@ -7,15 +7,6 @@ public class Stats {
     private int koDone;
     private int koRecieved;
 
-    // Constructor vacío
-    public Stats() {
-        this.name = "";
-        this.gamesPlayed = 0;
-        this.gamesWon = 0;
-        this.koDone = 0;
-        this.koRecieved = 0;
-    }
-
     // Constructor con parámetros
     public Stats(String name, int gamesPlayed, int gamesWon, int koDone, int koRecieved) {
         this.name = name;
