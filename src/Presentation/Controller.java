@@ -9,10 +9,7 @@ import Business.Entities.Team;
 import Business.TeamManager;
 import Business.Entities.Stats;
 import Business.StatsManager;
-import Persistence.CharacterJsonDAO;
-import Persistence.ItemsJsonDAO;
-import Persistence.TeamJsonDAO;
-import Persistence.StatsJsonDAO;
+
 
 import java.util.ArrayList; // Ensure this import is included
 import java.util.List;
@@ -23,20 +20,14 @@ public class Controller {
     private final StatsManager statsmanager;
     private final ItemsManager itemmanager;
     private final CharacterManager charactermanager;
-    private final CharacterJsonDAO characterJsonDAO;
-    private final TeamJsonDAO teamJsonDAO;
-    private final ItemsJsonDAO itemsJsonDAO;
-    private final StatsJsonDAO statsJsonDAO;
+
 
     public Controller() {
         this.statsmanager = new StatsManager();
         this.itemmanager = new ItemsManager();
         this.charactermanager = new CharacterManager();
         this.teammanager = new TeamManager();
-        this.characterJsonDAO = new CharacterJsonDAO();
-        this.teamJsonDAO = new TeamJsonDAO();
-        this.itemsJsonDAO = new ItemsJsonDAO();
-        this.statsJsonDAO = new StatsJsonDAO();
+
     }
 
 
