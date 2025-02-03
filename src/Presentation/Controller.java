@@ -11,6 +11,7 @@ import Business.Entities.Stats;
 import Business.StatsManager;
 
 
+import java.lang.reflect.Array;
 import java.util.ArrayList; // Ensure this import is included
 import java.util.List;
 import java.util.Scanner;
@@ -27,7 +28,6 @@ public class Controller {
         this.itemmanager = new ItemsManager();
         this.charactermanager = new CharacterManager();
         this.teammanager = new TeamManager();
-
     }
 
 
@@ -58,14 +58,12 @@ public class Controller {
             System.out.println("WEIGHT: " + selectedCharacter.getWeight() + " kg");
 
             // Obtener los equipos a los que pertenece este personaje
-            List<Team> teams = teammanager.showTeams();
+            //List<Team> teams = teammanager.showTeams();
             System.out.println("TEAMS:");
+                ArrayList<Team> teams =  teammanager.teamsWithPlayer(selectedCharacter.getId());
             for (Team team : teams) {
-                if (team.containsCharacter(selectedCharacter.getId())) {
-                    System.out.println("\t- " + team.getName());
-                }
+                System.out.println("\t- " + team.getName());
             }
-
             // Esperar a que el usuario continúe
             System.out.println("\n<Press any key to continue...>");
             scanner.nextLine(); // Consumir el salto de línea
@@ -145,19 +143,19 @@ public class Controller {
             System.out.println("\nTeam name: " + selectedTeam.getName() + "\n");
 
             // Mostrar miembros del equipo
-            Member[] members = selectedTeam.getMembers();
-            for (int i = 0; i < members.length; i++) {
-                Member member = members[i];
-                Character character = charactermanager.getCharacter(member.getCharacter().getId());
+            ArrayList<Member> members = teammanager.getTeam(selectedTeam.getName()).getMembers();
+            //ArrayList<Member> members = selectedTeam.getMembers();
+            for (int i = 0; i < members.size(); i++) {
+                Character character = charactermanager.getCharacter(members.get(i).getCharacter().getId());
 
                 if (character != null) {
                     // Establecer el rol (por defecto "Balanced")
-                    String role = member.getRole() != null ? member.getRole() : "Balanced";
+                    String role = members.get(i).getRole() != null ? members.get(i).getRole() : "Balanced";
 
                     // Alinear la salida con el nombre y el rol
                     System.out.printf("Character #%d: %-30s (%s)%n", (i + 1), character.getName(), role);
                 } else {
-                    System.out.println("Character #" + (i + 1) + ": Unknown Character (ID: " + member.getCharacter().getId() + ")");
+                    System.out.println("Character #" + (i + 1) + ": Unknown Character (ID: " + members.get(i).getCharacter().getId() + ")");
                 }
             }
 

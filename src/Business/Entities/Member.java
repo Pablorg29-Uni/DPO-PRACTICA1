@@ -3,6 +3,7 @@ package Business.Entities;
 import Business.CharacterManager;
 
 public class Member {
+    private long id;
     private Character character;
     private Items armadura;
     private Items arma;
@@ -10,6 +11,8 @@ public class Member {
     private float malRebut;
     private String role;
 
+    public Member() {
+    }
     public Member(long id, String strategy) {
         CharacterManager characterManager = new CharacterManager();
         this.character = characterManager.getCharacter(id);
@@ -56,4 +59,7 @@ public class Member {
         return role;
     }
 
+    public long getId() {
+        return id;
+    }
 }

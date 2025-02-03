@@ -37,7 +37,8 @@ public class TeamJsonDAO {
         try (FileReader reader = new FileReader(this.path)) {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             Type teamListType = new TypeToken<ArrayList<Team>>() {}.getType();
-            return gson.fromJson(reader, teamListType);
+            List<Team> teams = gson.fromJson(reader, teamListType);
+            return teams;
         } catch (IOException e) {
             throw new RuntimeException("Error reading teams: " + e.getMessage(), e);
         }

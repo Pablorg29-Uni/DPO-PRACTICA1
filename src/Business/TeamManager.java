@@ -1,5 +1,6 @@
 package Business;
 
+import Business.Entities.Member;
 import Business.Entities.Team;
 import Persistence.TeamJsonDAO;
 
@@ -28,7 +29,22 @@ public class TeamManager {
     public List<Team> showTeams() {
         return teamJsonDAO.getAllTeams();
     }
+
     public Team getTeam(String name) {
         return teamJsonDAO.getTeam(name);
+    }
+
+    public ArrayList<Team> teamsWithPlayer(long id) {
+        ArrayList<Team> matchingTeams = new ArrayList<>();
+        List<Team> teams = teamJsonDAO.getAllTeams();
+        for (Team team : teams) {
+            for (Member member : team.getMembers()) {
+                if (member.getId() == id) {
+                    matchingTeams.add(team);
+                    break;
+                }
+            }
+        }
+        return matchingTeams;
     }
 }
