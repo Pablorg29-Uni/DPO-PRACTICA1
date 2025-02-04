@@ -68,6 +68,8 @@ public class TeamJsonDAO {
     public boolean eliminateTeam(String name) {
         try {
             List<Team> teams = getAllTeams();
+            teams.removeIf(team -> team.getName().equals(name));
+            /*
             Team teamToRemove = getTeam(name);
 
             if (teamToRemove == null) {
@@ -76,7 +78,11 @@ public class TeamJsonDAO {
             }
 
             teams.remove(teamToRemove);
-            writeTeamsToFile(teams);
+            writeTeamsToFile(teams);*/
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            try (FileWriter writer = new FileWriter(this.path)) {
+                gson.toJson(teams, writer);
+            }
             return true;
         } catch (Exception e) {
             e.printStackTrace();

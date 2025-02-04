@@ -1,5 +1,6 @@
 package Persistence;
 
+import Business.Entities.Team;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -26,11 +27,30 @@ public class StatsJsonDAO {
         }
     }
 
+    public void deleteOneStats(String name) {
+        try {
+            FileReader reader = new FileReader(this.path);
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            Type statsType = new TypeToken<ArrayList<Stats>>() {
+            }.getType();
+            List<Stats> stats = gson.fromJson(reader, statsType);
+            stats.removeIf(stat -> name.equals(stat.getName())); //cosa rara del intelliJ
+            try (FileWriter writer = new FileWriter(this.path)) {
+                gson.toJson(stats, writer);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+    }
+
     public List<Stats> getAllStats() {
         try {
             FileReader reader = new FileReader(this.path);
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            Type statsType = new TypeToken<ArrayList<Stats>>() {}.getType();
+            Type statsType = new TypeToken<ArrayList<Stats>>() {
+            }.getType();
             return gson.fromJson(reader, statsType);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);

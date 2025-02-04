@@ -20,6 +20,7 @@ public class TeamManager {
 
     // Elimina un equipo por nombre
     public boolean eliminateTeam(String name) {
+        statsJsonDAO.deleteOneStats(name);
         return teamJsonDAO.eliminateTeam(name);
     }
 
