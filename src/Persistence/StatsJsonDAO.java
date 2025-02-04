@@ -8,6 +8,8 @@ import Business.Entities.Stats;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +34,16 @@ public class StatsJsonDAO {
             return gson.fromJson(reader, statsType);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public void createEmptyStats(String teamName) throws IOException {
+        List<Stats> stats = getAllStats();
+        Stats s = new Stats(teamName, 0, 0, 0, 0);
+        stats.add(s);
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        try (FileWriter writer = new FileWriter(this.path)) {
+            gson.toJson(stats, writer);
         }
     }
 

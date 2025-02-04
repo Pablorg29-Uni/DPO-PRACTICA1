@@ -146,7 +146,7 @@ public class Controller {
             ArrayList<Member> members = teammanager.getTeam(selectedTeam.getName()).getMembers();
             //ArrayList<Member> members = selectedTeam.getMembers();
             for (int i = 0; i < members.size(); i++) {
-                Character character = charactermanager.getCharacter(members.get(i).getCharacter().getId());
+                Character character = charactermanager.getCharacter(members.get(i).getId());
 
                 if (character != null) {
                     // Establecer el rol (por defecto "Balanced")
@@ -162,8 +162,8 @@ public class Controller {
             // Mostrar estadísticas del equipo
             Stats teamStats = statsmanager.getStat(selectedTeam.getName());
             if (teamStats != null) {
-                System.out.println("\nTeam Statistics:");
-                System.out.println("Combats played: " + teamStats.getGamesPlayed());
+                //System.out.println("\nTeam Statistics:");
+                System.out.println("\nCombats played: " + teamStats.getGamesPlayed());
                 System.out.println("Combats won: " + teamStats.getGamesWon());
 
                 // Calcular y mostrar la tasa de victorias

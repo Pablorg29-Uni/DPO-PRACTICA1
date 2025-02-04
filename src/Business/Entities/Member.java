@@ -12,7 +12,19 @@ public class Member {
     private String role;
 
     public Member() {
+        this.character = null;
+        this.armadura = null;
+        this.arma = null;
+        this.strategy = null;
+        this.malRebut = 0;
+        this.role = null;
     }
+
+    public Member (long id) {
+        this();
+        this.id = id;
+    }
+
     public Member(long id, String strategy) {
         CharacterManager characterManager = new CharacterManager();
         this.character = characterManager.getCharacter(id);
@@ -61,5 +73,9 @@ public class Member {
 
     public long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }
