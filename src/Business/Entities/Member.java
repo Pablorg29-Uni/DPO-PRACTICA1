@@ -16,7 +16,6 @@ public class Member {
         this.armadura = null;
         this.arma = null;
         this.strategy = null;
-        this.malRebut = 0;
         this.role = null;
     }
 

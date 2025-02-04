@@ -11,7 +11,6 @@ import Business.Entities.Stats;
 import Business.StatsManager;
 
 
-import java.lang.reflect.Array;
 import java.util.ArrayList; // Ensure this import is included
 import java.util.List;
 import java.util.Scanner;
@@ -163,17 +162,17 @@ public class Controller {
             Stats teamStats = statsmanager.getStat(selectedTeam.getName());
             if (teamStats != null) {
                 //System.out.println("\nTeam Statistics:");
-                System.out.println("\nCombats played: " + teamStats.getGamesPlayed());
-                System.out.println("Combats won: " + teamStats.getGamesWon());
+                System.out.println("\nCombats played: " + teamStats.getGames_played());
+                System.out.println("Combats won: " + teamStats.getGames_won());
 
                 // Calcular y mostrar la tasa de victorias
-                double winRate = teamStats.getGamesPlayed() > 0
-                        ? ((double) teamStats.getGamesWon() / teamStats.getGamesPlayed()) * 100
+                double winRate = teamStats.getGames_played() > 0
+                        ? ((double) teamStats.getGames_won() / teamStats.getGames_played()) * 100
                         : 0.0;
                 System.out.printf("Win rate: %.0f%%%n", winRate);
 
-                System.out.println("KOs done: " + teamStats.getKoDone());
-                System.out.println("KOs received: " + teamStats.getKoRecieved());
+                System.out.println("KOs done: " + teamStats.getKO_done());
+                System.out.println("KOs received: " + teamStats.getKO_received());
             } else {
                 System.out.println("\nNo statistics available for this team.");
             }

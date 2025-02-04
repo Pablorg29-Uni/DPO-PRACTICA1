@@ -29,11 +29,8 @@ public class StatsJsonDAO {
 
     public void deleteOneStats(String name) {
         try {
-            FileReader reader = new FileReader(this.path);
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            Type statsType = new TypeToken<ArrayList<Stats>>() {
-            }.getType();
-            List<Stats> stats = gson.fromJson(reader, statsType);
+            List<Stats> stats = getAllStats();
             stats.removeIf(stat -> name.equals(stat.getName())); //cosa rara del intelliJ
             try (FileWriter writer = new FileWriter(this.path)) {
                 gson.toJson(stats, writer);
