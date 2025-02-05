@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Controller {
+    private final View view;
     private final TeamManager teammanager;
     private final StatsManager statsmanager;
     private final ItemsManager itemmanager;
@@ -23,6 +24,7 @@ public class Controller {
 
 
     public Controller() {
+        this.view = new View();
         this.statsmanager = new StatsManager();
         this.itemmanager = new ItemsManager();
         this.charactermanager = new CharacterManager();
@@ -35,10 +37,11 @@ public class Controller {
         int posicion = 1;
         System.out.println("");
         List<Character> characters = charactermanager.getCharacters();
-        for (Character character : characters) {
-            System.out.println("\t" + posicion + ") " + character.getName());
-            posicion++;
-        }
+        //for (Character character : characters) {
+          //  System.out.println("\t" + posicion + ") " + character.getName());
+            //posicion++;
+        //}
+        view.NombrePJ(characters, posicion);
         System.out.println("\n\t0) Back\n\nChoose an option: ");
         int opcion = scanner.nextInt();
 
@@ -52,17 +55,19 @@ public class Controller {
             Character selectedCharacter = characters.get(opcion - 1);
 
             // Mostrar información del personaje seleccionado
-            System.out.println("\nID: " + selectedCharacter.getId());
-            System.out.println("NAME: " + selectedCharacter.getName());
-            System.out.println("WEIGHT: " + selectedCharacter.getWeight() + " kg");
 
+            //System.out.println("\nID: " + selectedCharacter.getId());
+            //System.out.println("NAME: " + selectedCharacter.getName());
+            //System.out.println("WEIGHT: " + selectedCharacter.getWeight() + " kg");
             // Obtener los equipos a los que pertenece este personaje
             //List<Team> teams = teammanager.showTeams();
-            System.out.println("TEAMS:");
+            //System.out.println("TEAMS:");
                 ArrayList<Team> teams =  teammanager.teamsWithPlayer(selectedCharacter.getId());
-            for (Team team : teams) {
-                System.out.println("\t- " + team.getName());
-            }
+            //for (Team team : teams) {
+              //  System.out.println("\t- " + team.getName());
+            //}
+            view.InfoPJ(selectedCharacter, teams);
+
             // Esperar a que el usuario continúe
             System.out.println("\n<Press any key to continue...>");
             scanner.nextLine(); // Consumir el salto de línea
@@ -119,11 +124,12 @@ public class Controller {
 
         // Mostrar la lista de equipos
         int posicion = 1;
-        System.out.println("\nAvailable Teams:");
-        for (Team team : teams) {
-            System.out.println("\t" + posicion + ") " + team.getName());
-            posicion++;
-        }
+        //System.out.println("\nAvailable Teams:");
+        //for (Team team : teams) {
+        //   System.out.println("\t" + posicion + ") " + team.getName());
+        //    posicion++;
+        //}
+        view.equipos(teams, posicion);
         System.out.println("\n\t0) Back\n\nChoose an option: ");
 
         // Leer opción seleccionada
@@ -147,36 +153,37 @@ public class Controller {
             for (int i = 0; i < members.size(); i++) {
                 Character character = charactermanager.getCharacter(members.get(i).getId());
 
-                if (character != null) {
+                //if (character != null) {
                     // Establecer el rol (por defecto "Balanced")
-                    String role = members.get(i).getRole() != null ? members.get(i).getRole() : "Balanced";
+                  //  String role = members.get(i).getRole() != null ? members.get(i).getRole() : "Balanced";
 
                     // Alinear la salida con el nombre y el rol
-                    System.out.printf("Character #%d: %-30s (%s)%n", (i + 1), character.getName(), role);
-                } else {
-                    System.out.println("Character #" + (i + 1) + ": Unknown Character (ID: " + members.get(i).getCharacter().getId() + ")");
-                }
+                    //System.out.printf("Character #%d: %-30s (%s)%n", (i + 1), character.getName(), role);
+                //} else {
+                 //   System.out.println("Character #" + (i + 1) + ": Unknown Character (ID: " + members.get(i).getCharacter().getId() + ")");
+                //}
+            view.equipo(members, character,i);
             }
 
             // Mostrar estadísticas del equipo
             Stats teamStats = statsmanager.getStat(selectedTeam.getName());
-            if (teamStats != null) {
+            //if (teamStats != null) {
                 //System.out.println("\nTeam Statistics:");
-                System.out.println("\nCombats played: " + teamStats.getGames_played());
-                System.out.println("Combats won: " + teamStats.getGames_won());
+                //System.out.println("\nCombats played: " + teamStats.getGames_played());
+                //System.out.println("Combats won: " + teamStats.getGames_won());
 
                 // Calcular y mostrar la tasa de victorias
-                double winRate = teamStats.getGames_played() > 0
-                        ? ((double) teamStats.getGames_won() / teamStats.getGames_played()) * 100
-                        : 0.0;
-                System.out.printf("Win rate: %.0f%%%n", winRate);
+                //double winRate = teamStats.getGames_played() > 0
+                  //      ? ((double) teamStats.getGames_won() / teamStats.getGames_played()) * 100
+                   //     : 0.0;
+                //System.out.printf("Win rate: %.0f%%%n", winRate);
 
-                System.out.println("KOs done: " + teamStats.getKO_done());
-                System.out.println("KOs received: " + teamStats.getKO_received());
-            } else {
-                System.out.println("\nNo statistics available for this team.");
-            }
-
+                //System.out.println("KOs done: " + teamStats.getKO_done());
+                //System.out.println("KOs received: " + teamStats.getKO_received());
+            //} else {
+              //  System.out.println("\nNo statistics available for this team.");
+            //}
+            view.statsequipo(teamStats);
             // Esperar que el usuario presione una tecla para continuar
             System.out.println("\n<Press any key to continue...>");
             scanner.nextLine(); // Consumir el salto de línea pendiente
@@ -239,13 +246,13 @@ public class Controller {
                 Items selectedItem = items.get(opcion - 1);
 
                 // Mostrar detalles del item
-                System.out.println("");
-                System.out.println("\tID: " + selectedItem.getId());
-                System.out.println("\tNAME: " + selectedItem.getName());
-                System.out.println("\tCLASS: " + selectedItem.getClasse());
-                System.out.println("\tPOWER: " + selectedItem.getPower());
-                System.out.println("\tDURABILITY: " + selectedItem.getDurability());
-
+                //System.out.println("");
+                //System.out.println("\tID: " + selectedItem.getId());
+                //System.out.println("\tNAME: " + selectedItem.getName());
+                //System.out.println("\tCLASS: " + selectedItem.getClasse());
+                //System.out.println("\tPOWER: " + selectedItem.getPower());
+                //System.out.println("\tDURABILITY: " + selectedItem.getDurability());
+                view.itemdetalle(selectedItem);
                 // Esperar que el usuario presione una tecla para continuar
                 System.out.println("\n<Press any key to continue...>");
                 scanner.nextLine(); // Consumir el salto de línea pendiente
