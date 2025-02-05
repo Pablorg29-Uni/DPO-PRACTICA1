@@ -29,7 +29,15 @@ public class CombatManager {
             member.setArmadura(itemsManager.obtenirArmaduraRandom());
             member.setMalRebut(0);
         }
+        omplirTeams(t1);
+        omplirTeams(t2);
         return new Team[]{team1, team2};
+    }
+
+    public void omplirTeams (Team t) {
+        for (Member member : t.getMembers()) {
+            member.setCharacter(characterManager.getCharacter(member.getId()));
+        }
     }
 
     public float calcularAttack(Member member) {

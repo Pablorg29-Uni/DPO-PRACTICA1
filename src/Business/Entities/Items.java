@@ -1,10 +1,13 @@
 package Business.Entities;
 
+import com.google.gson.annotations.SerializedName;
+
 public class    Items {
     private long id;
     private String name;
     private int power;
     private int durability;
+    @SerializedName("class")
     private String classe;
 
 

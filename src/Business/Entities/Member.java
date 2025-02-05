@@ -19,16 +19,16 @@ public class Member {
         this.role = null;
     }
 
-    public Member (long id) {
+    public Member(long id) {
         this();
         this.id = id;
     }
 
-    public Member(long id, String strategy) {
+    /*public Member(long id, String strategy) {
         CharacterManager characterManager = new CharacterManager();
         this.character = characterManager.getCharacter(id);
         this.strategy = strategy;
-    }
+    }*/
 
     public float getMalRebut() {
         return malRebut;

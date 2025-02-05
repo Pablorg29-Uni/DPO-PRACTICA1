@@ -1,14 +1,8 @@
 package Presentation;
 
+import Business.*;
+import Business.Entities.*;
 import Business.Entities.Character;
-import Business.CharacterManager;
-import Business.Entities.Items;
-import Business.ItemsManager;
-import Business.Entities.Member;
-import Business.Entities.Team;
-import Business.TeamManager;
-import Business.Entities.Stats;
-import Business.StatsManager;
 
 
 import java.util.ArrayList; // Ensure this import is included
@@ -277,6 +271,14 @@ public class Controller {
     }
 
     public void simulateCombat() {
+        //CODIGO PARA RECIBIR LOS EQUIPOS
+        Team t1 = teammanager.getTeam("Salle Fest Bois");
+        Team t2 = teammanager.getTeam("Technova");
+        //QUITAR ESTOS 2 EQUIPOS Y PREGUNTAR AL USUARIO EL EQUIPO (MIRAR PAGINA 23 DEL PDF)
+
+        CombatManager combatManager = new CombatManager();
+        combatManager.initCombat(t1, t2);
+
         System.out.println("Combat simulation is not implemented yet...");
     }
 }

@@ -18,10 +18,7 @@ public class ItemsManager {
         do {
             Random rand = new Random();
             List<Items> allItems = itemsJsonDAO.getAllItems();
-            for (Items i : allItems) {
-                if (i.getDurability() < 1 || i.getClasse().equals("Weapon"))
-                    allItems.remove(i);
-            }
+            allItems.removeIf(i -> i.getDurability() < 1 || i.getClasse().equals("Weapon"));
             if (allItems.isEmpty()) {
                 return null;
             } else {
@@ -36,10 +33,7 @@ public class ItemsManager {
         do {
             Random rand = new Random();
             List<Items> allItems = itemsJsonDAO.getAllItems();
-            for (Items i : allItems) {
-                if (i.getDurability() < 1 || i.getClasse().equals("Armor"))
-                    allItems.remove(i);
-            }
+            allItems.removeIf(i -> i.getDurability() < 1 || i.getClasse().equals("Armor"));
             if (allItems.isEmpty()) {
                 return null;
             } else {
