@@ -27,7 +27,7 @@ public class Menu {
                 case 1 -> controller.mostrarNombresDePersonajes();
                 case 2 -> manageTeamsMenu(scanner);
                 case 3 -> controller.mostrarItems();
-                case 4 -> simulateCombat();
+                case 4 -> controller.simulateCombat();
                 case 5 -> System.out.println("\nWe hope to see you again!");
                 default -> System.out.println("Invalid option. Please try again.");
             }
@@ -55,9 +55,5 @@ public class Menu {
                 default -> System.out.println("Invalid option. Please try again.");
             }
         } while (opcion != 4);
-    }
-
-    private void simulateCombat() {
-        System.out.println("Combat simulation is not implemented yet.");
     }
 }

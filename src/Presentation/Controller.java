@@ -35,7 +35,7 @@ public class Controller {
     public void mostrarNombresDePersonajes() {
         Scanner scanner = new Scanner(System.in);
         int posicion = 1;
-        System.out.println("");
+        System.out.println();
         List<Character> characters = charactermanager.getCharacters();
         //for (Character character : characters) {
           //  System.out.println("\t" + posicion + ") " + character.getName());
@@ -274,5 +274,9 @@ public class Controller {
 
         // Regresar al menú anterior si la opción es 0
         System.out.println("Returning to the previous menu...");
+    }
+
+    public void simulateCombat() {
+        System.out.println("Combat simulation is not implemented yet...");
     }
 }

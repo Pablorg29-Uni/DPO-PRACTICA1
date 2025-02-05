@@ -15,17 +15,9 @@ import java.util.ArrayList; // Ensure this import is included
 import java.util.List;
 import java.util.Scanner;
 public class View {
-    private final TeamManager teammanager;
-    private final StatsManager statsmanager;
-    private final ItemsManager itemmanager;
-    private final CharacterManager charactermanager;
 
-    public View() {
-        this.statsmanager = new StatsManager();
-        this.itemmanager = new ItemsManager();
-        this.charactermanager = new CharacterManager();
-        this.teammanager = new TeamManager();
-    }
+    public View() {}
+
     public void NombrePJ(List<Character> characters,int posicion ) {
         for (Character character : characters) {
             System.out.println("\t" + posicion + ") " + character.getName());
