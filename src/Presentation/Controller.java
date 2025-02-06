@@ -1,9 +1,15 @@
 package Presentation;
 
-import Business.*;
-import Business.Entities.*;
 import Business.Entities.Character;
-import Exceptions.BusinessException;
+import Business.CharacterManager;
+import Business.Entities.Items;
+import Business.ItemsManager;
+import Business.Entities.Member;
+import Business.Entities.Team;
+import Business.TeamManager;
+import Business.Entities.Stats;
+import Business.StatsManager;
+import Business.CombatManager;
 
 
 import java.util.ArrayList; // Ensure this import is included
@@ -11,6 +17,8 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Controller {
+    private final Member member;
+    private final CombatManager combatManager;
     private final View view;
     private final TeamManager teammanager;
     private final StatsManager statsmanager;
@@ -19,6 +27,8 @@ public class Controller {
 
 
     public Controller() {
+        this.member = new Member();
+        this.combatManager = new CombatManager();
         this.view = new View();
         this.statsmanager = new StatsManager();
         this.itemmanager = new ItemsManager();
@@ -272,44 +282,59 @@ public class Controller {
     }
 
     public void simulateCombat() {
-        //CODIGO PARA RECIBIR LOS EQUIPOS
-        Team t1 = teammanager.getTeam("Salle Fest Bois");
-        Team t2 = teammanager.getTeam("Technova");
-        //QUITAR ESTOS 2 EQUIPOS Y PREGUNTAR AL USUARIO EL EQUIPO (MIRAR PAGINA 23 DEL PDF)
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("\nStarting simulator...\nLooking for available teams...\n");
 
-        CombatManager combatManager = new CombatManager();
-        combatManager.initCombat(t1, t2);
-        boolean fiCombat = false;
+        // Obtener lista de equipos
+        List<Team> teams = teammanager.showTeams();
+        int posicion = 1;
 
-        while (!fiCombat) {
-            mostrarPrincipiRonda(combatManager);
-            combatManager.executarCombat();
-            view.mostrarRonda(); //Enviar atributs i valors necesaris al view
-            view.mostrarItems(); //Enviar atributs i valors necesaris al view
-            int estat = combatManager.comprovarEstatCombat();
-            if (estat != 0) {
-                fiCombat = true;
-            } else {
-                view.mostrarFinal(); //Enviar atributs i valors necesaris al view
-            }
+        // Mostrar equipos disponibles
+        view.equipos(teams, posicion);
+
+        // Seleccionar el primer equipo
+        System.out.println("\nChoose team #1: ");
+        int opcion1 = scanner.nextInt();
+        Team selectedTeam1 = teams.get(opcion1 - 1);
+
+        // Seleccionar el segundo equipo
+        System.out.println("\nChoose team #2: ");
+        int opcion2 = scanner.nextInt();
+        Team selectedTeam2 = teams.get(opcion2 - 1);
+        System.out.println("\nInitializing teams...\n");
+
+        // Mostrar los detalles de los equipos seleccionados
+        System.out.println("Team #1 – " + selectedTeam1.getName());
+        for (Member member : selectedTeam1.getMembers()) {
+            Character character = charactermanager.getCharacter(member.getId());
+            member.setCharacter(character);  // Asignar personaje al miembro
+
+            // Asignar arma y armadura aleatoria
+            member.setArma(itemmanager.obtenirArmaRandom());
+            member.setArmadura(itemmanager.obtenirArmaduraRandom());
+
+            // Mostrar los detalles del miembro con su arma y armadura
+            System.out.println("- " + member.getCharacter().getName());
+            System.out.println("\tWeapon: " + (member.getArma() != null ? member.getArma().getName() : "None"));
+            System.out.println("\tArmor: " + (member.getArmadura() != null ? member.getArmadura().getName() : "None"));
         }
-        //System.out.println("Combat simulation is not implemented yet...");
-    }
 
-    public void mostrarPrincipiRonda(CombatManager combatManager) {
-        String teamName1 = combatManager.getTeam1().getName();
-        String teamName2 = combatManager.getTeam2().getName();
+        System.out.println("\nTeam #2 – " + selectedTeam2.getName());
+        for (Member member : selectedTeam2.getMembers()) {
+            Character character = charactermanager.getCharacter(member.getId());
+            member.setCharacter(character);  // Asignar personaje al miembro
 
-        ArrayList<Member> members1 = combatManager.getTeam1().getMembers();
-        ArrayList<Member> members2 = combatManager.getTeam2().getMembers();
+            // Asignar arma y armadura aleatoria
+            member.setArma(itemmanager.obtenirArmaRandom());
+            member.setArmadura(itemmanager.obtenirArmaduraRandom());
 
-        view.combatPrincipio(teamName1, teamName2, members1, members2);
-    }
+            // Mostrar los detalles del miembro con su arma y armadura
+            System.out.println("- " + member.getCharacter().getName());
+            System.out.println("\tWeapon: " + (member.getArma() != null ? member.getArma().getName() : "None"));
+            System.out.println("\tArmor: " + (member.getArmadura() != null ? member.getArmadura().getName() : "None"));
+        }
 
-    public void verificarFiles() throws BusinessException {
-        teammanager.verify();
-        itemmanager.verify();
-        charactermanager.verify();
-        statsmanager.verify();
+        // Mensaje final indicando que los equipos están listos
+        System.out.println("\nCombat ready!");
     }
 }

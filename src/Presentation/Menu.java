@@ -14,15 +14,15 @@ public class Menu {
     }
 
     public void mostrarMenu() throws PresentationException {
-        mostrarTitol();
-        System.out.println("Verifying local files...");
-        try {
-            controller.verificarFiles();
-            System.out.println("Files OK.");
-            System.out.println("Starting program...");
-        } catch (BusinessException e) {
-            throw new PresentationException(e.getMessage());
-        }
+        //mostrarTitol();
+        //System.out.println("Verifying local files...");
+        //try {
+          //  controller.verificarFiles();
+          //  System.out.println("Files OK.");
+          //  System.out.println("Starting program...");
+       // } catch (BusinessException e) {
+         //   throw new PresentationException(e.getMessage());
+        //}
 
         Scanner scanner = new Scanner(System.in);
         int opcion;

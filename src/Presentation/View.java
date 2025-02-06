@@ -30,7 +30,6 @@ public class View {
         }
     }
     public void equipos(List<Team> teams, int posicion){
-        System.out.println("\nAvailable Teams:");
         for (Team team : teams) {
             System.out.println("\t" + posicion + ") " + team.getName());
             posicion++;
