@@ -336,5 +336,80 @@ public class Controller {
 
         // Mensaje final indicando que los equipos están listos
         System.out.println("\nCombat ready!");
+        System.out.println("\n<Press any key to continue...>");
+        scanner.nextLine(); // Esperar entrada del usuario
+
+        // Inicializar combate con los equipos seleccionados
+        Team[] combatTeams = combatManager.initCombat(selectedTeam1, selectedTeam2);
+        Team team1 = combatTeams[0];
+        Team team2 = combatTeams[1];
+
+        // Iniciar las rondas de combate
+        int round = 1;
+        boolean combatFinished = false;
+
+        while (!combatFinished) {
+            System.out.println("\n--- ROUND " + round + " ---");
+
+            // Realizar ataques y mostrar la información del ataque
+            combatManager.executarCombat();  // Ejecuta los ataques de ambos equipos
+
+            // Imprimir los resultados de cada ataque
+            for (Member member : team1.getMembers()) {
+                if (!member.isKO()) {
+                    printAttackDetails(member, team2);  // Imprime los detalles de los ataques
+                }
+            }
+
+            for (Member member : team2.getMembers()) {
+                if (!member.isKO()) {
+                    printAttackDetails(member, team1);  // Imprime los detalles de los ataques
+                }
+            }
+
+            // Verificar si el combate ha terminado
+            int result = combatManager.comprovarEstatCombat();
+            switch (result) {
+                case 1:
+                    System.out.println("\nTeam #1 wins!");
+                    combatFinished = true;
+                    break;
+                case 2:
+                    System.out.println("\nTeam #2 wins!");
+                    combatFinished = true;
+                    break;
+                case 3:
+                    System.out.println("\nIt's a tie!");
+                    combatFinished = true;
+                    break;
+                default:
+                    round++;  // Incrementa la ronda
+                    break;
+            }
+        }
+    }
+
+    // Este método se encargará de mostrar los detalles de cada ataque
+    private void printAttackDetails(Member attacker, Team defender) {
+        // Asumiendo que el ataque usa los métodos en CombatManager
+        for (Member target : defender.getMembers()) {
+            if (!target.isKO()) {
+                // Calcular el daño
+                float attackDamage = calcularDamage(attacker, target);
+                String attackDetails = attacker.getCharacter().getName() + " ATTACKS " + target.getCharacter().getName() +
+                        " WITH " + attacker.getArma().getName() + " FOR " + String.format("%.2f", attackDamage) + " DAMAGE!";
+                System.out.println(attackDetails);
+
+                // Mostrar cómo el objetivo recibe el daño
+                float receivedDamage = calcularDamage(target, attacker);
+                System.out.println(target.getCharacter().getName() + " RECEIVES " + String.format("%.2f", receivedDamage) + " DAMAGE.");
+            }
+        }
+    }
+
+    // Métodos para calcular el daño (basados en la lógica de CombatManager)
+    private float calcularDamage(Member attacker, Member defender) {
+        float attack = combatManager.calcularAttack(attacker);
+        return combatManager.calcularFinalDamage(defender, attack);
     }
 }

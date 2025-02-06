@@ -7,7 +7,7 @@ import Persistence.CharacterJsonDAO;
 
 import java.util.List;
 
-public class CharacterManager {
+public class    CharacterManager {
     private final CharacterJsonDAO characterJsonDAO;
 
     public CharacterManager() {
