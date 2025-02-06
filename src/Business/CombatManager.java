@@ -3,13 +3,14 @@ package Business;
 import Business.Entities.Member;
 import Business.Entities.Team;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class CombatManager {
     private Team team1;
     private Team team2;
-    private ItemsManager itemsManager;
-    private CharacterManager characterManager;
+    private final ItemsManager itemsManager;
+    private final CharacterManager characterManager;
 
 
     public CombatManager() {
@@ -69,47 +70,102 @@ public class CombatManager {
         return finalDmg / 100;
     }
 
-    public void executarCombat() {
+    public int comprovarEstatCombat() {
+        //0 --> Encara no ha acabat
+        //1 --> Ha guanyat el equip 1
+        //2 --> Ha guanyat el equip 2
+        //3 --> Han empatat
+        boolean team1KO = true;
+        boolean team2KO = true;
         for (Member member : team1.getMembers()) {
-            realitzarAtack(member);
+            if (!member.isKO()) {
+                team1KO = false;
+                break;
+            }
+        }
+        for (Member member : team2.getMembers()) {
+            if (!member.isKO()) {
+                team2KO = false;
+                break;
+            }
+        }
+        if (!team1KO && !team2KO) {
+            return 0;
+        } else if (!team1KO && team2KO) {
+            return 1;
+        } else if (team1KO && !team2KO) {
+            return 2;
+        } else if (team2KO && team1KO) {
+            return 3;
+        } else {
+            return -1;
+        }
+    }
+
+    public void executarCombat() {
+        ArrayList<Boolean> team2isKo = new ArrayList<>();
+        for (Member member : team2.getMembers()) {
+            if (!member.isKO()) {
+                team2isKo.add(false);
+            } else {
+                team2isKo.add(true);
+            }
+        } //Para poder realizar el turno del equipo 2 sin que afecte si estan KO o no
+
+        for (Member member : team1.getMembers()) {
+            if (!member.isKO()) {
+                realitzarAtack(member, team2);
+            }
+        }
+        int i = 0;
+        for (Member member : team2.getMembers()) {
+            if (!team2isKo.get(i)) {
+                realitzarAtack(member, team1);
+            }
+            i++;
         }
     }
 
     //SOLO SIRVE CUANDO ATACA TEAM1 (CAMBIAR)
-    public void atacarBalanced(Member member) {
+    public void atacarBalanced(Member member, Team teamDefensor) {
         Random rand = new Random();
-        int r = rand.nextInt(team2.getMembers().size());
+        int r = rand.nextInt(teamDefensor.getMembers().size());
         float attack = calcularAttack(member);
-        float finalDamage = calcularFinalDamage(team2.getMembers().get(r), attack);
-        team2.getMembers().get(r).setMalRebut(team2.getMembers().get(r).getMalRebut() + finalDamage);
+        float damageReduction = teamDefensor.getMembers().get(r).getDamageReduction();
+        float finalDamage = calcularFinalDamage(teamDefensor.getMembers().get(r), attack) - damageReduction;
+        teamDefensor.getMembers().get(r).setMalRebut(teamDefensor.getMembers().get(r).getMalRebut() + finalDamage);
         member.getArma().setDurability(member.getArma().getDurability() - 1);
-        team2.getMembers().get(r).getArmadura().setDurability(team2.getMembers().get(r).getArmadura().getDurability() - 1);
+        teamDefensor.getMembers().get(r).getArmadura().setDurability(teamDefensor.getMembers().get(r).getArmadura().getDurability() - 1);
         if (member.getArma().getDurability() == 0) {
             member.setArma(null);
         }
-        if (team2.getMembers().get(r).getArma().getDurability() == 0) {
-            team2.getMembers().get(r).setArma(null);
+        if (teamDefensor.getMembers().get(r).getArma().getDurability() == 0) {
+            teamDefensor.getMembers().get(r).setArma(null);
         }
         //CALCULAR KO
         int ko = rand.nextInt(1200) / 100;
-        if (ko>team2.getMembers().get(r).getMalRebut()) {
-            team2.getMembers().get(r).setKO(true);
+        if (ko > teamDefensor.getMembers().get(r).getMalRebut()) {
+            teamDefensor.getMembers().get(r).setKO(true);
         }
     }
 
-    public boolean realitzarAtack(Member member) {
+    public void defensarSeguentAtac(Member member) {
+        member.setDamageReduction((float) member.getCharacter().getWeight() / 400);
+    }
+
+    public boolean realitzarAtack(Member member, Team teamDefensor) {
         if (member.getStrategy().equals("balanced")) {
             if (member.getArma() != null) {
                 member.setArma(itemsManager.obtenirArmaRandom()); //Demanar arma
             } else {
                 if (member.getArmadura() != null) {
                     if (member.getMalRebut() >= 0.5 && member.getMalRebut() <= 1.0) {
-                        //Defensar
+                        defensarSeguentAtac(member);
                     } else {
-                        //Atacar
+                        atacarBalanced(member, teamDefensor);
                     }
                 } else {
-                    atacarBalanced(member);
+                    atacarBalanced(member, teamDefensor);
                 }
             }
             return true;

@@ -11,6 +11,7 @@ public class Member {
     private float malRebut;
     private String role;
     private boolean isKO;
+    private float damageReduction;
 
     public Member() {
         this.character = null;
@@ -77,6 +78,14 @@ public class Member {
 
     public void setKO(boolean KO) {
         isKO = KO;
+    }
+
+    public float getDamageReduction() {
+        return damageReduction;
+    }
+
+    public void setDamageReduction(float damageReduction) {
+        this.damageReduction = damageReduction;
     }
 
     public long getId() {

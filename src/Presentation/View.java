@@ -74,4 +74,13 @@ public class View {
     public void combatPrincipio(String teamName1, String teamName2, ArrayList<Member> members1, ArrayList<Member> members2) {
         //Aqui imprimes
     }
+
+    public void mostrarRonda() {
+    }
+
+    public void mostrarItems() {
+    }
+
+    public void mostrarFinal() {
+    }
 }

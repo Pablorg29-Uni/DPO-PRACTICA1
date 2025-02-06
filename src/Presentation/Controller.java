@@ -282,10 +282,17 @@ public class Controller {
 
         while (!fiCombat) {
             mostrarPrincipiRonda(combatManager);
+            combatManager.executarCombat();
+            view.mostrarRonda(); //Enviar atributs i valors necesaris al view
+            view.mostrarItems(); //Enviar atributs i valors necesaris al view
+            int estat = combatManager.comprovarEstatCombat();
+            if (estat != 0) {
+                fiCombat = true;
+            } else {
+                view.mostrarFinal(); //Enviar atributs i valors necesaris al view
+            }
         }
-
-
-        System.out.println("Combat simulation is not implemented yet...");
+        //System.out.println("Combat simulation is not implemented yet...");
     }
 
     public void mostrarPrincipiRonda(CombatManager combatManager) {
