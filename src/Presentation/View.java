@@ -1,19 +1,15 @@
 package Presentation;
 
 import Business.Entities.Character;
-import Business.CharacterManager;
 import Business.Entities.Items;
-import Business.ItemsManager;
 import Business.Entities.Member;
 import Business.Entities.Team;
-import Business.TeamManager;
 import Business.Entities.Stats;
-import Business.StatsManager;
 
 
 import java.util.ArrayList; // Ensure this import is included
 import java.util.List;
-import java.util.Scanner;
+
 public class View {
 
     public View() {}
@@ -73,5 +69,9 @@ public class View {
         System.out.println("\tCLASS: " + selectedItem.getClasse());
         System.out.println("\tPOWER: " + selectedItem.getPower());
         System.out.println("\tDURABILITY: " + selectedItem.getDurability());
+    }
+
+    public void combatPrincipio(String teamName1, String teamName2, ArrayList<Member> members1, ArrayList<Member> members2) {
+        //Aqui imprimes
     }
 }

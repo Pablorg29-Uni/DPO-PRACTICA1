@@ -10,6 +10,7 @@ public class Member {
     private String strategy;
     private float malRebut;
     private String role;
+    private boolean isKO;
 
     public Member() {
         this.character = null;
@@ -68,6 +69,14 @@ public class Member {
 
     public String getRole() {
         return role;
+    }
+
+    public boolean isKO() {
+        return isKO;
+    }
+
+    public void setKO(boolean KO) {
+        isKO = KO;
     }
 
     public long getId() {

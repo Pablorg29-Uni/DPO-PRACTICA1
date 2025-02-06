@@ -278,7 +278,23 @@ public class Controller {
 
         CombatManager combatManager = new CombatManager();
         combatManager.initCombat(t1, t2);
+        boolean fiCombat = false;
+
+        while (!fiCombat) {
+            mostrarPrincipiRonda(combatManager);
+        }
+
 
         System.out.println("Combat simulation is not implemented yet...");
+    }
+
+    public void mostrarPrincipiRonda(CombatManager combatManager) {
+        String teamName1 = combatManager.getTeam1().getName();
+        String teamName2 = combatManager.getTeam2().getName();
+
+        ArrayList<Member> members1 = combatManager.getTeam1().getMembers();
+        ArrayList<Member> members2 = combatManager.getTeam2().getMembers();
+
+        view.combatPrincipio(teamName1, teamName2, members1, members2);
     }
 }
