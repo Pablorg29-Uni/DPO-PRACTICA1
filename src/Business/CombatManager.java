@@ -52,6 +52,8 @@ public class CombatManager {
 
         if (member.getArma() != null) {
             part2 = (float) (member.getArma().getPower() / 20.0);
+        } else {
+            return 0;
         }
         return part1 + part2 + 18;
     }
@@ -61,7 +63,7 @@ public class CombatManager {
         float part2 = 0;
         float finalDmg;
 
-        part1 = (float) (200 * (1 - member.getMalRebut())) / (float) member.getCharacter().getWeight();
+        part1 = (200 * (1 - member.getMalRebut())) / (float) member.getCharacter().getWeight();
         if (member.getArmadura() != null) {
             part2 = (float) (member.getArmadura().getPower() / 20.0);
         }
@@ -134,14 +136,20 @@ public class CombatManager {
         float damageReduction = teamDefensor.getMembers().get(r).getDamageReduction();
         float finalDamage = calcularFinalDamage(teamDefensor.getMembers().get(r), attack) - damageReduction;
         teamDefensor.getMembers().get(r).setMalRebut(teamDefensor.getMembers().get(r).getMalRebut() + finalDamage);
-        member.getArma().setDurability(member.getArma().getDurability() - 1);
-        teamDefensor.getMembers().get(r).getArmadura().setDurability(teamDefensor.getMembers().get(r).getArmadura().getDurability() - 1);
-        if (member.getArma().getDurability() == 0) {
-            member.setArma(null);
+
+        if (member.getArma() != null) {
+            member.getArma().setDurability(member.getArma().getDurability() - 1);
+            if (member.getArma().getDurability() == 0) {
+                member.setArma(null);
+            }
         }
-        if (teamDefensor.getMembers().get(r).getArma().getDurability() == 0) {
-            teamDefensor.getMembers().get(r).setArma(null);
+        if (teamDefensor.getMembers().get(r).getArma() != null) {
+            teamDefensor.getMembers().get(r).getArmadura().setDurability(teamDefensor.getMembers().get(r).getArmadura().getDurability() - 1);
+            if (teamDefensor.getMembers().get(r).getArma().getDurability() == 0) {
+                teamDefensor.getMembers().get(r).setArma(null);
+            }
         }
+
         //CALCULAR KO
         int ko = rand.nextInt(1200) / 100;
         if (ko > teamDefensor.getMembers().get(r).getMalRebut()) {
