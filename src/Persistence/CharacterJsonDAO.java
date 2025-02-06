@@ -1,6 +1,7 @@
 package Persistence;
 
 import Business.Entities.Character;
+import Exceptions.PersistenceException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -16,11 +17,11 @@ public class CharacterJsonDAO {
     private final String path = "./src/Files/characters.json";
 
     // Verificar si el archivo JSON de personajes existe
-    public void verifyJsonCharacter() {
+    public void verifyJsonCharacter() throws PersistenceException {
         try {
             new FileReader(this.path);  // Corrección: no es necesario renombrar la variable FileReader
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            throw new PersistenceException(e.getMessage());
         }
     }
 

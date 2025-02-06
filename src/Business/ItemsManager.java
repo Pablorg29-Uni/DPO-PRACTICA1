@@ -1,6 +1,8 @@
 package Business;
 
 import Business.Entities.Items;
+import Exceptions.BusinessException;
+import Exceptions.PersistenceException;
 import Persistence.ItemsJsonDAO;
 
 import java.util.ArrayList;
@@ -48,7 +50,11 @@ public class ItemsManager {
         return (ArrayList<Items>) itemsJsonDAO.getAllItems();
     }
 
-    public Items showOneItem(long id) {
-        return itemsJsonDAO.getItem(id);
+    public void verify() throws BusinessException {
+        try {
+            itemsJsonDAO.verifyJsonItem();
+        } catch (PersistenceException e) {
+            throw new BusinessException(e.getMessage());
+        }
     }
 }

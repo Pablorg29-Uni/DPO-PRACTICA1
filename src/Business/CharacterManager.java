@@ -1,6 +1,8 @@
 package Business;
 
 import Business.Entities.Character;
+import Exceptions.BusinessException;
+import Exceptions.PersistenceException;
 import Persistence.CharacterJsonDAO;
 
 import java.util.List;
@@ -12,8 +14,12 @@ public class CharacterManager {
         this.characterJsonDAO = new CharacterJsonDAO();
     }
 
-    public void checkCharacterFile() {
-        this.characterJsonDAO.verifyJsonCharacter();
+    public void checkCharacterFile() throws BusinessException {
+        try {
+            this.characterJsonDAO.verifyJsonCharacter();
+        } catch (PersistenceException e) {
+            throw new BusinessException(e.getMessage());
+        }
     }
 
     public List<Business.Entities.Character> getCharacters() {
@@ -26,5 +32,13 @@ public class CharacterManager {
 
     public Character getCharacter2(String name) {
         return this.characterJsonDAO.getCharacterByName(name);
+    }
+
+    public void verify() throws BusinessException {
+        try {
+            characterJsonDAO.verifyJsonCharacter();
+        } catch (PersistenceException e) {
+            throw new BusinessException(e.getMessage());
+        }
     }
 }

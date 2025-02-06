@@ -1,5 +1,9 @@
 package Presentation;
 
+import Exceptions.BusinessException;
+import Exceptions.PresentationException;
+
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Menu {
@@ -9,19 +13,33 @@ public class Menu {
         this.controller = new Controller();
     }
 
-    public void mostrarMenu() {
+    public void mostrarMenu() throws PresentationException {
+        mostrarTitol();
+        System.out.println("Verifying local files...");
+        try {
+            controller.verificarFiles();
+            System.out.println("Files OK.");
+            System.out.println("Starting program...");
+        } catch (BusinessException e) {
+            throw new PresentationException(e.getMessage());
+        }
+
         Scanner scanner = new Scanner(System.in);
         int opcion;
-
+        System.out.println("\nStarting program...\n");
         do {
-            System.out.println("\nStarting program...\n");
             System.out.println("1) List Characters");
             System.out.println("2) Manage Teams");
             System.out.println("3) List Items");
             System.out.println("4) Simulate Combat");
             System.out.println("\n5) Exit\n");
             System.out.print("Choose an option: ");
-            opcion = scanner.nextInt();
+            try {
+                opcion = scanner.nextInt();
+            } catch (InputMismatchException e) {
+                opcion = 6;
+                scanner.nextLine();
+            }
 
             switch (opcion) {
                 case 1 -> controller.mostrarNombresDePersonajes();
@@ -55,5 +73,13 @@ public class Menu {
                 default -> System.out.println("Invalid option. Please try again.");
             }
         } while (opcion != 4);
+    }
+
+    private void mostrarTitol() {
+        System.out.println(" ___ _    ___  ___   _ ");
+        System.out.println("/ __|_ _ _ __ ___ _ _ | |  / __| | _ )_ _ ___| |");
+        System.out.println("\\__ \\ || | '_ \\/ -_) '_| | |__\\__ \\_ | _ \\ '_/ _ \\_|");
+        System.out.println("|___/\\_,_| .__/\\___|_| |____|___( ) |___/_| \\___(_)");
+        System.out.println("        |_|                  |/");
     }
 }

@@ -18,6 +18,10 @@ public class TeamManager {
         this.statsJsonDAO = new StatsJsonDAO();
     }
 
+    public void verify () {
+        teamJsonDAO.verifyJsonTeams();
+    }
+
     // Elimina un equipo por nombre
     public boolean eliminateTeam(String name) {
         statsJsonDAO.deleteOneStats(name);

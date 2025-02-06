@@ -1,6 +1,7 @@
 package Persistence;
 
 import Business.Entities.Team;
+import Exceptions.PersistenceException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -19,11 +20,11 @@ public class StatsJsonDAO {
 
     private final String path = "./src/Files/stats.json";
 
-    public void verifyJsonStats() {
+    public void verifyJsonStats() throws PersistenceException {
         try {
             FileReader fileReader = new FileReader(this.path);
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            throw new PersistenceException(e.getMessage());
         }
     }
 

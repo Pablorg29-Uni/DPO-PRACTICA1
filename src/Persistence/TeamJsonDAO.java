@@ -33,7 +33,6 @@ public class TeamJsonDAO {
 
 
     public List<Team> getAllTeams() {
-        verifyJsonTeams(); // Asegura que el archivo exista
         try (FileReader reader = new FileReader(this.path)) {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             Type teamListType = new TypeToken<ArrayList<Team>>() {}.getType();

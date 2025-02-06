@@ -3,6 +3,7 @@ package Presentation;
 import Business.*;
 import Business.Entities.*;
 import Business.Entities.Character;
+import Exceptions.BusinessException;
 
 
 import java.util.ArrayList; // Ensure this import is included
@@ -303,5 +304,12 @@ public class Controller {
         ArrayList<Member> members2 = combatManager.getTeam2().getMembers();
 
         view.combatPrincipio(teamName1, teamName2, members1, members2);
+    }
+
+    public void verificarFiles() throws BusinessException {
+        teammanager.verify();
+        itemmanager.verify();
+        charactermanager.verify();
+        statsmanager.verify();
     }
 }

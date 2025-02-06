@@ -1,3 +1,4 @@
+import Exceptions.PresentationException;
 import Presentation.Menu;
 
 
@@ -7,7 +8,12 @@ public class Main {
 
     public static void main(String[] args) {
         Menu menu = new Menu();
-        menu.mostrarMenu();
+        try {
+            menu.mostrarMenu();
+        } catch (PresentationException e) {
+            System.out.println("Error: The characters.json file can’t be accessed.");
+            System.out.println("Shutting down...");
+        }
         //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
         // to see how IntelliJ IDEA suggests fixing it.
         /*System.out.printf("Hello and welcome!");
