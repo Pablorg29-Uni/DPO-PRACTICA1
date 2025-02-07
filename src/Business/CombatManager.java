@@ -1,5 +1,6 @@
 package Business;
 
+import Business.Entities.LastAttack;
 import Business.Entities.Member;
 import Business.Entities.Team;
 
@@ -134,13 +135,23 @@ public class CombatManager {
         int r = rand.nextInt(teamDefensor.getMembers().size());
         float attack = calcularAttack(member);
         float damageReduction = teamDefensor.getMembers().get(r).getDamageReduction();
-        float finalDamage = calcularFinalDamage(teamDefensor.getMembers().get(r), attack) - damageReduction;
+        //Cambiar esto de manera que el final damage no te pueda sumar vida
+        float calculatedDamage = calcularFinalDamage(teamDefensor.getMembers().get(r), attack);
+        float finalDamage;
+        if (calculatedDamage>damageReduction) {
+            finalDamage = calculatedDamage-damageReduction;
+        } else {
+            finalDamage = 0;
+        }
         teamDefensor.getMembers().get(r).setMalRebut(teamDefensor.getMembers().get(r).getMalRebut() + finalDamage);
+        String nomObjectiu = teamDefensor.getMembers().get(r).getCharacter().getName();
 
+        boolean arma = false;
         if (member.getArma() != null) {
             member.getArma().setDurability(member.getArma().getDurability() - 1);
             if (member.getArma().getDurability() == 0) {
                 member.setArma(null);
+                arma = true;
             }
         }
         if (teamDefensor.getMembers().get(r).getArma() != null) {
@@ -150,11 +161,15 @@ public class CombatManager {
             }
         }
 
+
         //CALCULAR KO
+        boolean gotKO = false;
         int ko = rand.nextInt(1200) / 100;
         if (ko > teamDefensor.getMembers().get(r).getMalRebut()) {
             teamDefensor.getMembers().get(r).setKO(true);
+            gotKO = true;
         }
+        member.setLastAttack(new LastAttack(attack, finalDamage, nomObjectiu, arma, gotKO));
     }
 
     public void defensarSeguentAtac(Member member) {

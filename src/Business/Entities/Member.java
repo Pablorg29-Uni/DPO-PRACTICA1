@@ -12,6 +12,7 @@ public class Member {
     private String role;
     private boolean isKO;
     private float damageReduction;
+    private LastAttack lastAttack;
 
     public Member() {
         this.character = null;
@@ -19,6 +20,7 @@ public class Member {
         this.arma = null;
         this.strategy = null;
         this.role = null;
+        this.lastAttack = null;
     }
 
     public Member(long id) {
@@ -94,5 +96,13 @@ public class Member {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public LastAttack getLastAttack() {
+        return lastAttack;
+    }
+
+    public void setLastAttack(LastAttack lastAttack) {
+        this.lastAttack = lastAttack;
     }
 }
