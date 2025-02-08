@@ -10,7 +10,9 @@ public class    Items {
     @SerializedName("class")
     private String classe;
 
-
+    public Items(String name) {
+        this.name = name;
+    }
 
     public Items(long id, String name, int power, int durability, String classe) {
         this.id = id;

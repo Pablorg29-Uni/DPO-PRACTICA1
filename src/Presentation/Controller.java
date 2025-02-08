@@ -43,8 +43,8 @@ public class Controller {
         System.out.println();
         List<Character> characters = charactermanager.getCharacters();
         //for (Character character : characters) {
-          //  System.out.println("\t" + posicion + ") " + character.getName());
-            //posicion++;
+        //  System.out.println("\t" + posicion + ") " + character.getName());
+        //posicion++;
         //}
         view.NombrePJ(characters, posicion);
         System.out.println("\n\t0) Back\n\nChoose an option: ");
@@ -67,9 +67,9 @@ public class Controller {
             // Obtener los equipos a los que pertenece este personaje
             //List<Team> teams = teammanager.showTeams();
             //System.out.println("TEAMS:");
-                ArrayList<Team> teams =  teammanager.teamsWithPlayer(selectedCharacter.getId());
+            ArrayList<Team> teams = teammanager.teamsWithPlayer(selectedCharacter.getId());
             //for (Team team : teams) {
-              //  System.out.println("\t- " + team.getName());
+            //  System.out.println("\t- " + team.getName());
             //}
             view.InfoPJ(selectedCharacter, teams);
 
@@ -78,8 +78,7 @@ public class Controller {
             scanner.nextLine(); // Consumir el salto de línea
             scanner.nextLine(); // Esperar la entrada del usuario
         }
-        }
-
+    }
 
 
     public void crearEquipo() {
@@ -159,34 +158,34 @@ public class Controller {
                 Character character = charactermanager.getCharacter(members.get(i).getId());
 
                 //if (character != null) {
-                    // Establecer el rol (por defecto "Balanced")
-                  //  String role = members.get(i).getRole() != null ? members.get(i).getRole() : "Balanced";
+                // Establecer el rol (por defecto "Balanced")
+                //  String role = members.get(i).getRole() != null ? members.get(i).getRole() : "Balanced";
 
-                    // Alinear la salida con el nombre y el rol
-                    //System.out.printf("Character #%d: %-30s (%s)%n", (i + 1), character.getName(), role);
+                // Alinear la salida con el nombre y el rol
+                //System.out.printf("Character #%d: %-30s (%s)%n", (i + 1), character.getName(), role);
                 //} else {
-                 //   System.out.println("Character #" + (i + 1) + ": Unknown Character (ID: " + members.get(i).getCharacter().getId() + ")");
+                //   System.out.println("Character #" + (i + 1) + ": Unknown Character (ID: " + members.get(i).getCharacter().getId() + ")");
                 //}
-            view.equipo(members, character,i);
+                view.equipo(members, character, i);
             }
 
             // Mostrar estadísticas del equipo
             Stats teamStats = statsmanager.getStat(selectedTeam.getName());
             //if (teamStats != null) {
-                //System.out.println("\nTeam Statistics:");
-                //System.out.println("\nCombats played: " + teamStats.getGames_played());
-                //System.out.println("Combats won: " + teamStats.getGames_won());
+            //System.out.println("\nTeam Statistics:");
+            //System.out.println("\nCombats played: " + teamStats.getGames_played());
+            //System.out.println("Combats won: " + teamStats.getGames_won());
 
-                // Calcular y mostrar la tasa de victorias
-                //double winRate = teamStats.getGames_played() > 0
-                  //      ? ((double) teamStats.getGames_won() / teamStats.getGames_played()) * 100
-                   //     : 0.0;
-                //System.out.printf("Win rate: %.0f%%%n", winRate);
+            // Calcular y mostrar la tasa de victorias
+            //double winRate = teamStats.getGames_played() > 0
+            //      ? ((double) teamStats.getGames_won() / teamStats.getGames_played()) * 100
+            //     : 0.0;
+            //System.out.printf("Win rate: %.0f%%%n", winRate);
 
-                //System.out.println("KOs done: " + teamStats.getKO_done());
-                //System.out.println("KOs received: " + teamStats.getKO_received());
+            //System.out.println("KOs done: " + teamStats.getKO_done());
+            //System.out.println("KOs received: " + teamStats.getKO_received());
             //} else {
-              //  System.out.println("\nNo statistics available for this team.");
+            //  System.out.println("\nNo statistics available for this team.");
             //}
             view.statsequipo(teamStats);
             // Esperar que el usuario presione una tecla para continuar
@@ -197,6 +196,7 @@ public class Controller {
             System.out.println("\nInvalid option. Returning to the previous menu...");
         }
     }
+
     public void eliminarEquipo() {
         Scanner scanner = new Scanner(System.in);
         System.out.print("\nEnter the name of the team to remove: ");
@@ -357,13 +357,27 @@ public class Controller {
             // Imprimir los resultados de cada ataque
             for (Member member : team1.getMembers()) {
                 if (!member.isKO()) {
-                    printAttackDetails(member, team2);  // Imprime los detalles de los ataques
+                    Items a = member.getArma();
+                    if (a == null) {
+                        a = new Items("");
+                    }
+                    String attackDetails = member.getCharacter().getName() + " ATTACKS " + member.getLastAttack().getLastObjective() +
+                            " WITH " + a.getName() + " FOR " + String.format("%.2f", member.getLastAttack().getLastAttack()) + " DAMAGE!";
+                    String recievedDetails = member.getLastAttack().getLastObjective() + " RECEIVES " + String.format("%.2f", member.getLastAttack().getLastDamage()) + " DAMAGE.";
+                    view.printAttackDetails(attackDetails, recievedDetails);
                 }
             }
 
             for (Member member : team2.getMembers()) {
                 if (!member.isKO()) {
-                    printAttackDetails(member, team1);  // Imprime los detalles de los ataques
+                    Items a = member.getArma();
+                    if (a == null) {
+                        a = new Items("");
+                    }
+                    String attackDetails = member.getCharacter().getName() + " ATTACKS " + member.getLastAttack().getLastObjective() +
+                            " WITH " + a.getName() + " FOR " + String.format("%.2f", member.getLastAttack().getLastAttack()) + " DAMAGE!";
+                    String recievedDetails = member.getLastAttack().getLastObjective() + " RECEIVES " + String.format("%.2f", member.getLastAttack().getLastDamage()) + " DAMAGE.";
+                    view.printAttackDetails(attackDetails, recievedDetails);  // Imprime los detalles de los ataques
                 }
             }
 
@@ -387,29 +401,5 @@ public class Controller {
                     break;
             }
         }
-    }
-
-    // Este método se encargará de mostrar los detalles de cada ataque
-    private void printAttackDetails(Member attacker, Team defender) {
-        // Asumiendo que el ataque usa los métodos en CombatManager
-        for (Member target : defender.getMembers()) {
-            if (!target.isKO()) {
-                // Calcular el daño
-                float attackDamage = calcularDamage(attacker, target);
-                String attackDetails = attacker.getCharacter().getName() + " ATTACKS " + target.getCharacter().getName() +
-                        " WITH " + attacker.getArma().getName() + " FOR " + String.format("%.2f", attackDamage) + " DAMAGE!";
-                System.out.println(attackDetails);
-
-                // Mostrar cómo el objetivo recibe el daño
-                float receivedDamage = calcularDamage(target, attacker);
-                System.out.println(target.getCharacter().getName() + " RECEIVES " + String.format("%.2f", receivedDamage) + " DAMAGE.");
-            }
-        }
-    }
-
-    // Métodos para calcular el daño (basados en la lógica de CombatManager)
-    private float calcularDamage(Member attacker, Member defender) {
-        float attack = combatManager.calcularAttack(attacker);
-        return combatManager.calcularFinalDamage(defender, attack);
     }
 }

@@ -82,4 +82,9 @@ public class View {
 
     public void mostrarFinal() {
     }
+
+    public void printAttackDetails(String attackDetails, String recievedDetails) {
+        System.out.println(attackDetails);
+        System.out.println(recievedDetails);
+    }
 }

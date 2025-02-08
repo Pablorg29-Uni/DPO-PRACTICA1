@@ -178,7 +178,7 @@ public class CombatManager {
 
     public boolean realitzarAtack(Member member, Team teamDefensor) {
         if (member.getStrategy().equals("balanced")) {
-            if (member.getArma() != null) {
+            if (member.getArma() == null) {
                 member.setArma(itemsManager.obtenirArmaRandom()); //Demanar arma
             } else {
                 if (member.getArmadura() != null) {
@@ -195,13 +195,5 @@ public class CombatManager {
         } else {
             return false;
         }
-    }
-
-    public Team getTeam1() {
-        return team1;
-    }
-
-    public Team getTeam2() {
-        return team2;
     }
 }
