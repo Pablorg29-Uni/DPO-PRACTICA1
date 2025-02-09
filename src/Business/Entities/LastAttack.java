@@ -5,13 +5,15 @@ public class LastAttack {
     private float lastDamage;
     private String lastObjective;
     private boolean weaponBroke;
+    private boolean armorBroke;
     private boolean gotKO;
 
-    public LastAttack(float lastAttack, float lastDamage, String lastObjective, boolean weaponBroke, boolean gotKO) {
+    public LastAttack(float lastAttack, float lastDamage, String lastObjective, boolean weaponBroke, boolean armorBroke, boolean gotKO) {
         this.lastAttack = lastAttack;
         this.lastDamage = lastDamage;
         this.lastObjective = lastObjective;
         this.weaponBroke = weaponBroke;
+        this.armorBroke = armorBroke;
         this.gotKO = gotKO;
     }
 

@@ -350,56 +350,67 @@ public class Controller {
 
         while (!combatFinished) {
             System.out.println("\n--- ROUND " + round + " ---");
+            System.out.println("Team #1 – " + team1.getName());
+            printTeamInfo(team1);
+            System.out.println("\nTeam #2 – " + team2.getName());
+            printTeamInfo(team2);
+            System.out.println();
 
             // Realizar ataques y mostrar la información del ataque
             combatManager.executarCombat();  // Ejecuta los ataques de ambos equipos
 
             // Imprimir los resultados de cada ataque
-            for (Member member : team1.getMembers()) {
-                if (!member.isKO()) {
-                    Items a = member.getArma();
-                    if (a == null) {
-                        a = new Items("");
-                    }
-                    String attackDetails = member.getCharacter().getName() + " ATTACKS " + member.getLastAttack().getLastObjective() +
-                            " WITH " + a.getName() + " FOR " + String.format("%.2f", member.getLastAttack().getLastAttack()) + " DAMAGE!";
-                    String recievedDetails = member.getLastAttack().getLastObjective() + " RECEIVES " + String.format("%.2f", member.getLastAttack().getLastDamage()) + " DAMAGE.";
-                    view.printAttackDetails(attackDetails, recievedDetails);
-                }
-            }
-
-            for (Member member : team2.getMembers()) {
-                if (!member.isKO()) {
-                    Items a = member.getArma();
-                    if (a == null) {
-                        a = new Items("");
-                    }
-                    String attackDetails = member.getCharacter().getName() + " ATTACKS " + member.getLastAttack().getLastObjective() +
-                            " WITH " + a.getName() + " FOR " + String.format("%.2f", member.getLastAttack().getLastAttack()) + " DAMAGE!";
-                    String recievedDetails = member.getLastAttack().getLastObjective() + " RECEIVES " + String.format("%.2f", member.getLastAttack().getLastDamage()) + " DAMAGE.";
-                    view.printAttackDetails(attackDetails, recievedDetails);  // Imprime los detalles de los ataques
-                }
-            }
+            roundStats(team1);
+            System.out.println();
+            roundStats(team2);
 
             // Verificar si el combate ha terminado
             int result = combatManager.comprovarEstatCombat();
             switch (result) {
                 case 1:
-                    System.out.println("\nTeam #1 wins!");
+                    System.out.println("\nTeam #1 wins!\n");
                     combatFinished = true;
                     break;
                 case 2:
-                    System.out.println("\nTeam #2 wins!");
+                    System.out.println("\nTeam #2 wins!\n");
                     combatFinished = true;
                     break;
                 case 3:
-                    System.out.println("\nIt's a tie!");
+                    System.out.println("\nIt's a tie!\n");
                     combatFinished = true;
                     break;
                 default:
                     round++;  // Incrementa la ronda
                     break;
             }
+        }
+    }
+
+    private void roundStats(Team team) {
+        for (Member member : team.getMembers()) {
+            if (!member.isKO() && member.getLastAttack() != null) {
+                Items a = member.getArma();
+                if (a == null) {
+                    a = new Items("");
+                }
+                String attackDetails = member.getCharacter().getName() + " ATTACKS " + member.getLastAttack().getLastObjective() +
+                        " WITH " + a.getName() + " FOR " + String.format("%.2f", member.getLastAttack().getLastAttack()) + " DAMAGE!";
+                String recievedDetails = member.getLastAttack().getLastObjective() + " RECEIVES " + String.format("%.2f", member.getLastAttack().getLastDamage()) + " DAMAGE.";
+                view.printAttackDetails(attackDetails, recievedDetails);  // Imprime los detalles de los ataques
+            }
+        }
+    }
+
+
+
+    private void printTeamInfo(Team team) {
+        for (Member member : team.getMembers()) {
+            Character character = charactermanager.getCharacter(member.getId());
+            Items weapon = member.getArma() != null ? member.getArma() : new Items("None");
+            Items armor = member.getArmadura() != null ? member.getArmadura() : new Items("None");
+
+            System.out.println("\t- " + character.getName() + " (" + String.format("%.2f", member.getMalRebut()) + " %) "
+                    + weapon.getName() + " - " + armor.getName());
         }
     }
 }

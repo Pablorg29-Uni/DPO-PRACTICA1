@@ -25,7 +25,7 @@ public class ItemsManager {
                 return null;
             } else {
                 int ind = rand.nextInt(allItems.size());
-                itemsJsonDAO.setDurability(allItems.get(ind).getId(), allItems.get(ind).getDurability() - 1);
+                //itemsJsonDAO.setDurability(allItems.get(ind).getId(), allItems.get(ind).getDurability() - 1);
                 return allItems.get(ind);
             }
         } while (true);
@@ -40,7 +40,7 @@ public class ItemsManager {
                 return null;
             } else {
                 int ind = rand.nextInt(allItems.size());
-                itemsJsonDAO.setDurability(allItems.get(ind).getId(), allItems.get(ind).getDurability() - 1);
+                //itemsJsonDAO.setDurability(allItems.get(ind).getId(), allItems.get(ind).getDurability() - 1);
                 return allItems.get(ind);
             }
         } while (true);

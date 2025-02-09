@@ -118,12 +118,16 @@ public class CombatManager {
         for (Member member : team1.getMembers()) {
             if (!member.isKO()) {
                 realitzarAtack(member, team2);
+            } else {
+                member.setLastAttack(null);
             }
         }
         int i = 0;
         for (Member member : team2.getMembers()) {
             if (!team2isKo.get(i)) {
                 realitzarAtack(member, team1);
+            } else {
+                member.setLastAttack(null);
             }
             i++;
         }
@@ -138,6 +142,7 @@ public class CombatManager {
         //Cambiar esto de manera que el final damage no te pueda sumar vida
         float calculatedDamage = calcularFinalDamage(teamDefensor.getMembers().get(r), attack);
         float finalDamage;
+
         if (calculatedDamage>damageReduction) {
             finalDamage = calculatedDamage-damageReduction;
         } else {
@@ -147,11 +152,20 @@ public class CombatManager {
         String nomObjectiu = teamDefensor.getMembers().get(r).getCharacter().getName();
 
         boolean arma = false;
+        boolean armadura = false;
         if (member.getArma() != null) {
             member.getArma().setDurability(member.getArma().getDurability() - 1);
             if (member.getArma().getDurability() == 0) {
                 member.setArma(null);
                 arma = true;
+            }
+        }
+        if (member.getArmadura() != null) {
+            if (member.getArmadura().getDurability() == 0) {
+                //En caso que la armadura vaya pereciendo
+                member.getArmadura().setDurability(member.getArmadura().getDurability() - 1);
+                armadura = true;
+                member.setArmadura(null);
             }
         }
         if (teamDefensor.getMembers().get(r).getArma() != null) {
@@ -169,16 +183,18 @@ public class CombatManager {
             teamDefensor.getMembers().get(r).setKO(true);
             gotKO = true;
         }
-        member.setLastAttack(new LastAttack(attack, finalDamage, nomObjectiu, arma, gotKO));
+        member.setLastAttack(new LastAttack(attack, finalDamage, nomObjectiu, arma, armadura, gotKO));
     }
 
     public void defensarSeguentAtac(Member member) {
+        member.setLastAttack(null);
         member.setDamageReduction((float) member.getCharacter().getWeight() / 400);
     }
 
     public boolean realitzarAtack(Member member, Team teamDefensor) {
         if (member.getStrategy().equals("balanced")) {
             if (member.getArma() == null) {
+                member.setLastAttack(null);
                 member.setArma(itemsManager.obtenirArmaRandom()); //Demanar arma
             } else {
                 if (member.getArmadura() != null) {

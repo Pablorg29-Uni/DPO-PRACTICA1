@@ -38,7 +38,7 @@ public class ItemsJsonDAO {
             throw new RuntimeException(e);
         }
     }
-
+    /*
     public void setDurability(long id, int durability) {
         List<Items> items = getAllItems();
         boolean found = false;
@@ -61,14 +61,5 @@ public class ItemsJsonDAO {
             throw new RuntimeException("Error writing to JSON file: " + e.getMessage());
         }
     }
-
-    public Items getItem(long id) {
-        List<Items> items = getAllItems();
-        for (Items item : items) {
-            if (item.getId() == id) {
-                return item;
-            }
-        }
-        throw new RuntimeException("No item with id " + id);
-    }
+    */
 }
