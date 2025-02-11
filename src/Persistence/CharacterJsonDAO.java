@@ -59,6 +59,4 @@ public class CharacterJsonDAO {
         return null;  // Si no se encuentra el personaje, se devuelve null
     }
 
-    // Método para obtener un personaje por id, el id es un long en lugar de int
-
 }

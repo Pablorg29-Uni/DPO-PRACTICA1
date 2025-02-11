@@ -2,7 +2,6 @@ package Business;
 
 import Business.Entities.Member;
 import Business.Entities.Team;
-import Persistence.StatsJsonDAO;
 import Persistence.TeamJsonDAO;
 
 import java.io.IOException;
@@ -11,11 +10,9 @@ import java.util.List;
 
 public class TeamManager {
     private final TeamJsonDAO teamJsonDAO;
-    private final StatsJsonDAO statsJsonDAO;
 
     public TeamManager() {
         this.teamJsonDAO = new TeamJsonDAO();
-        this.statsJsonDAO = new StatsJsonDAO();
     }
 
     public void verify () {
@@ -24,18 +21,16 @@ public class TeamManager {
 
     // Elimina un equipo por nombre
     public boolean eliminateTeam(String name) {
-        statsJsonDAO.deleteOneStats(name);
+        StatsManager statsManager = new StatsManager();
+        statsManager.deleteStat(name);
         return teamJsonDAO.eliminateTeam(name);
     }
 
     // Crea un nuevo equipo
     public boolean createTeam(String name, long id1, long id2, long id3, long id4) {
         Team team = new Team(name, id1, id2, id3, id4);
-        try {
-            statsJsonDAO.createEmptyStats(name);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        StatsManager statsManager = new StatsManager();
+        statsManager.createStat(name);
         return teamJsonDAO.saveTeam(team);
     }
 

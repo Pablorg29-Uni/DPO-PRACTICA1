@@ -56,7 +56,12 @@ public class CombatManager {
         } else {
             return 0;
         }
-        return part1 + part2 + 18;
+        float f = part1 + part2 + 18;
+        if (f > 0) {
+            return f;
+        } else {
+            return 0;
+        }
     }
 
     public float calcularFinalDamage(Member member, float attack) {
@@ -143,8 +148,8 @@ public class CombatManager {
         float calculatedDamage = calcularFinalDamage(teamDefensor.getMembers().get(r), attack);
         float finalDamage;
 
-        if (calculatedDamage>damageReduction) {
-            finalDamage = calculatedDamage-damageReduction;
+        if (calculatedDamage > damageReduction) {
+            finalDamage = calculatedDamage - damageReduction;
         } else {
             finalDamage = 0;
         }
@@ -191,7 +196,7 @@ public class CombatManager {
         member.setDamageReduction((float) member.getCharacter().getWeight() / 400);
     }
 
-    public boolean realitzarAtack(Member member, Team teamDefensor) {
+    public void realitzarAtack(Member member, Team teamDefensor) {
         if (member.getStrategy().equals("balanced")) {
             if (member.getArma() == null) {
                 member.setLastAttack(null);
@@ -207,9 +212,8 @@ public class CombatManager {
                     atacarBalanced(member, teamDefensor);
                 }
             }
-            return true;
         } else {
-            return false;
+            System.out.println("Estratègia encara no implementada");
         }
     }
 }

@@ -55,13 +55,15 @@ public class StatsJsonDAO {
         }
     }
 
-    public void createEmptyStats(String teamName) throws IOException {
+    public void createEmptyStats(String teamName) throws PersistenceException {
         List<Stats> stats = getAllStats();
         Stats s = new Stats(teamName, 0, 0, 0, 0);
         stats.add(s);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         try (FileWriter writer = new FileWriter(this.path)) {
             gson.toJson(stats, writer);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

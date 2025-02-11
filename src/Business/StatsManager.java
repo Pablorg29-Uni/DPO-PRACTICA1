@@ -4,7 +4,6 @@ import Business.Entities.Stats;
 import Exceptions.BusinessException;
 import Exceptions.PersistenceException;
 import Persistence.StatsJsonDAO;
-
 import java.util.ArrayList;
 
 public class StatsManager {
@@ -18,6 +17,10 @@ public class StatsManager {
         return (ArrayList<Stats>) statsJsonDAO.getAllStats();
     }
 
+    public void deleteStat (String name) {
+        statsJsonDAO.deleteOneStats(name);
+    }
+
     public Stats getStat(String name) {
         return statsJsonDAO.getStat(name);
     }
@@ -27,6 +30,14 @@ public class StatsManager {
             statsJsonDAO.verifyJsonStats();
         } catch (PersistenceException e) {
             throw new BusinessException(e.getMessage());
+        }
+    }
+
+    public void createStat(String name) {
+        try {
+            statsJsonDAO.createEmptyStats(name);
+        } catch (PersistenceException e) {
+            throw new RuntimeException(e);
         }
     }
 }
