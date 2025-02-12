@@ -2,6 +2,8 @@ package Business;
 
 import Business.Entities.Member;
 import Business.Entities.Team;
+import Exceptions.BusinessException;
+import Exceptions.PersistenceException;
 import Persistence.TeamJsonDAO;
 
 import java.io.IOException;
@@ -15,8 +17,12 @@ public class TeamManager {
         this.teamJsonDAO = new TeamJsonDAO();
     }
 
-    public void verify () {
-        teamJsonDAO.verifyJsonTeams();
+    public void verify () throws BusinessException {
+        try {
+            teamJsonDAO.verifyJsonTeams();
+        } catch (PersistenceException e) {
+            throw new BusinessException(e.getMessage());
+        }
     }
 
     // Elimina un equipo por nombre

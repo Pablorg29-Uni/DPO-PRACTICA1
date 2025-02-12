@@ -77,10 +77,28 @@ public class View {
     public void mostrarRonda() {
     }
 
-    public void mostrarItems() {
+    public void mostrarItems(ArrayList<String> brokenItems) {
+        for (String brokenItem : brokenItems) {
+            System.out.println(brokenItem);
+        }
     }
 
-    public void mostrarFinal() {
+    public void mostrarKO (ArrayList<String> ko) {
+        for (String k : ko) {
+            System.out.println(k + " flies away! It's a KO!");
+        }
+    }
+
+    public void mostrarTeam(ArrayList<String> teamsInfo) {
+        for (String team : teamsInfo) {
+            System.out.println(team);
+        }
+    }
+
+    public void mostrarFinal(ArrayList<String> finalInfo) {
+        for (String s : finalInfo) {
+            System.out.println(s);
+        }
     }
 
     public void printAttackDetails(String attackDetails, String recievedDetails) {

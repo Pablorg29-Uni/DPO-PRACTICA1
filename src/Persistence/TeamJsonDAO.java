@@ -1,5 +1,6 @@
 package Persistence;
 
+import Exceptions.PersistenceException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -16,7 +17,7 @@ public class TeamJsonDAO {
     private final String path = "./src/Files/teams.json";
 
     // Verifica si el archivo JSON existe, y lo crea si no existe
-    public void verifyJsonTeams() {
+    public void verifyJsonTeams() throws PersistenceException {
         File file = new File(this.path);
         if (!file.exists()) {
             try {
@@ -26,7 +27,7 @@ public class TeamJsonDAO {
                     writer.write("[]"); // Inicializa un JSON vacío
                 }
             } catch (IOException e) {
-                throw new RuntimeException("Error creating the JSON file: " + e.getMessage(), e);
+                throw new PersistenceException(e.getMessage());
             }
         }
     }

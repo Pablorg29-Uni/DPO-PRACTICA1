@@ -10,6 +10,8 @@ import Business.TeamManager;
 import Business.Entities.Stats;
 import Business.StatsManager;
 import Business.CombatManager;
+import Exceptions.BusinessException;
+import Exceptions.PresentationException;
 
 
 import java.util.ArrayList; // Ensure this import is included
@@ -17,7 +19,6 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Controller {
-    private final Member member;
     private final CombatManager combatManager;
     private final View view;
     private final TeamManager teammanager;
@@ -27,13 +28,12 @@ public class Controller {
 
 
     public Controller() {
-        this.member = new Member();
         this.combatManager = new CombatManager();
-        this.view = new View();
         this.statsmanager = new StatsManager();
         this.itemmanager = new ItemsManager();
         this.charactermanager = new CharacterManager();
         this.teammanager = new TeamManager();
+        this.view = new View();
     }
 
 
@@ -417,55 +417,73 @@ public class Controller {
     }
 
     private void printBrokenItems(Team team) {
+        ArrayList<String> brokenItems = new ArrayList<>();
         for (Member teamMember : team.getMembers()) {
             if (teamMember.getLastAttack() != null) {
                 if (teamMember.getLastAttack().isWeaponBroke()) {
-                    System.out.println("Oh no! " + teamMember.getCharacter().getName() + "'s " + teamMember.getNameArma() + " breaks! (Weapon)");
+                    brokenItems.add("Oh no! " + teamMember.getCharacter().getName() + "'s " + teamMember.getNameArma() + " breaks! (Weapon)");
                 }
                 if (teamMember.getLastAttack().isArmorBroke()) {
-                    System.out.println("Oh no! " + teamMember.getCharacter().getName() + "'s " + teamMember.getNameArmadura() + " breaks! (Armor)");
+                    brokenItems.add("Oh no! " + teamMember.getCharacter().getName() + "'s " + teamMember.getNameArmadura() + " breaks! (Armor)");
                 }
             }
         }
+        view.mostrarItems(brokenItems);
     }
 
     private void printKo(Team team1, Team team2) {
+        ArrayList<String> mostrarKO = new ArrayList<>();
         for (Member team1Member : team1.getMembers()) {
             if (team1Member.getLastAttack() != null && team1Member.isKO()) {
-                System.out.println(team1Member.getCharacter().getName() + " flies away! It's a KO!");
+                mostrarKO.add(team1Member.getCharacter().getName());
             }
         }
         for (Member team2Member : team2.getMembers()) {
             if (team2Member.getLastAttack() != null && team2Member.isKO()) {
-                System.out.println(team2Member.getCharacter().getName() + " flies away! It's a KO!");
+                mostrarKO.add(team2Member.getCharacter().getName());
             }
         }
-
+        view.mostrarKO(mostrarKO);
     }
 
 
     private void printTeamInfo(Team team) {
+        ArrayList<String> teamInfo = new ArrayList<>();
         for (Member member : team.getMembers()) {
             Character character = charactermanager.getCharacter(member.getId());
             Items weapon = member.getArma() != null ? member.getArma() : new Items("None");
             Items armor = member.getArmadura() != null ? member.getArmadura() : new Items("None");
             if (member.isKO()) {
-                System.out.println("\t- " + character.getName() + " (KO)");
+                teamInfo.add("\t- " + character.getName() + " (KO)");
             } else {
-                System.out.println("\t- " + character.getName() + " (" + String.format("%.2f", member.getMalRebut() * 100) + " %) "
+                teamInfo.add("\t- " + character.getName() + " (" + String.format("%.2f", member.getMalRebut() * 100) + " %) "
                         + weapon.getName() + " - " + armor.getName());
             }
         }
+        view.mostrarTeam(teamInfo);
     }
 
     private void printFinalInfo(Team team) {
+        ArrayList<String> finalInfo = new ArrayList<>();
         for (Member member : team.getMembers()) {
             Character character = charactermanager.getCharacter(member.getId());
             if (member.isKO()) {
-                System.out.println("\t- " + character.getName() + " (KO)");
+                finalInfo.add("\t- " + character.getName() + " (KO)");
             } else {
-                System.out.println("\t- " + character.getName() + " (" + String.format("%.2f", member.getMalRebut() * 100) + " %) ");
+                finalInfo.add("\t- " + character.getName() + " (" + String.format("%.2f", member.getMalRebut() * 100) + " %) ");
             }
+        }
+        view.mostrarFinal(finalInfo);
+    }
+
+    public void verificarFiles() throws PresentationException {
+        try {
+            charactermanager.verify();
+            itemmanager.verify();
+            statsmanager.verify();
+            teammanager.verify();
+        } catch (BusinessException e) {
+            throw new PresentationException(e.getMessage());
         }
     }
 }
