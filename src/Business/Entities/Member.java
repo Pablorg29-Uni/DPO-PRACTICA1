@@ -13,6 +13,8 @@ public class Member {
     private boolean isKO;
     private float damageReduction;
     private LastAttack lastAttack;
+    private String nameArma;
+    public String nameArmadura;
 
     public Member() {
         this.character = null;
@@ -55,6 +57,9 @@ public class Member {
     }
 
     public void setArmadura(Items armadura) {
+        if (armadura != null) {
+            this.nameArmadura = armadura.getName();
+        }
         this.armadura = armadura;
     }
 
@@ -63,6 +68,9 @@ public class Member {
     }
 
     public void setArma(Items arma) {
+        if (arma != null) {
+            this.nameArma = arma.getName();
+        }
         this.arma = arma;
     }
 
@@ -104,5 +112,13 @@ public class Member {
 
     public void setLastAttack(LastAttack lastAttack) {
         this.lastAttack = lastAttack;
+    }
+
+    public String getNameArma() {
+        return nameArma;
+    }
+
+    public String getNameArmadura() {
+        return nameArmadura;
     }
 }

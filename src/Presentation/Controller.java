@@ -234,7 +234,7 @@ public class Controller {
 
         // Mostrar la lista de items
         int posicion = 1;
-        System.out.println("");
+        System.out.println();
         for (Items item : items) {
             System.out.println("\t" + posicion + ") " + item.getName());
             posicion++;
@@ -363,6 +363,15 @@ public class Controller {
             roundStats(team1);
             System.out.println();
             roundStats(team2);
+            System.out.println();
+
+            printBrokenItems(team1);
+            System.out.println();
+            printBrokenItems(team2);
+            System.out.println();
+
+            printKo(team1, team2);
+            System.out.println();
 
             // Verificar si el combate ha terminado
             int result = combatManager.comprovarEstatCombat();
@@ -384,23 +393,55 @@ public class Controller {
                     break;
             }
         }
+        printFinalInfo(team1);
+        System.out.println();
+        printFinalInfo(team2);
+        System.out.println("\n<Press any key to continue...>");
+        scanner.nextLine();
+        System.out.println();
     }
 
     private void roundStats(Team team) {
         for (Member member : team.getMembers()) {
-            if (!member.isKO() && member.getLastAttack() != null) {
+            if (member.getLastAttack() != null) {
                 Items a = member.getArma();
                 if (a == null) {
                     a = new Items("");
                 }
                 String attackDetails = member.getCharacter().getName() + " ATTACKS " + member.getLastAttack().getLastObjective() +
                         " WITH " + a.getName() + " FOR " + String.format("%.2f", member.getLastAttack().getLastAttack()) + " DAMAGE!";
-                String recievedDetails = member.getLastAttack().getLastObjective() + " RECEIVES " + String.format("%.2f", member.getLastAttack().getLastDamage()) + " DAMAGE.";
+                String recievedDetails = "\t" + member.getLastAttack().getLastObjective() + " RECEIVES " + String.format("%.2f", member.getLastAttack().getLastDamage()) + " DAMAGE.";
                 view.printAttackDetails(attackDetails, recievedDetails);  // Imprime los detalles de los ataques
             }
         }
     }
 
+    private void printBrokenItems(Team team) {
+        for (Member teamMember : team.getMembers()) {
+            if (teamMember.getLastAttack() != null) {
+                if (teamMember.getLastAttack().isWeaponBroke()) {
+                    System.out.println("Oh no! " + teamMember.getCharacter().getName() + "'s " + teamMember.getNameArma() + " breaks! (Weapon)");
+                }
+                if (teamMember.getLastAttack().isArmorBroke()) {
+                    System.out.println("Oh no! " + teamMember.getCharacter().getName() + "'s " + teamMember.getNameArmadura() + " breaks! (Armor)");
+                }
+            }
+        }
+    }
+
+    private void printKo(Team team1, Team team2) {
+        for (Member team1Member : team1.getMembers()) {
+            if (team1Member.getLastAttack() != null && team1Member.isKO()) {
+                System.out.println(team1Member.getCharacter().getName() + " flies away! It's a KO!");
+            }
+        }
+        for (Member team2Member : team2.getMembers()) {
+            if (team2Member.getLastAttack() != null && team2Member.isKO()) {
+                System.out.println(team2Member.getCharacter().getName() + " flies away! It's a KO!");
+            }
+        }
+
+    }
 
 
     private void printTeamInfo(Team team) {
@@ -408,9 +449,23 @@ public class Controller {
             Character character = charactermanager.getCharacter(member.getId());
             Items weapon = member.getArma() != null ? member.getArma() : new Items("None");
             Items armor = member.getArmadura() != null ? member.getArmadura() : new Items("None");
+            if (member.isKO()) {
+                System.out.println("\t- " + character.getName() + " (KO)");
+            } else {
+                System.out.println("\t- " + character.getName() + " (" + String.format("%.2f", member.getMalRebut() * 100) + " %) "
+                        + weapon.getName() + " - " + armor.getName());
+            }
+        }
+    }
 
-            System.out.println("\t- " + character.getName() + " (" + String.format("%.2f", member.getMalRebut()) + " %) "
-                    + weapon.getName() + " - " + armor.getName());
+    private void printFinalInfo(Team team) {
+        for (Member member : team.getMembers()) {
+            Character character = charactermanager.getCharacter(member.getId());
+            if (member.isKO()) {
+                System.out.println("\t- " + character.getName() + " (KO)");
+            } else {
+                System.out.println("\t- " + character.getName() + " (" + String.format("%.2f", member.getMalRebut() * 100) + " %) ");
+            }
         }
     }
 }

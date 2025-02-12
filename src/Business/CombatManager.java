@@ -49,10 +49,10 @@ public class CombatManager {
         float part1;
         float part2 = 0;
 
-        part1 = member.getCharacter().getWeight() * (1 - member.getMalRebut());
+        part1 = (member.getCharacter().getWeight() * (1 - member.getMalRebut()) / 10);
 
         if (member.getArma() != null) {
-            part2 = (float) (member.getArma().getPower() / 20.0);
+            part2 = (float) ((float) member.getArma().getPower() / 20.0);
         } else {
             return 0;
         }
@@ -138,26 +138,37 @@ public class CombatManager {
         }
     }
 
-    //SOLO SIRVE CUANDO ATACA TEAM1 (CAMBIAR)
+
     public void atacarBalanced(Member member, Team teamDefensor) {
+        //System.out.println(member.getCharacter().getName()+ " is attacking...");
         Random rand = new Random();
-        int r = rand.nextInt(teamDefensor.getMembers().size());
+        int r;
+        do {
+            r = rand.nextInt(teamDefensor.getMembers().size());
+        } while (teamDefensor.getMembers().get(r).isKO());
         float attack = calcularAttack(member);
         float damageReduction = teamDefensor.getMembers().get(r).getDamageReduction();
         //Cambiar esto de manera que el final damage no te pueda sumar vida
         float calculatedDamage = calcularFinalDamage(teamDefensor.getMembers().get(r), attack);
         float finalDamage;
+        boolean arma = false;
+        boolean armadura = false;
 
         if (calculatedDamage > damageReduction) {
             finalDamage = calculatedDamage - damageReduction;
+            teamDefensor.getMembers().get(r).setDamageReduction(0);
         } else {
             finalDamage = 0;
+        }
+        if (damageReduction != 0) {
+            teamDefensor.getMembers().get(r).getArmadura().setDurability(teamDefensor.getMembers().get(r).getArmadura().getDurability()-1);
+            if (teamDefensor.getMembers().get(r).getArmadura().getDurability() == 0) {
+                armadura = true;
+            }
         }
         teamDefensor.getMembers().get(r).setMalRebut(teamDefensor.getMembers().get(r).getMalRebut() + finalDamage);
         String nomObjectiu = teamDefensor.getMembers().get(r).getCharacter().getName();
 
-        boolean arma = false;
-        boolean armadura = false;
         if (member.getArma() != null) {
             member.getArma().setDurability(member.getArma().getDurability() - 1);
             if (member.getArma().getDurability() == 0) {
@@ -165,30 +176,15 @@ public class CombatManager {
                 arma = true;
             }
         }
-        if (member.getArmadura() != null) {
-            if (member.getArmadura().getDurability() == 0) {
-                //En caso que la armadura vaya pereciendo
-                member.getArmadura().setDurability(member.getArmadura().getDurability() - 1);
-                armadura = true;
-                member.setArmadura(null);
-            }
-        }
-        if (teamDefensor.getMembers().get(r).getArma() != null) {
-            teamDefensor.getMembers().get(r).getArmadura().setDurability(teamDefensor.getMembers().get(r).getArmadura().getDurability() - 1);
-            if (teamDefensor.getMembers().get(r).getArma().getDurability() == 0) {
-                teamDefensor.getMembers().get(r).setArma(null);
-            }
-        }
-
 
         //CALCULAR KO
-        boolean gotKO = false;
-        int ko = rand.nextInt(1200) / 100;
+        int k = rand.nextInt(200) + 1;
+        float ko = (float) (k / 100.0);
         if (ko > teamDefensor.getMembers().get(r).getMalRebut()) {
             teamDefensor.getMembers().get(r).setKO(true);
-            gotKO = true;
+            //System.out.println(teamDefensor.getMembers().get(r).getCharacter().getName()+ " is KOOOOOOOOOOOOOOOOOOOOOOOOO!");
         }
-        member.setLastAttack(new LastAttack(attack, finalDamage, nomObjectiu, arma, armadura, gotKO));
+        member.setLastAttack(new LastAttack(attack, finalDamage, nomObjectiu, arma, armadura));
     }
 
     public void defensarSeguentAtac(Member member) {
