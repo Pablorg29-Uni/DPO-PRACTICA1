@@ -1,6 +1,5 @@
 package Presentation;
 
-import Exceptions.BusinessException;
 import Exceptions.PresentationException;
 
 import java.util.InputMismatchException;
@@ -24,7 +23,6 @@ public class Menu {
             System.out.println("Shutting down...");
             return;
         }
-
         Scanner scanner = new Scanner(System.in);
         int opcion;
         System.out.println("\nStarting program...\n");
@@ -41,7 +39,6 @@ public class Menu {
                 opcion = 6;
                 scanner.nextLine();
             }
-
             switch (opcion) {
                 case 1 -> controller.mostrarNombresDePersonajes();
                 case 2 -> manageTeamsMenu(scanner);
@@ -51,7 +48,6 @@ public class Menu {
                 default -> System.out.println("Invalid option. Please try again.");
             }
         } while (opcion != 5);
-
         scanner.close();
     }
 
@@ -65,7 +61,6 @@ public class Menu {
             System.out.println("\n\t4) Back");
             System.out.print("\nChoose an option: ");
             opcion = scanner.nextInt();
-
             switch (opcion) {
                 case 1 -> controller.crearEquipo();
                 case 2 -> controller.mostrarEquipos();

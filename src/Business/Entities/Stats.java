@@ -7,7 +7,6 @@ public class Stats {
     private int KO_done;
     private int KO_received;
 
-    // Constructor con parámetros
     public Stats(String name, int gamesPlayed, int gamesWon, int koDone, int koRecieved) {
         this.name = name;
         this.games_played = gamesPlayed;
@@ -16,7 +15,6 @@ public class Stats {
         this.KO_received = koRecieved;
     }
 
-    // Métodos Getters
     public String getName() {
         return name;
     }
@@ -37,24 +35,8 @@ public class Stats {
         return KO_received;
     }
 
-    // Métodos Setters
     public void setName(String name) {
         this.name = name;
     }
 
-    public void setGames_played(int games_played) {
-        this.games_played = games_played;
-    }
-
-    public void setGames_won(int games_won) {
-        this.games_won = games_won;
-    }
-
-    public void setKO_done(int KO_done) {
-        this.KO_done = KO_done;
-    }
-
-    public void setKO_received(int KO_received) {
-        this.KO_received = KO_received;
-    }
 }

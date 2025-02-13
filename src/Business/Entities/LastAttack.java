@@ -23,10 +23,6 @@ public class LastAttack {
         return lastDamage;
     }
 
-    public void setLastDamage(float lastDamage) {
-        this.lastDamage = lastDamage;
-    }
-
     public String getLastObjective() {
         return lastObjective;
     }

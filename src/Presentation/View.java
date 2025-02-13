@@ -45,11 +45,9 @@ public class View {
     }
     public void statsequipo(Stats teamStats){
         if (teamStats != null) {
-            //System.out.println("\nTeam Statistics:");
             System.out.println("\nCombats played: " + teamStats.getGames_played());
             System.out.println("Combats won: " + teamStats.getGames_won());
 
-            // Calcular y mostrar la tasa de victorias
             double winRate = teamStats.getGames_played() > 0
                     ? ((double) teamStats.getGames_won() / teamStats.getGames_played()) * 100
                     : 0.0;
@@ -70,12 +68,6 @@ public class View {
         System.out.println("\tDURABILITY: " + selectedItem.getDurability());
     }
 
-    public void combatPrincipio(String teamName1, String teamName2, ArrayList<Member> members1, ArrayList<Member> members2) {
-        //Aqui imprimes
-    }
-
-    public void mostrarRonda() {
-    }
 
     public void mostrarItems(ArrayList<String> brokenItems) {
         for (String brokenItem : brokenItems) {

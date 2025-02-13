@@ -14,15 +14,6 @@ public class    Items {
         this.name = name;
     }
 
-    public Items(long id, String name, int power, int durability, String classe) {
-        this.id = id;
-        this.name = name;
-        this.power = power;
-        this.durability = durability;
-        this.classe = classe;
-    }
-
-    // Métodos getters
     public long getId() {
         return id;
     }

@@ -38,28 +38,5 @@ public class ItemsJsonDAO {
             throw new RuntimeException(e);
         }
     }
-    /*
-    public void setDurability(long id, int durability) {
-        List<Items> items = getAllItems();
-        boolean found = false;
 
-        for (Items item : items) {
-            if (item.getId() == id) {
-                item.setDurability(durability);
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            throw new RuntimeException("No item with id " + id);
-        }
-        
-        try (FileWriter writer = new FileWriter(path)) {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            gson.toJson(items, writer);
-        } catch (IOException e) {
-            throw new RuntimeException("Error writing to JSON file: " + e.getMessage());
-        }
-    }
-    */
 }

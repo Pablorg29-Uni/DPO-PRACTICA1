@@ -16,15 +16,14 @@ public class TeamJsonDAO {
 
     private final String path = "./src/Files/teams.json";
 
-    // Verifica si el archivo JSON existe, y lo crea si no existe
     public void verifyJsonTeams() throws PersistenceException {
         File file = new File(this.path);
         if (!file.exists()) {
             try {
-                file.getParentFile().mkdirs(); // Crea directorios si no existen
+                file.getParentFile().mkdirs();
                 file.createNewFile();
                 try (FileWriter writer = new FileWriter(this.path)) {
-                    writer.write("[]"); // Inicializa un JSON vacío
+                    writer.write("[]");
                 }
             } catch (IOException e) {
                 throw new PersistenceException(e.getMessage());
@@ -56,7 +55,6 @@ public class TeamJsonDAO {
         try {
             List<Team> teams = getAllTeams();
             teams.add(team);
-
             writeTeamsToFile(teams);
             return true;
         } catch (Exception e) {
@@ -69,16 +67,6 @@ public class TeamJsonDAO {
         try {
             List<Team> teams = getAllTeams();
             teams.removeIf(team -> team.getName().equals(name));
-            /*
-            Team teamToRemove = getTeam(name);
-
-            if (teamToRemove == null) {
-                System.out.println("Error: Team not found (" + name + ").");
-                return false;
-            }
-
-            teams.remove(teamToRemove);
-            writeTeamsToFile(teams);*/
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             try (FileWriter writer = new FileWriter(this.path)) {
                 gson.toJson(teams, writer);

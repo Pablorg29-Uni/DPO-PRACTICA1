@@ -16,16 +16,14 @@ public class CharacterJsonDAO {
 
     private final String path = "./src/Files/characters.json";
 
-    // Verificar si el archivo JSON de personajes existe
     public void verifyJsonCharacter() throws PersistenceException {
         try {
-            new FileReader(this.path);  // Corrección: no es necesario renombrar la variable FileReader
+            new FileReader(this.path);
         } catch (FileNotFoundException e) {
             throw new PersistenceException(e.getMessage());
         }
     }
 
-    // Obtener todos los personajes desde el archivo JSON
     public List<Character> getAllCharacters() {
         try {
             FileReader reader = new FileReader(this.path);
@@ -37,7 +35,6 @@ public class CharacterJsonDAO {
         }
     }
 
-    // Buscar un personaje por su id
     public Character getCharacterById(long id) {
         List<Character> characters = getAllCharacters();
         for (Character character : characters) {
@@ -45,10 +42,9 @@ public class CharacterJsonDAO {
                 return character;
             }
         }
-        return null;  // Si no se encuentra el personaje, se devuelve null
+        return null;
     }
 
-    // Buscar un personaje por su nombre
     public Character getCharacterByName(String name) {
         List<Character> characters = getAllCharacters();
         for (Character character : characters) {
@@ -56,7 +52,7 @@ public class CharacterJsonDAO {
                 return character;
             }
         }
-        return null;  // Si no se encuentra el personaje, se devuelve null
+        return null;
     }
 
 }

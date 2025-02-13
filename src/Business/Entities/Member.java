@@ -1,7 +1,5 @@
 package Business.Entities;
 
-import Business.CharacterManager;
-
 public class Member {
     private long id;
     private Character character;
@@ -29,12 +27,6 @@ public class Member {
         this();
         this.id = id;
     }
-
-    /*public Member(long id, String strategy) {
-        CharacterManager characterManager = new CharacterManager();
-        this.character = characterManager.getCharacter(id);
-        this.strategy = strategy;
-    }*/
 
     public float getMalRebut() {
         return malRebut;

@@ -6,7 +6,6 @@ public class Team {
     private String name;
     private ArrayList<Member> members;
 
-    public Team() {}
     public Team(String name, long id1, long id2, long id3, long id4) {
         this.name = name;
         members = new ArrayList<>();
@@ -20,14 +19,6 @@ public class Team {
         return members;
     }
 
-    /*public boolean containsCharacter(long characterId) {
-        if (members[0] != null || members[1] != null || members[2] != null || members[3] != null ) {
-            if (members[0].getCharacter().getId() == characterId || members[1].getCharacter().getId() == characterId || members[2].getCharacter().getId() == characterId || members[3].getCharacter().getId() == characterId) {
-                return true;
-            }
-        }
-        return false;
-    }*/
 
     public String getName() {
         return name;
@@ -37,7 +28,4 @@ public class Team {
         this.name = name;
     }
 
-    public void setMembers(ArrayList<Member> members) {
-        this.members = members;
-    }
 }
