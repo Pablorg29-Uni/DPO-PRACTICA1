@@ -9,8 +9,6 @@ import Business.Entities.Items;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +17,11 @@ public class ItemsJsonDAO {
 
     private final String path = "./src/Files/items.json";
 
+    /**
+     * Verifica la existencia del archivo JSON de items.
+     *
+     * @throws PersistenceException Si el archivo no se encuentra.
+     */
     public void verifyJsonItem() throws PersistenceException {
         try {
             FileReader fileReader = new FileReader(this.path);
@@ -27,6 +30,11 @@ public class ItemsJsonDAO {
         }
     }
 
+    /**
+     * Obtiene la lista de todos los items desde el archivo JSON.
+     *
+     * @return Lista de items.
+     */
     public List<Items> getAllItems() {
         try {
             FileReader reader = new FileReader(this.path);
@@ -38,5 +46,4 @@ public class ItemsJsonDAO {
             throw new RuntimeException(e);
         }
     }
-
 }
