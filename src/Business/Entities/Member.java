@@ -14,7 +14,7 @@ public class Member {
     private float damageReduction;
     private LastAttack lastAttack;
     private String nameArma;
-    public String nameArmadura;
+    private String nameArmadura;
 
     public Member() {
         this.character = null;
@@ -121,4 +121,5 @@ public class Member {
     public String getNameArmadura() {
         return nameArmadura;
     }
+
 }

@@ -347,6 +347,7 @@ public class Controller {
         // Iniciar las rondas de combate
         int round = 1;
         boolean combatFinished = false;
+        int result = 0;
 
         while (!combatFinished) {
             System.out.println("\n--- ROUND " + round + " ---");
@@ -374,7 +375,7 @@ public class Controller {
             System.out.println();
 
             // Verificar si el combate ha terminado
-            int result = combatManager.comprovarEstatCombat();
+            result = combatManager.comprovarEstatCombat();
             switch (result) {
                 case 1:
                     System.out.println("\nTeam #1 wins!\n");
@@ -396,9 +397,36 @@ public class Controller {
         printFinalInfo(team1);
         System.out.println();
         printFinalInfo(team2);
+        actualitzarStats(team1, team2, result);
         System.out.println("\n<Press any key to continue...>");
         scanner.nextLine();
         System.out.println();
+    }
+
+    private void actualitzarStats(Team team1, Team team2, int result) {
+
+        int ko1 = 0;
+        int ko2 = 0;
+
+        for (Member member1 : team1.getMembers()) {
+            if (member1.isKO()) {
+                ko1++;
+            }
+        }
+        for (Member member : team2.getMembers()) {
+            if (member.isKO()) {
+                ko2++;
+            }
+        }
+
+        if (result == 1) {
+            statsmanager.actualitzarFinalJoc(team1, team2, 1, 0, ko1, ko2);
+        } else if (result == 2) {
+            statsmanager.actualitzarFinalJoc(team1, team2, 0, 1, ko1, ko2);
+        } else if (result == 3) {
+            statsmanager.actualitzarFinalJoc(team1, team2, 0, 0, ko1, ko2);
+        }
+
     }
 
     private void roundStats(Team team) {

@@ -1,6 +1,5 @@
 package Persistence;
 
-import Business.Entities.Team;
 import Exceptions.PersistenceException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -75,5 +74,14 @@ public class StatsJsonDAO {
             }
         }
         throw new RuntimeException("No stats found for name " + name);
+    }
+
+    public void writeStatsToFile (List<Stats> stats) throws PersistenceException {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        try (FileWriter writer = new FileWriter(this.path)) {
+            gson.toJson(stats, writer);
+        } catch (Exception e) {
+            throw new PersistenceException(e.getMessage());
+        }
     }
 }
