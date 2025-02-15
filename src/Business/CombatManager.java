@@ -3,6 +3,7 @@ package Business;
 import Business.Entities.LastAttack;
 import Business.Entities.Member;
 import Business.Entities.Team;
+import Exceptions.BusinessException;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -34,14 +35,22 @@ public class CombatManager {
             member.setMalRebut(0);
             member.setKO(false);
         }
-        omplirTeams(t1);
-        omplirTeams(t2);
+        try {
+            omplirTeams(t1);
+            omplirTeams(t2);
+        } catch (BusinessException e) {
+            System.out.println("The teams can't be filled");
+        }
         return new Team[]{team1, team2};
     }
 
-    public void omplirTeams(Team t) {
-        for (Member member : t.getMembers()) {
-            member.setCharacter(characterManager.getCharacter(member.getId()));
+    public void omplirTeams(Team t) throws BusinessException {
+        try {
+            for (Member member : t.getMembers()) {
+                member.setCharacter(characterManager.getCharacter(member.getId()));
+            }
+        } catch (Exception e) {
+            throw new BusinessException(e.getMessage());
         }
     }
 

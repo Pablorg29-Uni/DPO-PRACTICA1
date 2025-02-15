@@ -34,14 +34,15 @@ public class CharacterJsonDAO {
      *
      * @return Lista de personajes.
      */
-    public List<Character> getAllCharacters() {
+    public List<Character> getAllCharacters() throws PersistenceException {
         try {
             FileReader reader = new FileReader(this.path);
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            Type characterListType = new TypeToken<ArrayList<Character>>() {}.getType();
+            Type characterListType = new TypeToken<ArrayList<Character>>() {
+            }.getType();
             return gson.fromJson(reader, characterListType);
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            throw new PersistenceException(e.getMessage());
         }
     }
 
@@ -51,14 +52,18 @@ public class CharacterJsonDAO {
      * @param id Identificador del personaje.
      * @return El personaje si se encuentra, de lo contrario, null.
      */
-    public Character getCharacterById(long id) {
-        List<Character> characters = getAllCharacters();
-        for (Character character : characters) {
-            if (character.getId() == id) {
-                return character;
+    public Character getCharacterById(long id) throws PersistenceException {
+        try {
+            List<Character> characters = getAllCharacters();
+            for (Character character : characters) {
+                if (character.getId() == id) {
+                    return character;
+                }
             }
+            throw new PersistenceException("Character with id " + id + " not found");
+        } catch (PersistenceException e) {
+            throw new PersistenceException(e.getMessage());
         }
-        return null;
     }
 
     /**
@@ -67,7 +72,7 @@ public class CharacterJsonDAO {
      * @param name Nombre del personaje.
      * @return El personaje si se encuentra, de lo contrario, null.
      */
-    public Character getCharacterByName(String name) {
+    public Character getCharacterByName(String name) throws PersistenceException {
         List<Character> characters = getAllCharacters();
         for (Character character : characters) {
             if (character.getName().equalsIgnoreCase(name)) {

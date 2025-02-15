@@ -37,11 +37,16 @@ public class Controller {
     }
 
 
-    public void mostrarNombresDePersonajes() {
+    public void mostrarNombresDePersonajes() throws PresentationException {
         Scanner scanner = new Scanner(System.in);
         int posicion = 1;
         System.out.println();
-        List<Character> characters = charactermanager.getCharacters();
+        List<Character> characters;
+        try {
+            characters = charactermanager.getCharacters();
+        } catch (BusinessException e) {
+            throw new PresentationException(e.getMessage());
+        }
         //for (Character character : characters) {
         //  System.out.println("\t" + posicion + ") " + character.getName());
         //posicion++;

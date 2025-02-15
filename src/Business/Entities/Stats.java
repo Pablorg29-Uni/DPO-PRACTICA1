@@ -77,5 +77,21 @@ public class Stats {
     public void setName(String name) {
         this.name = name;
     }
+
+    public void setGames_played(int i) {
+        this.games_played = i;
+    }
+
+    public void setGames_won(int i) {
+        this.games_won = i;
+    }
+
+    public void setKO_done(int i) {
+        this.KO_done = i;
+    }
+
+    public void setKO_received(int i) {
+        this.KO_received = i;
+    }
 }
 

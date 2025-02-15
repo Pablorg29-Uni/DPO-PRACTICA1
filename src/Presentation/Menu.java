@@ -53,12 +53,28 @@ public class Menu {
             }
 
             switch (opcion) {
-                case 1 -> controller.mostrarNombresDePersonajes();
-                case 2 -> manageTeamsMenu(scanner);
-                case 3 -> controller.mostrarItems();
-                case 4 -> controller.simulateCombat();
-                case 5 -> System.out.println("\nWe hope to see you again!");
-                default -> System.out.println("Invalid option. Please try again.");
+                case 1:
+                    try {
+                        controller.mostrarNombresDePersonajes();
+                    } catch (PresentationException e) {
+                        System.out.println("Error: The characters can't be accessed");
+                    }
+                    break;
+                case 2:
+                    manageTeamsMenu(scanner);
+                    break;
+                case 3:
+                    controller.mostrarItems();
+                    break;
+                case 4:
+                    controller.simulateCombat();
+                    break;
+                case 5:
+                    System.out.println("\nWe hope to see you again!");
+                    break;
+                default:
+                    System.out.println("Invalid option. Please try again.");
+                    break;
             }
         } while (opcion != 5);
         scanner.close();

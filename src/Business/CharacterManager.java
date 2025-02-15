@@ -22,16 +22,30 @@ public class    CharacterManager {
         }
     }
 
-    public List<Business.Entities.Character> getCharacters() {
-        return this.characterJsonDAO.getAllCharacters();
+    public List<Business.Entities.Character> getCharacters() throws BusinessException {
+        try {
+            return this.characterJsonDAO.getAllCharacters();
+        } catch (PersistenceException e) {
+            throw new BusinessException(e.getMessage());
+        }
     }
 
     public Character getCharacter(long id) {
-        return this.characterJsonDAO.getCharacterById(id);
+        try {
+            return this.characterJsonDAO.getCharacterById(id);
+        } catch (PersistenceException e) {
+            System.out.println("Error getting character");
+            return null;
+        }
     }
 
     public Character getCharacter2(String name) {
-        return this.characterJsonDAO.getCharacterByName(name);
+        try {
+            return this.characterJsonDAO.getCharacterByName(name);
+        } catch (PersistenceException e) {
+            System.out.println("Error getting character");
+            return null;
+        }
     }
 
     public void verify() throws BusinessException {
