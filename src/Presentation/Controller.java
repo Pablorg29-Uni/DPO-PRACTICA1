@@ -339,6 +339,18 @@ public class Controller {
         }
         System.out.println("\nInitializing teams...\n");
 
+        if (selectedTeam1.equals(selectedTeam2)) {
+            long id0 = selectedTeam2.getMembers().get(0).getId();
+            long id1 = selectedTeam2.getMembers().get(1).getId();
+            long id2 = selectedTeam2.getMembers().get(2).getId();
+            long id3 = selectedTeam2.getMembers().get(3).getId();
+            selectedTeam2 = new Team(selectedTeam2.getName(), id0, id1, id2, id3);
+            selectedTeam2.getMembers().get(0).setStrategy(selectedTeam1.getMembers().get(0).getStrategy());
+            selectedTeam2.getMembers().get(1).setStrategy(selectedTeam1.getMembers().get(1).getStrategy());
+            selectedTeam2.getMembers().get(2).setStrategy(selectedTeam1.getMembers().get(2).getStrategy());
+            selectedTeam2.getMembers().get(3).setStrategy(selectedTeam1.getMembers().get(3).getStrategy());
+        }
+
         try {
             System.out.println("Team #1 – " + selectedTeam1.getName());
             mostrarTeamMembers(selectedTeam1);

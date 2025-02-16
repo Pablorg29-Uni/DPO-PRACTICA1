@@ -221,4 +221,13 @@ public class Member {
     public String getNameArmadura() {
         return nameArmadura;
     }
+
+    /**
+     * Establece la estrategia del miembro.
+     *
+     * @param strategy Nombre de la estrategia.
+     */
+    public void setStrategy(String strategy) {
+        this.strategy = strategy;
+    }
 }

@@ -192,6 +192,16 @@ public class CombatManager {
     public void atacarBalanced(Member member, Team teamDefensor) {
         Random rand = new Random();
         int r;
+        boolean allKO = true;
+        for (Member teamDefensorMember : teamDefensor.getMembers()) {
+            if (!teamDefensorMember.isKO()) {
+                allKO = false;
+                break;
+            }
+        }
+        if (allKO) {
+            return;
+        }
         do {
             r = rand.nextInt(teamDefensor.getMembers().size());
         } while (teamDefensor.getMembers().get(r).isKO());
@@ -234,9 +244,14 @@ public class CombatManager {
         }
 
         // Determinar si el defensor queda KO
-        int k = rand.nextInt(200) + 1;
+        int k = rand.nextInt(200) + 1; //(int) (Math.random()*200)+1;
         float ko = (float) (k / 100.0);
-        if (ko > teamDefensor.getMembers().get(r).getMalRebut()) {
+        /*
+        Aqui com diu la practica seria ko < teamDefensor.getMembers().get(r).getMalRebut()
+        Pero aixo no te sentit degut a que seguint aquest metode, els character tindrien mes posibilitats
+        de ko quan menys mal tinguin rebut (canviar en cas incorrecte)
+         */
+        if (ko < teamDefensor.getMembers().get(r).getMalRebut()) {
             teamDefensor.getMembers().get(r).setKO(true);
         }
 

@@ -34,7 +34,7 @@ public class ItemsManager {
             } catch (PersistenceException e) {
                 throw new BusinessException(e.getMessage());
             }
-            allItems.removeIf(i -> i.getDurability() < 1 || i.getClasse().equals("Weapon"));
+            allItems.removeIf(i -> i.getDurability() < 1 || i.getClasse().equals("Armor"));
             if (allItems.isEmpty()) {
                 return null;
             } else {
@@ -59,7 +59,7 @@ public class ItemsManager {
             } catch (PersistenceException e) {
                 throw new BusinessException(e.getMessage());
             }
-            allItems.removeIf(i -> i.getDurability() < 1 || i.getClasse().equals("Armor"));
+            allItems.removeIf(i -> i.getDurability() < 1 || i.getClasse().equals("Weapon"));
             if (allItems.isEmpty()) {
                 return null;
             } else {
