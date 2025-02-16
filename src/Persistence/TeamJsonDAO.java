@@ -66,7 +66,7 @@ public class TeamJsonDAO {
      * Guarda un equipo en el archivo JSON.
      *
      * @param team Equipo a guardar.
-     * @return true si se guardó correctamente, false en caso contrario.
+     * @throws PersistenceException si no se ha podido guardar el equipo
      */
     public void saveTeam(Team team) throws PersistenceException {
         try {
@@ -99,13 +99,13 @@ public class TeamJsonDAO {
      * Escribe la lista de equipos en el archivo JSON.
      *
      * @param teams Lista de equipos a escribir.
-     * @throws IOException si ocurre un error al escribir en el archivo.
+     * @throws PersistenceException si ocurre un error al escribir en el archivo.
      */
     private void writeTeamsToFile(List<Team> teams) throws PersistenceException {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         try (FileWriter writer = new FileWriter(this.path)) {
             gson.toJson(teams, writer);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new PersistenceException(e.getMessage());
         }
     }
