@@ -8,7 +8,10 @@ import Exceptions.BusinessException;
 import java.util.ArrayList;
 import java.util.Random;
 
-
+/**
+ * Maneja la lógica de los combates entre personajes.
+ * Se encarga de gestionar turnos, aplicar daño y determinar el resultado.
+ */
 public class CombatManager {
     private Team team1;
     private Team team2;

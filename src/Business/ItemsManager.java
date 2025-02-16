@@ -8,7 +8,10 @@ import Persistence.ItemsJsonDAO;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
+/**
+ * Gestiona la lógica de los ítems en el juego.
+ * Actúa como intermediario entre la capa de persistencia y el resto de la aplicación.
+ */
 public class ItemsManager {
     private final ItemsJsonDAO itemsJsonDAO;
 

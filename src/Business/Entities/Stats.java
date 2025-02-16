@@ -1,5 +1,7 @@
 package Business.Entities;
-
+/**
+ * Representa las estadísticas de un equipo o personaje dentro del juego.
+ */
 public class Stats {
     private String name;
     private int games_played;

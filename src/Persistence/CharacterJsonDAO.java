@@ -11,7 +11,10 @@ import java.io.FileReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * Maneja la persistencia de personajes en un archivo JSON.
+ * Proporciona métodos para leer, guardar y modificar personajes.
+ */
 public class CharacterJsonDAO {
 
     private final String path = "./src/Files/characters.json";
@@ -30,9 +33,10 @@ public class CharacterJsonDAO {
     }
 
     /**
-     * Obtiene la lista de todos los personajes desde el archivo JSON.
+     * Carga todos los personajes desde un archivo JSON y los devuelve en una lista.
      *
-     * @return Lista de personajes.
+     * @return Lista con los personajes cargados desde el archivo.
+     * @throws PersistenceException Si el archivo no existe o hay un problema al leerlo.
      */
     public List<Character> getAllCharacters() throws PersistenceException {
         try {
@@ -47,10 +51,11 @@ public class CharacterJsonDAO {
     }
 
     /**
-     * Busca un personaje por su identificador.
+     * Busca un personaje por su id.
      *
-     * @param id Identificador del personaje.
-     * @return El personaje si se encuentra, de lo contrario, null.
+     * @param id Identificador del personaje que queremos encontrar.
+     * @return El personaje correspondiente si existe, de lo contrario lanza una excepción.
+     * @throws PersistenceException Si no se encuentra el personaje o hay un problema con la lectura de datos.
      */
     public Character getCharacterById(long id) throws PersistenceException {
         try {
@@ -67,10 +72,11 @@ public class CharacterJsonDAO {
     }
 
     /**
-     * Busca un personaje por su nombre.
+     * Busca un personaje por su nombre en la lista de personajes almacenada.
      *
-     * @param name Nombre del personaje.
-     * @return El personaje si se encuentra, de lo contrario, null.
+     * @param name Nombre del personaje a buscar (ignorando mayúsculas y minúsculas).
+     * @return El personaje encontrado.
+     * @throws PersistenceException Si ocurre un error al obtener la lista o el personaje no existe.
      */
     public Character getCharacterByName(String name) throws PersistenceException {
         List<Character> characters = getAllCharacters();

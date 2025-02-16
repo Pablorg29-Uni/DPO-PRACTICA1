@@ -14,6 +14,9 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+/**
+ * Maneja la persistencia de las estadísticas en un archivo JSON.
+ */
 
 public class StatsJsonDAO {
 
@@ -33,9 +36,13 @@ public class StatsJsonDAO {
     }
 
     /**
-     * Elimina una estadística del archivo JSON basada en el nombre del equipo.
+     * Elimina una estadística del archivo JSON según el nombre del equipo.
      *
-     * @param name Nombre del equipo cuyas estadísticas deben eliminarse.
+     * Busca y borra la estadística correspondiente, luego guarda la lista actualizada.
+     * Lanza una excepción si ocurre un error al acceder o modificar el archivo.
+     *
+     * @param name Nombre del equipo cuya estadística será eliminada.
+     * @throws PersistenceException Si hay un problema con el archivo JSON.
      */
     public void deleteOneStats(String name) throws PersistenceException {
         try {
@@ -51,9 +58,10 @@ public class StatsJsonDAO {
     }
 
     /**
-     * Obtiene todas las estadísticas almacenadas en el archivo JSON.
+     * Carga todas las estadísticas desde el archivo JSON.
      *
-     * @return Lista de todas las estadísticas disponibles.
+     * @return Lista de estadísticas almacenadas.
+     * @throws PersistenceException Si ocurre un error al leer el archivo.
      */
     public List<Stats> getAllStats() throws PersistenceException {
         try {
@@ -85,11 +93,11 @@ public class StatsJsonDAO {
     }
 
     /**
-     * Obtiene las estadísticas de un equipo basado en su nombre.
+     * Busca las estadísticas de un equipo por nombre.
      *
      * @param name Nombre del equipo.
-     * @return Objeto Stats correspondiente al equipo.
-     * @throws RuntimeException si no se encuentran estadísticas para el equipo dado.
+     * @return Estadísticas del equipo.
+     * @throws PersistenceException Si no se encuentran datos.
      */
     public Stats getStat(String name) throws PersistenceException {
         List<Stats> stats = getAllStats();

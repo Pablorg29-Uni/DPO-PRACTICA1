@@ -6,7 +6,9 @@ import Exceptions.BusinessException;
 import Exceptions.PersistenceException;
 import Persistence.StatsJsonDAO;
 import java.util.List;
-
+/**
+ * Gestiona las estadísticas de los equipos y personajes.
+ */
 public class StatsManager {
     private final StatsJsonDAO statsJsonDAO;
 

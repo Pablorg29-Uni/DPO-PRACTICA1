@@ -1,5 +1,7 @@
 package Business.Entities;
-
+/**
+ * Representa un personaje con sus atributos y características.
+ */
 public class Character {
 
     private long id;
@@ -9,9 +11,9 @@ public class Character {
     /**
      * Constructor de la clase Character.
      *
-     * @param id Identificador único del personaje.
+     * @param id Identificador del personaje.
      * @param name Nombre del personaje.
-     * @param weight Peso del personaje en unidades arbitrarias.
+     * @param weight Peso del personaje.
      */
     public Character(long id, String name, int weight) {
         this.id = id;

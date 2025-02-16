@@ -1,5 +1,8 @@
 package Business.Entities;
-
+/**
+ * Representa el último ataque realizado en un combate.
+ * Contiene información sobre el atacante, el objetivo y el daño infligido.
+ */
 public class LastAttack {
     private float lastAttack;
     private float lastDamage;
@@ -52,7 +55,7 @@ public class LastAttack {
     }
 
     /**
-     * Indica si el arma se rompió en el último ataque.
+     * Indica si el arma se rompió.
      *
      * @return true si el arma se rompió, false en caso contrario.
      */
@@ -61,7 +64,7 @@ public class LastAttack {
     }
 
     /**
-     * Indica si la armadura se rompió en el último ataque.
+     * Indica si la armadura se rompió.
      *
      * @return true si la armadura se rompió, false en caso contrario.
      */

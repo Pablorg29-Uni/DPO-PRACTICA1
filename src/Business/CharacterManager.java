@@ -6,7 +6,10 @@ import Exceptions.PersistenceException;
 import Persistence.CharacterJsonDAO;
 
 import java.util.List;
-
+/**
+ * Gestiona las operaciones relacionadas con los personajes.
+ * Utiliza CharacterJsonDAO para interactuar con el almacenamiento JSON.
+ */
 public class CharacterManager {
     private final CharacterJsonDAO characterJsonDAO;
 

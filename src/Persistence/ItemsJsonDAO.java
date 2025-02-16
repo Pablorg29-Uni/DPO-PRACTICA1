@@ -12,7 +12,10 @@ import java.io.FileReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * Maneja la persistencia de los ítems en formato JSON.
+ * Se encarga de leer y escribir la información de los ítems en el archivo correspondiente.
+ */
 public class ItemsJsonDAO {
 
     private final String path = "./src/Files/items.json";
@@ -31,9 +34,10 @@ public class ItemsJsonDAO {
     }
 
     /**
-     * Obtiene la lista de todos los items desde el archivo JSON.
+     * Obtiene la lista de todos los ítems almacenados en el archivo JSON.
      *
-     * @return Lista de items.
+     * @return Lista de ítems disponibles.
+     * @throws PersistenceException Si ocurre un error al leer el archivo o al parsear los datos.
      */
     public List<Items> getAllItems() throws PersistenceException {
         try {

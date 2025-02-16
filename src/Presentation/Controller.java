@@ -18,7 +18,10 @@ import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
-
+/**
+ * Controlador principal del programa.
+ * Se encarga de coordinar la lógica del programa y la interacción con los datos.
+ */
 public class Controller {
     private final CombatManager combatManager;
     private final View view;

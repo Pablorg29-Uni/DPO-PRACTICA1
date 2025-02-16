@@ -1,7 +1,9 @@
 package Business.Entities;
 
 import java.util.ArrayList;
-
+/**
+ * Representa un equipo dentro del juego.
+ */
 public class Team {
     private String name;
     private ArrayList<Member> members;

@@ -11,7 +11,9 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * Maneja la persistencia de los equipos en un archivo JSON.
+ */
 public class TeamJsonDAO {
 
     private final String path = "./src/Files/teams.json";
@@ -30,9 +32,10 @@ public class TeamJsonDAO {
     }
 
     /**
-     * Obtiene todos los equipos almacenados en el archivo JSON.
+     * Carga todos los equipos desde el archivo JSON.
      *
      * @return Lista de equipos.
+     * @throws PersistenceException Si ocurre un error al leer el archivo.
      */
     public List<Team> getAllTeams() throws PersistenceException {
         try (FileReader reader = new FileReader(this.path)) {
@@ -46,10 +49,11 @@ public class TeamJsonDAO {
     }
 
     /**
-     * Obtiene un equipo específico por su nombre.
+     * Busca un equipo por su nombre.
      *
-     * @param name Nombre del equipo a buscar.
-     * @return El equipo encontrado o null si no existe.
+     * @param name Nombre del equipo.
+     * @return El equipo si existe.
+     * @throws PersistenceException Si el equipo no se encuentra.
      */
     public Team getTeam(String name) throws PersistenceException {
         List<Team> teams = getAllTeams();
@@ -65,8 +69,8 @@ public class TeamJsonDAO {
     /**
      * Guarda un equipo en el archivo JSON.
      *
-     * @param team Equipo a guardar.
-     * @return true si se guardó correctamente, false en caso contrario.
+     * @param team Equipo a agregar.
+     * @throws PersistenceException Si ocurre un error al guardar los datos.
      */
     public void saveTeam(Team team) throws PersistenceException {
         try {
@@ -82,7 +86,8 @@ public class TeamJsonDAO {
      * Elimina un equipo del archivo JSON por su nombre.
      *
      * @param name Nombre del equipo a eliminar.
-     * @return true si se eliminó correctamente, false en caso contrario.
+     * @throws PersistenceException Si ocurre un error al eliminar el equipo.
+     * @return true si se eliminó correctamente.
      */
     public boolean eliminateTeam(String name) throws PersistenceException {
         try {

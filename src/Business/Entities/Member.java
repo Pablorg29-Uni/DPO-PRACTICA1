@@ -1,5 +1,9 @@
 package Business.Entities;
-
+/**
+ * Representa a un miembro dentro del sistema.
+ *
+ * Contiene información relevante sobre el miembro, como su nombre, rol, etc.
+ */
 public class Member {
     private long id;
     private Character character;
@@ -15,7 +19,7 @@ public class Member {
     private String nameArmadura;
 
     /**
-     * Constructor por defecto de la clase Member.
+     * Constructor de la clase Member.
      */
     public Member() {
         this.character = null;
@@ -37,18 +41,18 @@ public class Member {
     }
 
     /**
-     * Obtiene el valor de malRebut.
+     * Obtiene el malRebut.
      *
-     * @return Valor de malRebut.
+     * @return de malRebut.
      */
     public float getMalRebut() {
         return malRebut;
     }
 
     /**
-     * Establece el valor de malRebut.
+     * Establece el malRebut.
      *
-     * @param malRebut Nuevo valor de malRebut.
+     * @param malRebut Nuevo malRebut.
      */
     public void setMalRebut(float malRebut) {
         this.malRebut = malRebut;
