@@ -37,7 +37,7 @@ public class Menu {
 
         Scanner scanner = new Scanner(System.in);
         int opcion;
-        System.out.println("\nStarting program...\n");
+        System.out.println("Starting program...\n");
         do {
             System.out.println("1) List Characters");
             System.out.println("2) Manage Teams");
@@ -146,5 +146,7 @@ public class Menu {
         System.out.println("\\__\\  || | '_ \\/ -_) '_|  | |__\\__ \\_  | _ \\ '_/ _ \\_|");
         System.out.println("|___/\\_,_| .__/\\___|_|    |____|___( ) |___/_| \\___(_)");
         System.out.println("         |_|                       |/");
+        System.out.println("\nWelcome to Super LS, Bro! Simulator.\n");
+
     }
 }
