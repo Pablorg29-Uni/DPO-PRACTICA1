@@ -141,10 +141,10 @@ public class Menu {
      * Muestra el título del programa en ASCII art.
      */
     private void mostrarTitol() {
-        System.out.println(" ___ _    ___  ___   _ ");
-        System.out.println("/ __|_ _ _ __ ___ _ _ | |  / __| | _ )_ _ ___| |");
-        System.out.println("\\__ \\ || | '_ \\/ -_) '_| | |__\\__ \\_ | _ \\'_/ _ \\_|");
-        System.out.println("|___/\\_,_| .__/\\___|_| |____|___( ) |___/_| \\___(_)");
-        System.out.println("        |_|                  |/");
+        System.out.println(" ___                       _    ___     ___         _ ");
+        System.out.println("/ __|_ _  _ __  ___ _ _   | |  / __|   | _ )_ _ ___| |");
+        System.out.println("\\__\\  || | '_ \\/ -_) '_|  | |__\\__ \\_  | _ \\ '_/ _ \\_|");
+        System.out.println("|___/\\_,_| .__/\\___|_|    |____|___( ) |___/_| \\___(_)");
+        System.out.println("         |_|                       |/");
     }
 }
