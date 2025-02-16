@@ -25,7 +25,7 @@ public class ItemsJsonDAO {
     public void verifyJsonItem() throws PersistenceException {
         try {
             FileReader fileReader = new FileReader(this.path);
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             throw new PersistenceException(e.getMessage());
         }
     }
@@ -35,15 +35,15 @@ public class ItemsJsonDAO {
      *
      * @return Lista de items.
      */
-    public List<Items> getAllItems() {
+    public List<Items> getAllItems() throws PersistenceException {
         try {
             FileReader reader = new FileReader(this.path);
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             Type itemType = new TypeToken<ArrayList<Items>>() {
             }.getType();
             return gson.fromJson(reader, itemType);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new PersistenceException(e.getMessage());
         }
     }
 }

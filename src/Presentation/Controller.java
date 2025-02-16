@@ -15,6 +15,7 @@ import Exceptions.PresentationException;
 
 
 import java.util.ArrayList; // Ensure this import is included
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -47,13 +48,15 @@ public class Controller {
         } catch (BusinessException e) {
             throw new PresentationException(e.getMessage());
         }
-        //for (Character character : characters) {
-        //  System.out.println("\t" + posicion + ") " + character.getName());
-        //posicion++;
-        //}
         view.NombrePJ(characters, posicion);
         System.out.println("\n\t0) Back\n\nChoose an option: ");
-        int opcion = scanner.nextInt();
+        int opcion;
+        try {
+            opcion = scanner.nextInt();
+        } catch (InputMismatchException e) {
+            opcion = characters.size()+1;
+            scanner.nextLine();
+        }
 
         // Validar la selección
         if (opcion == 0) {
@@ -62,31 +65,25 @@ public class Controller {
         }
 
         if (opcion > 0 && opcion <= characters.size()) {
-            Character selectedCharacter = characters.get(opcion - 1);
-
-            // Mostrar información del personaje seleccionado
-
-            //System.out.println("\nID: " + selectedCharacter.getId());
-            //System.out.println("NAME: " + selectedCharacter.getName());
-            //System.out.println("WEIGHT: " + selectedCharacter.getWeight() + " kg");
-            // Obtener los equipos a los que pertenece este personaje
-            //List<Team> teams = teammanager.showTeams();
-            //System.out.println("TEAMS:");
-            ArrayList<Team> teams = teammanager.teamsWithPlayer(selectedCharacter.getId());
-            //for (Team team : teams) {
-            //  System.out.println("\t- " + team.getName());
-            //}
-            view.InfoPJ(selectedCharacter, teams);
+            try {
+                Character selectedCharacter = characters.get(opcion - 1);
+                ArrayList<Team> teams = teammanager.teamsWithPlayer(selectedCharacter.getId());
+                view.InfoPJ(selectedCharacter, teams);
+            } catch (BusinessException e) {
+                throw new PresentationException(e.getMessage());
+            }
 
             // Esperar a que el usuario continúe
             System.out.println("\n<Press any key to continue...>");
             scanner.nextLine(); // Consumir el salto de línea
             scanner.nextLine(); // Esperar la entrada del usuario
+        } else {
+            throw new PresentationException("");
         }
     }
 
 
-    public void crearEquipo() {
+    public void crearEquipo() throws PresentationException {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter the team's name: ");
         String teamName = scanner.nextLine();
@@ -97,34 +94,36 @@ public class Controller {
             String input = scanner.nextLine();
             try {
                 long id = Long.parseLong(input);
-                Character character = charactermanager.getCharacter(id);
-                if (character == null) {
-                    System.out.println("Error: Character with ID " + id + " not found.");
-                    return;
-                }
+                charactermanager.getCharacter(id); //Per veure si dona erorr al obtenir el character
                 ids[i] = id;
-            } catch (NumberFormatException e) {
-                Character character = charactermanager.getCharacter2(input);
-                if (character == null) {
-                    System.out.println("Error: Character with name " + input + " not found.");
-                    return;
+            } catch (NumberFormatException | BusinessException e) {
+                try {
+                    Character character = charactermanager.getCharacter2(input);
+                    ids[i] = character.getId();
+                } catch (BusinessException ex) {
+                    throw new PresentationException(ex.getMessage());
                 }
-                ids[i] = character.getId();
             }
         }
-
-        if (teammanager.createTeam(teamName, ids[0], ids[1], ids[2], ids[3])) {
+        try {
+            teammanager.createTeam(teamName, ids[0], ids[1], ids[2], ids[3]);
             System.out.println("\nTeam " + teamName + " has been successfully created!");
-        } else {
-            System.out.println("\nError: Failed to save the team. Please try again.");
+        } catch (BusinessException e) {
+            throw new PresentationException(e.getMessage());
         }
+
     }
 
-    public void mostrarEquipos() {
+    public void mostrarEquipos() throws PresentationException {
         Scanner scanner = new Scanner(System.in);
 
         // Obtener la lista de equipos
-        List<Team> teams = teammanager.showTeams();
+        List<Team> teams = null;
+        try {
+            teams = teammanager.showTeams();
+        } catch (BusinessException e) {
+            throw new PresentationException(e.getMessage());
+        }
 
         if (teams.isEmpty()) {
             System.out.println("\nNo teams available.");
@@ -133,16 +132,18 @@ public class Controller {
 
         // Mostrar la lista de equipos
         int posicion = 1;
-        //System.out.println("\nAvailable Teams:");
-        //for (Team team : teams) {
-        //   System.out.println("\t" + posicion + ") " + team.getName());
-        //    posicion++;
-        //}
         view.equipos(teams, posicion);
         System.out.println("\n\t0) Back\n\nChoose an option: ");
 
         // Leer opción seleccionada
-        int opcion = scanner.nextInt();
+        int opcion;
+        try {
+            opcion = scanner.nextInt();
+        } catch (InputMismatchException e) {
+            opcion = teams.size() + 1;
+            scanner.nextLine();
+        }
+
 
         // Validar la selección
         if (opcion == 0) {
@@ -156,43 +157,19 @@ public class Controller {
             // Mostrar detalles del equipo
             System.out.println("\nTeam name: " + selectedTeam.getName() + "\n");
 
-            // Mostrar miembros del equipo
-            ArrayList<Member> members = teammanager.getTeam(selectedTeam.getName()).getMembers();
-            //ArrayList<Member> members = selectedTeam.getMembers();
-            for (int i = 0; i < members.size(); i++) {
-                Character character = charactermanager.getCharacter(members.get(i).getId());
-
-                //if (character != null) {
-                // Establecer el rol (por defecto "Balanced")
-                //  String role = members.get(i).getRole() != null ? members.get(i).getRole() : "Balanced";
-
-                // Alinear la salida con el nombre y el rol
-                //System.out.printf("Character #%d: %-30s (%s)%n", (i + 1), character.getName(), role);
-                //} else {
-                //   System.out.println("Character #" + (i + 1) + ": Unknown Character (ID: " + members.get(i).getCharacter().getId() + ")");
-                //}
-                view.equipo(members, character, i);
+            try {
+                // Mostrar miembros del equipo
+                ArrayList<Member> members = teammanager.getTeam(selectedTeam.getName()).getMembers();
+                for (int i = 0; i < members.size(); i++) {
+                    Character character = charactermanager.getCharacter(members.get(i).getId());
+                    view.equipo(members, character, i);
+                }
+                // Mostrar estadísticas del equipo
+                Stats teamStats = statsmanager.getStat(selectedTeam.getName());
+                view.statsequipo(teamStats);
+            } catch (BusinessException e) {
+                throw new PresentationException(e.getMessage());
             }
-
-            // Mostrar estadísticas del equipo
-            Stats teamStats = statsmanager.getStat(selectedTeam.getName());
-            //if (teamStats != null) {
-            //System.out.println("\nTeam Statistics:");
-            //System.out.println("\nCombats played: " + teamStats.getGames_played());
-            //System.out.println("Combats won: " + teamStats.getGames_won());
-
-            // Calcular y mostrar la tasa de victorias
-            //double winRate = teamStats.getGames_played() > 0
-            //      ? ((double) teamStats.getGames_won() / teamStats.getGames_played()) * 100
-            //     : 0.0;
-            //System.out.printf("Win rate: %.0f%%%n", winRate);
-
-            //System.out.println("KOs done: " + teamStats.getKO_done());
-            //System.out.println("KOs received: " + teamStats.getKO_received());
-            //} else {
-            //  System.out.println("\nNo statistics available for this team.");
-            //}
-            view.statsequipo(teamStats);
             // Esperar que el usuario presione una tecla para continuar
             System.out.println("\n<Press any key to continue...>");
             scanner.nextLine(); // Consumir el salto de línea pendiente
@@ -202,34 +179,40 @@ public class Controller {
         }
     }
 
-    public void eliminarEquipo() {
+    public void eliminarEquipo() throws PresentationException {
         Scanner scanner = new Scanner(System.in);
         System.out.print("\nEnter the name of the team to remove: ");
         String teamName = scanner.nextLine();
 
-        if (teammanager.getTeam(teamName) == null) {
-            System.out.println("Error: Team not found.");
-            return;
+        try {
+            teammanager.getTeam(teamName);
+        } catch (BusinessException e) {
+            throw new PresentationException(e.getMessage());
         }
 
         System.out.print("Are you sure you want to remove \"" + teamName + "\"? (Yes/No): ");
         String confirmation = scanner.nextLine();
         if (confirmation.equalsIgnoreCase("yes")) {
-            if (teammanager.eliminateTeam(teamName)) {
-                System.out.println("\nTeam \"" + teamName + "\" has been removed.");
-            } else {
-                System.out.println("\nError: Failed to remove the team.");
+            try {
+                teammanager.eliminateTeam(teamName);
+            } catch (BusinessException e) {
+                throw new PresentationException(e.getMessage());
             }
         } else {
             System.out.println("\nTeam deletion cancelled.");
         }
     }
 
-    public void mostrarItems() {
+    public void mostrarItems() throws PresentationException {
         Scanner scanner = new Scanner(System.in);
 
         // Obtener la lista de items
-        List<Items> items = itemmanager.showItems();
+        List<Items> items;
+        try {
+            items = itemmanager.showItems();
+        } catch (BusinessException e) {
+            throw new PresentationException(e.getMessage());
+        }
 
         // Si no hay items disponibles
         if (items.isEmpty()) {
@@ -247,21 +230,18 @@ public class Controller {
         System.out.println("\n\t0) Back\n\nChoose an option: ");
 
         // Leer la opción seleccionada
-        int opcion = scanner.nextInt();
-
+        int opcion;
+        try {
+            opcion = scanner.nextInt();
+        } catch (InputMismatchException e) {
+            opcion = items.size() + 1;
+            scanner.nextLine();
+        }
         // Validar la selección
         while (opcion != 0) {
             if (opcion > 0 && opcion <= items.size()) {
                 // Obtener el item seleccionado
                 Items selectedItem = items.get(opcion - 1);
-
-                // Mostrar detalles del item
-                //System.out.println("");
-                //System.out.println("\tID: " + selectedItem.getId());
-                //System.out.println("\tNAME: " + selectedItem.getName());
-                //System.out.println("\tCLASS: " + selectedItem.getClasse());
-                //System.out.println("\tPOWER: " + selectedItem.getPower());
-                //System.out.println("\tDURABILITY: " + selectedItem.getDurability());
                 view.itemdetalle(selectedItem);
                 // Esperar que el usuario presione una tecla para continuar
                 System.out.println("\n<Press any key to continue...>");
@@ -279,64 +259,81 @@ public class Controller {
                 posicion++;
             }
             System.out.println("\n\t0) Back\n\nChoose an option: ");
-            opcion = scanner.nextInt();  // Leer la opción seleccionada
+            try {
+                opcion = scanner.nextInt();
+            } catch (InputMismatchException e) {
+                opcion = items.size() + 1;
+                scanner.nextLine();
+            }
         }
 
         // Regresar al menú anterior si la opción es 0
         System.out.println("Returning to the previous menu...");
     }
 
-    public void simulateCombat() {
+    public void simulateCombat() throws PresentationException {
         Scanner scanner = new Scanner(System.in);
         System.out.println("\nStarting simulator...\nLooking for available teams...\n");
 
         // Obtener lista de equipos
-        List<Team> teams = teammanager.showTeams();
+        List<Team> teams;
         int posicion = 1;
+        try {
+            teams = teammanager.showTeams();
+        } catch (BusinessException e) {
+            throw new PresentationException(e.getMessage());
+        }
 
         // Mostrar equipos disponibles
         view.equipos(teams, posicion);
-
+        int opcion;
         // Seleccionar el primer equipo
         System.out.println("\nChoose team #1: ");
-        int opcion1 = scanner.nextInt();
-        Team selectedTeam1 = teams.get(opcion1 - 1);
+        Team selectedTeam1;
+        while (true) {
+            try {
+                opcion = scanner.nextInt();
+            } catch (InputMismatchException e) {
+                opcion = teams.size() + 1;
+                scanner.nextLine();
+            }
+            if (opcion > 0 && opcion <= teams.size()) {
+                selectedTeam1 = teams.get(opcion - 1);
+                break;
+            } else {
+                System.out.println("\nInvalid option. Please choose again.");
+            }
+        }
 
         // Seleccionar el segundo equipo
         System.out.println("\nChoose team #2: ");
-        int opcion2 = scanner.nextInt();
-        Team selectedTeam2 = teams.get(opcion2 - 1);
+        Team selectedTeam2;
+        while (true) {
+            try {
+                opcion = scanner.nextInt();
+            } catch (InputMismatchException e) {
+                opcion = teams.size() + 1;
+                scanner.nextLine();
+            }
+
+            if (opcion > 0 && opcion <= teams.size()) {
+                selectedTeam2 = teams.get(opcion - 1);
+                break;
+            } else {
+                System.out.println("\nInvalid option. Please choose again.");
+            }
+        }
         System.out.println("\nInitializing teams...\n");
 
-        // Mostrar los detalles de los equipos seleccionados
-        System.out.println("Team #1 – " + selectedTeam1.getName());
-        for (Member member : selectedTeam1.getMembers()) {
-            Character character = charactermanager.getCharacter(member.getId());
-            member.setCharacter(character);  // Asignar personaje al miembro
+        try {
+            // Mostrar los detalles de los equipos seleccionados
+            System.out.println("Team #1 – " + selectedTeam1.getName());
+            mostrarTeamMembers(selectedTeam1);
 
-            // Asignar arma y armadura aleatoria
-            member.setArma(itemmanager.obtenirArmaRandom());
-            member.setArmadura(itemmanager.obtenirArmaduraRandom());
-
-            // Mostrar los detalles del miembro con su arma y armadura
-            System.out.println("- " + member.getCharacter().getName());
-            System.out.println("\tWeapon: " + (member.getArma() != null ? member.getArma().getName() : "None"));
-            System.out.println("\tArmor: " + (member.getArmadura() != null ? member.getArmadura().getName() : "None"));
-        }
-
-        System.out.println("\nTeam #2 – " + selectedTeam2.getName());
-        for (Member member : selectedTeam2.getMembers()) {
-            Character character = charactermanager.getCharacter(member.getId());
-            member.setCharacter(character);  // Asignar personaje al miembro
-
-            // Asignar arma y armadura aleatoria
-            member.setArma(itemmanager.obtenirArmaRandom());
-            member.setArmadura(itemmanager.obtenirArmaduraRandom());
-
-            // Mostrar los detalles del miembro con su arma y armadura
-            System.out.println("- " + member.getCharacter().getName());
-            System.out.println("\tWeapon: " + (member.getArma() != null ? member.getArma().getName() : "None"));
-            System.out.println("\tArmor: " + (member.getArmadura() != null ? member.getArmadura().getName() : "None"));
+            System.out.println("\nTeam #2 – " + selectedTeam2.getName());
+            mostrarTeamMembers(selectedTeam2);
+        } catch (BusinessException e) {
+            throw new PresentationException(e.getMessage());
         }
 
         // Mensaje final indicando que los equipos están listos
@@ -345,9 +342,16 @@ public class Controller {
         scanner.nextLine(); // Esperar entrada del usuario
 
         // Inicializar combate con los equipos seleccionados
-        Team[] combatTeams = combatManager.initCombat(selectedTeam1, selectedTeam2);
-        Team team1 = combatTeams[0];
-        Team team2 = combatTeams[1];
+        Team team1;
+        Team team2;
+
+        try {
+            Team[] combatTeams = combatManager.initCombat(selectedTeam1, selectedTeam2);
+            team1 = combatTeams[0];
+            team2 = combatTeams[1];
+        } catch (BusinessException e) {
+            throw new PresentationException("Error initializing the combat teams!");
+        }
 
         // Iniciar las rondas de combate
         int round = 1;
@@ -363,7 +367,11 @@ public class Controller {
             System.out.println();
 
             // Realizar ataques y mostrar la información del ataque
-            combatManager.executarCombat();  // Ejecuta los ataques de ambos equipos
+            try {
+                combatManager.executarCombat();  // Ejecuta los ataques de ambos equipos
+            } catch (BusinessException e) {
+                throw new PresentationException(e.getMessage());
+            }
 
             // Imprimir los resultados de cada ataque
             roundStats(team1);
@@ -402,13 +410,33 @@ public class Controller {
         printFinalInfo(team1);
         System.out.println();
         printFinalInfo(team2);
-        actualitzarStats(team1, team2, result);
+        try {
+            actualitzarStats(team1, team2, result);
+        } catch (PresentationException e) {
+            System.out.println("The stats can't be updated!");
+        }
         System.out.println("\n<Press any key to continue...>");
         scanner.nextLine();
         System.out.println();
     }
 
-    private void actualitzarStats(Team team1, Team team2, int result) {
+    private void mostrarTeamMembers(Team team) throws BusinessException {
+        for (Member member : team.getMembers()) {
+            Character character = charactermanager.getCharacter(member.getId());
+            member.setCharacter(character);  // Asignar personaje al miembro
+
+            // Asignar arma y armadura aleatoria
+            member.setArma(itemmanager.obtenirArmaRandom());
+            member.setArmadura(itemmanager.obtenirArmaduraRandom());
+
+            // Mostrar los detalles del miembro con su arma y armadura
+            System.out.println("- " + member.getCharacter().getName());
+            System.out.println("\tWeapon: " + (member.getArma() != null ? member.getArma().getName() : "None"));
+            System.out.println("\tArmor: " + (member.getArmadura() != null ? member.getArmadura().getName() : "None"));
+        }
+    }
+
+    private void actualitzarStats(Team team1, Team team2, int result) throws PresentationException {
 
         int ko1 = 0;
         int ko2 = 0;
@@ -423,13 +451,16 @@ public class Controller {
                 ko2++;
             }
         }
-
-        if (result == 1) {
-            statsmanager.actualitzarFinalJoc(team1, team2, 1, 0, ko1, ko2);
-        } else if (result == 2) {
-            statsmanager.actualitzarFinalJoc(team1, team2, 0, 1, ko1, ko2);
-        } else if (result == 3) {
-            statsmanager.actualitzarFinalJoc(team1, team2, 0, 0, ko1, ko2);
+        try {
+            if (result == 1) {
+                statsmanager.actualitzarFinalJoc(team1, team2, 1, 0, ko1, ko2);
+            } else if (result == 2) {
+                statsmanager.actualitzarFinalJoc(team1, team2, 0, 1, ko1, ko2);
+            } else if (result == 3) {
+                statsmanager.actualitzarFinalJoc(team1, team2, 0, 0, ko1, ko2);
+            }
+        } catch (BusinessException e) {
+            throw new PresentationException(e.getMessage());
         }
 
     }
@@ -480,10 +511,15 @@ public class Controller {
     }
 
 
-    private void printTeamInfo(Team team) {
+    private void printTeamInfo(Team team) throws PresentationException {
         ArrayList<String> teamInfo = new ArrayList<>();
         for (Member member : team.getMembers()) {
-            Character character = charactermanager.getCharacter(member.getId());
+            Character character;
+            try {
+                character = charactermanager.getCharacter(member.getId());
+            } catch (BusinessException e) {
+                throw new PresentationException(e.getMessage());
+            }
             Items weapon = member.getArma() != null ? member.getArma() : new Items("None");
             Items armor = member.getArmadura() != null ? member.getArmadura() : new Items("None");
             if (member.isKO()) {
@@ -496,10 +532,15 @@ public class Controller {
         view.mostrarTeam(teamInfo);
     }
 
-    private void printFinalInfo(Team team) {
+    private void printFinalInfo(Team team) throws PresentationException {
         ArrayList<String> finalInfo = new ArrayList<>();
         for (Member member : team.getMembers()) {
-            Character character = charactermanager.getCharacter(member.getId());
+            Character character;
+            try {
+                character = charactermanager.getCharacter(member.getId());
+            } catch (BusinessException e) {
+                throw new PresentationException(e.getMessage());
+            }
             if (member.isKO()) {
                 finalInfo.add("\t- " + character.getName() + " (KO)");
             } else {

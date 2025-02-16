@@ -22,17 +22,10 @@ public class TeamJsonDAO {
      * @throws PersistenceException si ocurre un error al crear el archivo.
      */
     public void verifyJsonTeams() throws PersistenceException {
-        File file = new File(this.path);
-        if (!file.exists()) {
-            try {
-                file.getParentFile().mkdirs();
-                file.createNewFile();
-                try (FileWriter writer = new FileWriter(this.path)) {
-                    writer.write("[]");
-                }
-            } catch (IOException e) {
-                throw new PersistenceException(e.getMessage());
-            }
+        try {
+            FileReader fileReader = new FileReader(this.path);
+        } catch (Exception e) {
+            throw new PersistenceException(e.getMessage());
         }
     }
 
@@ -41,13 +34,14 @@ public class TeamJsonDAO {
      *
      * @return Lista de equipos.
      */
-    public List<Team> getAllTeams() {
+    public List<Team> getAllTeams() throws PersistenceException {
         try (FileReader reader = new FileReader(this.path)) {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            Type teamListType = new TypeToken<ArrayList<Team>>() {}.getType();
+            Type teamListType = new TypeToken<ArrayList<Team>>() {
+            }.getType();
             return gson.fromJson(reader, teamListType);
-        } catch (IOException e) {
-            throw new RuntimeException("Error reading teams: " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new PersistenceException("Error reading teams: " + e.getMessage());
         }
     }
 
@@ -57,12 +51,16 @@ public class TeamJsonDAO {
      * @param name Nombre del equipo a buscar.
      * @return El equipo encontrado o null si no existe.
      */
-    public Team getTeam(String name) {
-        return getAllTeams().stream()
-                .filter(team -> team.getName().equalsIgnoreCase(name))
-                .findFirst()
-                .orElse(null);
+    public Team getTeam(String name) throws PersistenceException {
+        List<Team> teams = getAllTeams();
+        for (Team team : teams) {
+            if (team.getName().equalsIgnoreCase(name)) {
+                return team;
+            }
+        }
+        throw new PersistenceException("No team found for name " + name);
     }
+
 
     /**
      * Guarda un equipo en el archivo JSON.
@@ -70,14 +68,13 @@ public class TeamJsonDAO {
      * @param team Equipo a guardar.
      * @return true si se guardó correctamente, false en caso contrario.
      */
-    public boolean saveTeam(Team team) {
+    public void saveTeam(Team team) throws PersistenceException {
         try {
             List<Team> teams = getAllTeams();
             teams.add(team);
             writeTeamsToFile(teams);
-            return true;
         } catch (Exception e) {
-            return false;
+            throw new PersistenceException(e.getMessage());
         }
     }
 
@@ -87,15 +84,14 @@ public class TeamJsonDAO {
      * @param name Nombre del equipo a eliminar.
      * @return true si se eliminó correctamente, false en caso contrario.
      */
-    public boolean eliminateTeam(String name) {
+    public boolean eliminateTeam(String name) throws PersistenceException {
         try {
             List<Team> teams = getAllTeams();
             teams.removeIf(team -> team.getName().equals(name));
             writeTeamsToFile(teams);
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+            throw new PersistenceException(e.getMessage());
         }
     }
 
@@ -105,10 +101,12 @@ public class TeamJsonDAO {
      * @param teams Lista de equipos a escribir.
      * @throws IOException si ocurre un error al escribir en el archivo.
      */
-    private void writeTeamsToFile(List<Team> teams) throws IOException {
+    private void writeTeamsToFile(List<Team> teams) throws PersistenceException {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         try (FileWriter writer = new FileWriter(this.path)) {
             gson.toJson(teams, writer);
+        } catch (IOException e) {
+            throw new PersistenceException(e.getMessage());
         }
     }
 }

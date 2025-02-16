@@ -24,7 +24,7 @@ public class CharacterJsonDAO {
     public void verifyJsonCharacter() throws PersistenceException {
         try {
             new FileReader(this.path);
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             throw new PersistenceException(e.getMessage());
         }
     }
@@ -79,6 +79,6 @@ public class CharacterJsonDAO {
                 return character;
             }
         }
-        return null;
+        throw new PersistenceException("Error getting character!");
     }
 }

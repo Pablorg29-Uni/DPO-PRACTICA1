@@ -30,21 +30,19 @@ public class    CharacterManager {
         }
     }
 
-    public Character getCharacter(long id) {
+    public Character getCharacter(long id) throws BusinessException {
         try {
             return this.characterJsonDAO.getCharacterById(id);
         } catch (PersistenceException e) {
-            System.out.println("Error getting character");
-            return null;
+            throw new BusinessException(e.getMessage());
         }
     }
 
-    public Character getCharacter2(String name) {
+    public Character getCharacter2(String name) throws BusinessException {
         try {
             return this.characterJsonDAO.getCharacterByName(name);
         } catch (PersistenceException e) {
-            System.out.println("Error getting character");
-            return null;
+            throw new BusinessException(e.getMessage());
         }
     }
 

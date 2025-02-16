@@ -16,25 +16,34 @@ public class ItemsManager {
         this.itemsJsonDAO = new ItemsJsonDAO();
     }
 
-    public Items obtenirArmaRandom() {
+    public Items obtenirArmaRandom() throws BusinessException {
         do {
             Random rand = new Random();
-            List<Items> allItems = itemsJsonDAO.getAllItems();
+            List<Items> allItems;
+            try {
+                allItems = itemsJsonDAO.getAllItems();
+            } catch (PersistenceException e) {
+                throw new BusinessException(e.getMessage());
+            }
             allItems.removeIf(i -> i.getDurability() < 1 || i.getClasse().equals("Weapon"));
             if (allItems.isEmpty()) {
                 return null;
             } else {
                 int ind = rand.nextInt(allItems.size());
-                //itemsJsonDAO.setDurability(allItems.get(ind).getId(), allItems.get(ind).getDurability() - 1);
                 return allItems.get(ind);
             }
         } while (true);
     }
 
-    public Items obtenirArmaduraRandom() {
+    public Items obtenirArmaduraRandom() throws BusinessException {
         do {
             Random rand = new Random();
-            List<Items> allItems = itemsJsonDAO.getAllItems();
+            List<Items> allItems;
+            try {
+                allItems = itemsJsonDAO.getAllItems();
+            } catch (PersistenceException e) {
+                throw new BusinessException(e.getMessage());
+            }
             allItems.removeIf(i -> i.getDurability() < 1 || i.getClasse().equals("Armor"));
             if (allItems.isEmpty()) {
                 return null;
@@ -46,8 +55,12 @@ public class ItemsManager {
         } while (true);
     }
 
-    public ArrayList<Items> showItems() {
-        return (ArrayList<Items>) itemsJsonDAO.getAllItems();
+    public ArrayList<Items> showItems() throws BusinessException {
+        try {
+            return (ArrayList<Items>) itemsJsonDAO.getAllItems();
+        } catch (PersistenceException e) {
+            throw new BusinessException(e.getMessage());
+        }
     }
 
     public void verify() throws BusinessException {

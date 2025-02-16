@@ -20,26 +20,34 @@ public class CombatManager {
         this.characterManager = new CharacterManager();
     }
 
-    public Team[] initCombat(Team t1, Team t2) {
+    public Team[] initCombat(Team t1, Team t2) throws BusinessException {
         this.team1 = t1;
         this.team2 = t2;
         for (Member member : t1.getMembers()) {
-            member.setArma(itemsManager.obtenirArmaRandom());
-            member.setArmadura(itemsManager.obtenirArmaduraRandom());
-            member.setMalRebut(0);
-            member.setKO(false);
+            try {
+                member.setArma(itemsManager.obtenirArmaRandom());
+                member.setArmadura(itemsManager.obtenirArmaduraRandom());
+                member.setMalRebut(0);
+                member.setKO(false);
+            } catch (BusinessException e) {
+                throw new BusinessException(e.getMessage());
+            }
         }
         for (Member member : t2.getMembers()) {
-            member.setArma(itemsManager.obtenirArmaRandom());
-            member.setArmadura(itemsManager.obtenirArmaduraRandom());
-            member.setMalRebut(0);
-            member.setKO(false);
+            try {
+                member.setArma(itemsManager.obtenirArmaRandom());
+                member.setArmadura(itemsManager.obtenirArmaduraRandom());
+                member.setMalRebut(0);
+                member.setKO(false);
+            } catch (BusinessException e) {
+                throw new BusinessException(e.getMessage());
+            }
         }
         try {
             omplirTeams(t1);
             omplirTeams(t2);
         } catch (BusinessException e) {
-            System.out.println("The teams can't be filled");
+            throw new BusinessException(e.getMessage());
         }
         return new Team[]{team1, team2};
     }
@@ -119,7 +127,7 @@ public class CombatManager {
         }
     }
 
-    public void executarCombat() {
+    public void executarCombat() throws BusinessException {
         ArrayList<Boolean> team2isKo = new ArrayList<>();
         for (Member member : team2.getMembers()) {
             if (!member.isKO()) {
@@ -131,7 +139,11 @@ public class CombatManager {
 
         for (Member member : team1.getMembers()) {
             if (!member.isKO()) {
-                realitzarAtack(member, team2);
+                try {
+                    realitzarAtack(member, team2);
+                } catch (BusinessException e) {
+                    throw new BusinessException(e.getMessage());
+                }
             } else {
                 member.setLastAttack(null);
             }
@@ -139,7 +151,11 @@ public class CombatManager {
         int i = 0;
         for (Member member : team2.getMembers()) {
             if (!team2isKo.get(i)) {
-                realitzarAtack(member, team1);
+                try {
+                    realitzarAtack(member, team1);
+                } catch (BusinessException e) {
+                    throw new BusinessException(e.getMessage());
+                }
             } else {
                 member.setLastAttack(null);
             }
@@ -170,7 +186,7 @@ public class CombatManager {
             finalDamage = 0;
         }
         if (damageReduction != 0) {
-            teamDefensor.getMembers().get(r).getArmadura().setDurability(teamDefensor.getMembers().get(r).getArmadura().getDurability()-1);
+            teamDefensor.getMembers().get(r).getArmadura().setDurability(teamDefensor.getMembers().get(r).getArmadura().getDurability() - 1);
             if (teamDefensor.getMembers().get(r).getArmadura().getDurability() == 0) {
                 armadura = true;
             }
@@ -201,11 +217,15 @@ public class CombatManager {
         member.setDamageReduction((float) member.getCharacter().getWeight() / 400);
     }
 
-    public void realitzarAtack(Member member, Team teamDefensor) {
+    public void realitzarAtack(Member member, Team teamDefensor) throws BusinessException {
         if (member.getStrategy().equals("balanced")) {
             if (member.getArma() == null) {
                 member.setLastAttack(null);
-                member.setArma(itemsManager.obtenirArmaRandom()); //Demanar arma
+                try {
+                    member.setArma(itemsManager.obtenirArmaRandom()); //Demanar arma
+                } catch (BusinessException e) {
+                    throw new BusinessException(e.getMessage());
+                }
             } else {
                 if (member.getArmadura() != null) {
                     if (member.getMalRebut() >= 0.5 && member.getMalRebut() <= 1.0) {

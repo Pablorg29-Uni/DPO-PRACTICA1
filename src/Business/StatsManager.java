@@ -5,7 +5,6 @@ import Business.Entities.Team;
 import Exceptions.BusinessException;
 import Exceptions.PersistenceException;
 import Persistence.StatsJsonDAO;
-import java.util.ArrayList;
 import java.util.List;
 
 public class StatsManager {
@@ -15,16 +14,20 @@ public class StatsManager {
         this.statsJsonDAO = new StatsJsonDAO();
     }
 
-    public ArrayList<Stats> getStats() {
-        return (ArrayList<Stats>) statsJsonDAO.getAllStats();
+   public void deleteStat (String name) throws BusinessException {
+        try {
+            statsJsonDAO.deleteOneStats(name);
+        } catch (PersistenceException e) {
+            throw new BusinessException(e.getMessage());
+        }
     }
 
-    public void deleteStat (String name) {
-        statsJsonDAO.deleteOneStats(name);
-    }
-
-    public Stats getStat(String name) {
-        return statsJsonDAO.getStat(name);
+    public Stats getStat(String name) throws BusinessException {
+        try {
+            return statsJsonDAO.getStat(name);
+        } catch (PersistenceException e) {
+            throw new BusinessException(e.getMessage());
+        }
     }
 
     public void verify() throws BusinessException {
@@ -35,16 +38,21 @@ public class StatsManager {
         }
     }
 
-    public void createStat(String name) {
+    public void createStat(String name) throws BusinessException{
         try {
             statsJsonDAO.createEmptyStats(name);
         } catch (PersistenceException e) {
-            throw new RuntimeException(e);
+            throw new BusinessException(e.getMessage());
         }
     }
 
-    public void actualitzarFinalJoc(Team team1, Team team2, int victoria1, int victoria2, int ko1, int ko2) {
-        List<Stats> stats = statsJsonDAO.getAllStats();
+    public void actualitzarFinalJoc(Team team1, Team team2, int victoria1, int victoria2, int ko1, int ko2) throws BusinessException {
+        List<Stats> stats;
+        try {
+            stats = statsJsonDAO.getAllStats();
+        } catch (PersistenceException e) {
+            throw new BusinessException(e.getMessage());
+        }
         for (Stats stat : stats) {
             if (stat.getName().equals(team1.getName())) {
                 stat.setGames_played(stat.getGames_played() + 1);
@@ -62,7 +70,7 @@ public class StatsManager {
         try {
             statsJsonDAO.writeStatsToFile(stats);
         } catch (PersistenceException e) {
-            System.out.println(e.getMessage());
+            throw new BusinessException(e.getMessage());
         }
     }
 }

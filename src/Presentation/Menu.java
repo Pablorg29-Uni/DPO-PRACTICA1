@@ -57,7 +57,7 @@ public class Menu {
                     try {
                         controller.mostrarNombresDePersonajes();
                     } catch (PresentationException e) {
-                        System.out.println("Error: The characters can't be accessed");
+                        System.out.println("\nError: The characters can't be accessed");
                     }
                     break;
                 case 2:
@@ -67,7 +67,11 @@ public class Menu {
                     controller.mostrarItems();
                     break;
                 case 4:
-                    controller.simulateCombat();
+                    try {
+                        controller.simulateCombat();
+                    } catch (PresentationException e) {
+                        System.out.println(e.getMessage());
+                    }
                     break;
                 case 5:
                     System.out.println("\nWe hope to see you again!");
@@ -94,14 +98,42 @@ public class Menu {
             System.out.println("\t3) Delete a Team");
             System.out.println("\n\t4) Back");
             System.out.print("\nChoose an option: ");
-            opcion = scanner.nextInt();
-            switch (opcion) {
-                case 1 -> controller.crearEquipo();
-                case 2 -> controller.mostrarEquipos();
-                case 3 -> controller.eliminarEquipo();
-                case 4 -> System.out.println("Returning to main menu...");
-                default -> System.out.println("Invalid option. Please try again.");
+            try {
+                opcion = scanner.nextInt();
+            } catch (InputMismatchException e) {
+                opcion = 5;
+                scanner.nextLine();
             }
+            switch (opcion) {
+                case 1:
+                    try {
+                        controller.crearEquipo();
+                    } catch (PresentationException e) {
+                        System.out.println("\nError: Failed to save the team. Please try again.");
+                    }
+                    break;
+                case 2:
+                    try {
+                        controller.mostrarEquipos();
+                    } catch (PresentationException e) {
+                        System.out.println("\nError: The team can't be viewed");
+                    }
+                    break;
+                case 3:
+                    try {
+                        controller.eliminarEquipo();
+                    } catch (PresentationException e) {
+                        System.out.println("\nError: Failed to delete the team");
+                    }
+                    break;
+                case 4:
+                    System.out.println("Returning to main menu...");
+                    break;
+                default:
+                    System.out.println("Invalid option. Please try again.");
+                    break;
+            }
+
         } while (opcion != 4);
     }
 

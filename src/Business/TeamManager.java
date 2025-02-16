@@ -26,32 +26,53 @@ public class TeamManager {
     }
 
     // Elimina un equipo por nombre
-    public boolean eliminateTeam(String name) {
-        StatsManager statsManager = new StatsManager();
-        statsManager.deleteStat(name);
-        return teamJsonDAO.eliminateTeam(name);
+    public boolean eliminateTeam(String name) throws BusinessException {
+        try {
+            StatsManager statsManager = new StatsManager();
+            statsManager.deleteStat(name);
+            return teamJsonDAO.eliminateTeam(name);
+        } catch (Exception e) {
+            throw new BusinessException(e.getMessage());
+        }
     }
 
     // Crea un nuevo equipo
-    public boolean createTeam(String name, long id1, long id2, long id3, long id4) {
-        Team team = new Team(name, id1, id2, id3, id4);
-        StatsManager statsManager = new StatsManager();
-        statsManager.createStat(name);
-        return teamJsonDAO.saveTeam(team);
+    public void createTeam(String name, long id1, long id2, long id3, long id4) throws BusinessException {
+        try {
+            Team team = new Team(name, id1, id2, id3, id4);
+            StatsManager statsManager = new StatsManager();
+            statsManager.createStat(name);
+            teamJsonDAO.saveTeam(team);
+        } catch (Exception e) {
+            throw new BusinessException(e.getMessage());
+        }
     }
 
     // Muestra todos los equipos
-    public List<Team> showTeams() {
-        return teamJsonDAO.getAllTeams();
+    public List<Team> showTeams() throws BusinessException {
+        try {
+            return teamJsonDAO.getAllTeams();
+        } catch (PersistenceException e) {
+            throw new BusinessException(e.getMessage());
+        }
     }
 
-    public Team getTeam(String name) {
-        return teamJsonDAO.getTeam(name);
+    public Team getTeam(String name) throws BusinessException {
+        try {
+            return teamJsonDAO.getTeam(name);
+        } catch (PersistenceException e) {
+            throw new BusinessException(e.getMessage());
+        }
     }
 
-    public ArrayList<Team> teamsWithPlayer(long id) {
+    public ArrayList<Team> teamsWithPlayer(long id) throws BusinessException {
         ArrayList<Team> matchingTeams = new ArrayList<>();
-        List<Team> teams = teamJsonDAO.getAllTeams();
+        List<Team> teams;
+        try {
+            teams = teamJsonDAO.getAllTeams();
+        } catch (PersistenceException e) {
+            throw new BusinessException(e.getMessage());
+        }
         for (Team team : teams) {
             for (Member member : team.getMembers()) {
                 if (member.getId() == id) {

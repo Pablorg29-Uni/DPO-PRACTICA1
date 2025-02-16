@@ -27,7 +27,7 @@ public class StatsJsonDAO {
     public void verifyJsonStats() throws PersistenceException {
         try {
             FileReader fileReader = new FileReader(this.path);
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             throw new PersistenceException(e.getMessage());
         }
     }
@@ -37,7 +37,7 @@ public class StatsJsonDAO {
      *
      * @param name Nombre del equipo cuyas estadísticas deben eliminarse.
      */
-    public void deleteOneStats(String name) {
+    public void deleteOneStats(String name) throws PersistenceException {
         try {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             List<Stats> stats = getAllStats();
@@ -45,8 +45,8 @@ public class StatsJsonDAO {
             try (FileWriter writer = new FileWriter(this.path)) {
                 gson.toJson(stats, writer);
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new PersistenceException(e.getMessage());
         }
     }
 
@@ -55,14 +55,14 @@ public class StatsJsonDAO {
      *
      * @return Lista de todas las estadísticas disponibles.
      */
-    public List<Stats> getAllStats() {
+    public List<Stats> getAllStats() throws PersistenceException {
         try {
             FileReader reader = new FileReader(this.path);
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             Type statsType = new TypeToken<ArrayList<Stats>>() {}.getType();
             return gson.fromJson(reader, statsType);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new PersistenceException(e.getMessage());
         }
     }
 
@@ -91,14 +91,14 @@ public class StatsJsonDAO {
      * @return Objeto Stats correspondiente al equipo.
      * @throws RuntimeException si no se encuentran estadísticas para el equipo dado.
      */
-    public Stats getStat(String name) {
+    public Stats getStat(String name) throws PersistenceException {
         List<Stats> stats = getAllStats();
         for (Stats stat : stats) {
             if (stat.getName().equals(name)) {
                 return stat;
             }
         }
-        throw new RuntimeException("No stats found for name " + name);
+        throw new PersistenceException("No stats found for name " + name);
     }
 
     public void writeStatsToFile(List<Stats> stats) throws PersistenceException {
