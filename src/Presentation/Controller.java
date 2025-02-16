@@ -14,7 +14,7 @@ import Exceptions.BusinessException;
 import Exceptions.PresentationException;
 
 
-import java.util.ArrayList; // Ensure this import is included
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
@@ -27,7 +27,9 @@ public class Controller {
     private final ItemsManager itemmanager;
     private final CharacterManager charactermanager;
 
-
+    /**
+     * Constructor que inicializa los gestores de negocio y la vista.
+     */
     public Controller() {
         this.combatManager = new CombatManager();
         this.statsmanager = new StatsManager();
@@ -37,7 +39,12 @@ public class Controller {
         this.view = new View();
     }
 
-
+    /**
+     * Muestra los nombres de los personajes disponibles y permite seleccionar uno
+     * para ver su información y los equipos en los que participa.
+     *
+     * @throws PresentationException si ocurre un error al obtener los personajes.
+     */
     public void mostrarNombresDePersonajes() throws PresentationException {
         Scanner scanner = new Scanner(System.in);
         int posicion = 1;
@@ -54,14 +61,13 @@ public class Controller {
         try {
             opcion = scanner.nextInt();
         } catch (InputMismatchException e) {
-            opcion = characters.size()+1;
+            opcion = characters.size() + 1;
             scanner.nextLine();
         }
 
-        // Validar la selección
         if (opcion == 0) {
             System.out.println("Returning to the previous menu...");
-            return; // Regresa al menú anterior
+            return;
         }
 
         if (opcion > 0 && opcion <= characters.size()) {
@@ -73,16 +79,21 @@ public class Controller {
                 throw new PresentationException(e.getMessage());
             }
 
-            // Esperar a que el usuario continúe
+
             System.out.println("\n<Press any key to continue...>");
-            scanner.nextLine(); // Consumir el salto de línea
-            scanner.nextLine(); // Esperar la entrada del usuario
+            scanner.nextLine();
+            scanner.nextLine();
         } else {
             throw new PresentationException("");
         }
     }
 
-
+    /**
+     * Permite crear un equipo solicitando al usuario el nombre y los personajes
+     * que lo conformarán.
+     *
+     * @throws PresentationException si ocurre un error durante la creación del equipo.
+     */
     public void crearEquipo() throws PresentationException {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter the team's name: ");
@@ -94,7 +105,7 @@ public class Controller {
             String input = scanner.nextLine();
             try {
                 long id = Long.parseLong(input);
-                charactermanager.getCharacter(id); //Per veure si dona erorr al obtenir el character
+                charactermanager.getCharacter(id);
                 ids[i] = id;
             } catch (NumberFormatException | BusinessException e) {
                 try {
@@ -113,11 +124,15 @@ public class Controller {
         }
 
     }
-
+    /**
+     * Muestra la lista de equipos disponibles y permite al usuario seleccionar uno
+     * para ver sus detalles, incluyendo sus miembros y estadísticas.
+     *
+     * @throws PresentationException Si ocurre un error al obtener los equipos, miembros o estadísticas.
+     */
     public void mostrarEquipos() throws PresentationException {
         Scanner scanner = new Scanner(System.in);
 
-        // Obtener la lista de equipos
         List<Team> teams = null;
         try {
             teams = teammanager.showTeams();
@@ -130,12 +145,10 @@ public class Controller {
             return;
         }
 
-        // Mostrar la lista de equipos
         int posicion = 1;
         view.equipos(teams, posicion);
         System.out.println("\n\t0) Back\n\nChoose an option: ");
 
-        // Leer opción seleccionada
         int opcion;
         try {
             opcion = scanner.nextInt();
@@ -145,7 +158,6 @@ public class Controller {
         }
 
 
-        // Validar la selección
         if (opcion == 0) {
             System.out.println("Returning to the previous menu...");
             return;
@@ -154,31 +166,31 @@ public class Controller {
         if (opcion > 0 && opcion <= teams.size()) {
             Team selectedTeam = teams.get(opcion - 1);
 
-            // Mostrar detalles del equipo
             System.out.println("\nTeam name: " + selectedTeam.getName() + "\n");
 
             try {
-                // Mostrar miembros del equipo
                 ArrayList<Member> members = teammanager.getTeam(selectedTeam.getName()).getMembers();
                 for (int i = 0; i < members.size(); i++) {
                     Character character = charactermanager.getCharacter(members.get(i).getId());
                     view.equipo(members, character, i);
                 }
-                // Mostrar estadísticas del equipo
                 Stats teamStats = statsmanager.getStat(selectedTeam.getName());
                 view.statsequipo(teamStats);
             } catch (BusinessException e) {
                 throw new PresentationException(e.getMessage());
             }
-            // Esperar que el usuario presione una tecla para continuar
             System.out.println("\n<Press any key to continue...>");
-            scanner.nextLine(); // Consumir el salto de línea pendiente
-            scanner.nextLine(); // Esperar entrada del usuario
+            scanner.nextLine();
+            scanner.nextLine();
         } else {
             System.out.println("\nInvalid option. Returning to the previous menu...");
         }
     }
-
+    /**
+     * Permite eliminar un equipo por su nombre. Solicita confirmación antes de proceder con la eliminación.
+     *
+     * @throws PresentationException Si ocurre un error al obtener o eliminar el equipo.
+     */
     public void eliminarEquipo() throws PresentationException {
         Scanner scanner = new Scanner(System.in);
         System.out.print("\nEnter the name of the team to remove: ");
@@ -202,11 +214,15 @@ public class Controller {
             System.out.println("\nTeam deletion cancelled.");
         }
     }
-
+    /**
+     * Muestra la lista de ítems disponibles y permite al usuario seleccionar uno para ver sus detalles.
+     * Si no hay ítems disponibles, informa al usuario.
+     *
+     * @throws PresentationException Si ocurre un error al obtener la lista de ítems.
+     */
     public void mostrarItems() throws PresentationException {
         Scanner scanner = new Scanner(System.in);
 
-        // Obtener la lista de items
         List<Items> items;
         try {
             items = itemmanager.showItems();
@@ -214,13 +230,12 @@ public class Controller {
             throw new PresentationException(e.getMessage());
         }
 
-        // Si no hay items disponibles
         if (items.isEmpty()) {
             System.out.println("\nNo items available.");
             return;
         }
 
-        // Mostrar la lista de items
+
         int posicion = 1;
         System.out.println();
         for (Items item : items) {
@@ -229,7 +244,6 @@ public class Controller {
         }
         System.out.println("\n\t0) Back\n\nChoose an option: ");
 
-        // Leer la opción seleccionada
         int opcion;
         try {
             opcion = scanner.nextInt();
@@ -237,21 +251,18 @@ public class Controller {
             opcion = items.size() + 1;
             scanner.nextLine();
         }
-        // Validar la selección
+
         while (opcion != 0) {
             if (opcion > 0 && opcion <= items.size()) {
-                // Obtener el item seleccionado
                 Items selectedItem = items.get(opcion - 1);
                 view.itemdetalle(selectedItem);
-                // Esperar que el usuario presione una tecla para continuar
                 System.out.println("\n<Press any key to continue...>");
-                scanner.nextLine(); // Consumir el salto de línea pendiente
-                scanner.nextLine(); // Esperar la entrada del usuario
+                scanner.nextLine();
+                scanner.nextLine();
             } else {
                 System.out.println("\nInvalid option. Please choose again.");
             }
 
-            // Mostrar nuevamente la lista de items y permitir la selección
             System.out.println("\nAvailable Items:");
             posicion = 1;
             for (Items item : items) {
@@ -267,15 +278,20 @@ public class Controller {
             }
         }
 
-        // Regresar al menú anterior si la opción es 0
         System.out.println("Returning to the previous menu...");
     }
-
+    /**
+     * Simula un combate entre dos equipos seleccionados por el usuario.
+     * Se presentan los equipos disponibles, se eligen dos equipos, y luego se ejecutan rondas de combate
+     * hasta que haya un ganador o se declare un empate.
+     *
+     * @throws PresentationException Si ocurre un error en la selección de equipos, la inicialización del combate
+     *                               o la actualización de estadísticas.
+     */
     public void simulateCombat() throws PresentationException {
         Scanner scanner = new Scanner(System.in);
         System.out.println("\nStarting simulator...\nLooking for available teams...\n");
 
-        // Obtener lista de equipos
         List<Team> teams;
         int posicion = 1;
         try {
@@ -284,10 +300,9 @@ public class Controller {
             throw new PresentationException(e.getMessage());
         }
 
-        // Mostrar equipos disponibles
         view.equipos(teams, posicion);
         int opcion;
-        // Seleccionar el primer equipo
+
         System.out.println("\nChoose team #1: ");
         Team selectedTeam1;
         while (true) {
@@ -305,7 +320,6 @@ public class Controller {
             }
         }
 
-        // Seleccionar el segundo equipo
         System.out.println("\nChoose team #2: ");
         Team selectedTeam2;
         while (true) {
@@ -326,7 +340,6 @@ public class Controller {
         System.out.println("\nInitializing teams...\n");
 
         try {
-            // Mostrar los detalles de los equipos seleccionados
             System.out.println("Team #1 – " + selectedTeam1.getName());
             mostrarTeamMembers(selectedTeam1);
 
@@ -336,12 +349,11 @@ public class Controller {
             throw new PresentationException(e.getMessage());
         }
 
-        // Mensaje final indicando que los equipos están listos
+
         System.out.println("\nCombat ready!");
         System.out.println("\n<Press any key to continue...>");
-        scanner.nextLine(); // Esperar entrada del usuario
+        scanner.nextLine();
 
-        // Inicializar combate con los equipos seleccionados
         Team team1;
         Team team2;
 
@@ -353,7 +365,7 @@ public class Controller {
             throw new PresentationException("Error initializing the combat teams!");
         }
 
-        // Iniciar las rondas de combate
+
         int round = 1;
         boolean combatFinished = false;
         int result = 0;
@@ -366,14 +378,14 @@ public class Controller {
             printTeamInfo(team2);
             System.out.println();
 
-            // Realizar ataques y mostrar la información del ataque
+
             try {
-                combatManager.executarCombat();  // Ejecuta los ataques de ambos equipos
+                combatManager.executarCombat();
             } catch (BusinessException e) {
                 throw new PresentationException(e.getMessage());
             }
 
-            // Imprimir los resultados de cada ataque
+
             roundStats(team1);
             System.out.println();
             roundStats(team2);
@@ -387,7 +399,7 @@ public class Controller {
             printKo(team1, team2);
             System.out.println();
 
-            // Verificar si el combate ha terminado
+
             result = combatManager.comprovarEstatCombat();
             switch (result) {
                 case 1:
@@ -403,7 +415,7 @@ public class Controller {
                     combatFinished = true;
                     break;
                 default:
-                    round++;  // Incrementa la ronda
+                    round++;
                     break;
             }
         }
@@ -419,23 +431,35 @@ public class Controller {
         scanner.nextLine();
         System.out.println();
     }
-
+    /**
+     * Muestra los miembros de un equipo, asignándoles un personaje, un arma y una armadura aleatoria.
+     *
+     * @param team El equipo cuyos miembros se van a mostrar.
+     * @throws BusinessException Si ocurre un error al obtener los datos de los miembros.
+     */
     private void mostrarTeamMembers(Team team) throws BusinessException {
         for (Member member : team.getMembers()) {
             Character character = charactermanager.getCharacter(member.getId());
-            member.setCharacter(character);  // Asignar personaje al miembro
+            member.setCharacter(character);
 
-            // Asignar arma y armadura aleatoria
+
             member.setArma(itemmanager.obtenirArmaRandom());
             member.setArmadura(itemmanager.obtenirArmaduraRandom());
 
-            // Mostrar los detalles del miembro con su arma y armadura
+
             System.out.println("- " + member.getCharacter().getName());
             System.out.println("\tWeapon: " + (member.getArma() != null ? member.getArma().getName() : "None"));
             System.out.println("\tArmor: " + (member.getArmadura() != null ? member.getArmadura().getName() : "None"));
         }
     }
-
+    /**
+     * Actualiza las estadísticas del combate tras su finalización.
+     *
+     * @param team1  El primer equipo.
+     * @param team2  El segundo equipo.
+     * @param result El resultado del combate (1 = gana team1, 2 = gana team2, 3 = empate).
+     * @throws PresentationException Si ocurre un error al actualizar las estadísticas.
+     */
     private void actualitzarStats(Team team1, Team team2, int result) throws PresentationException {
 
         int ko1 = 0;
@@ -464,7 +488,11 @@ public class Controller {
         }
 
     }
-
+    /**
+     * Muestra el resumen de los ataques realizados por un equipo en la ronda actual.
+     *
+     * @param team El equipo cuyos ataques se van a mostrar.
+     */
     private void roundStats(Team team) {
         for (Member member : team.getMembers()) {
             if (member.getLastAttack() != null) {
@@ -475,11 +503,15 @@ public class Controller {
                 String attackDetails = member.getCharacter().getName() + " ATTACKS " + member.getLastAttack().getLastObjective() +
                         " WITH " + a.getName() + " FOR " + String.format("%.2f", member.getLastAttack().getLastAttack()) + " DAMAGE!";
                 String recievedDetails = "\t" + member.getLastAttack().getLastObjective() + " RECEIVES " + String.format("%.2f", member.getLastAttack().getLastDamage()) + " DAMAGE.";
-                view.printAttackDetails(attackDetails, recievedDetails);  // Imprime los detalles de los ataques
+                view.printAttackDetails(attackDetails, recievedDetails);
             }
         }
     }
-
+    /**
+     * Muestra los objetos rotos (armas y armaduras) de los miembros de un equipo tras la ronda actual.
+     *
+     * @param team El equipo cuyos objetos rotos se van a mostrar.
+     */
     private void printBrokenItems(Team team) {
         ArrayList<String> brokenItems = new ArrayList<>();
         for (Member teamMember : team.getMembers()) {
@@ -494,7 +526,12 @@ public class Controller {
         }
         view.mostrarItems(brokenItems);
     }
-
+    /**
+     * Muestra los miembros que han quedado fuera de combate (KO) en ambos equipos.
+     *
+     * @param team1 El primer equipo.
+     * @param team2 El segundo equipo.
+     */
     private void printKo(Team team1, Team team2) {
         ArrayList<String> mostrarKO = new ArrayList<>();
         for (Member team1Member : team1.getMembers()) {
@@ -510,7 +547,13 @@ public class Controller {
         view.mostrarKO(mostrarKO);
     }
 
-
+    /**
+     * Muestra la información del equipo, incluyendo el estado de cada miembro,
+     * el porcentaje de daño recibido, el arma y la armadura equipada.
+     *
+     * @param team El equipo cuya información se mostrará.
+     * @throws PresentationException Si ocurre un error al obtener los datos de los personajes.
+     */
     private void printTeamInfo(Team team) throws PresentationException {
         ArrayList<String> teamInfo = new ArrayList<>();
         for (Member member : team.getMembers()) {
@@ -531,7 +574,13 @@ public class Controller {
         }
         view.mostrarTeam(teamInfo);
     }
-
+    /**
+     * Muestra la información final del equipo después del combate,
+     * incluyendo el estado de cada miembro y el porcentaje de daño recibido.
+     *
+     * @param team El equipo cuya información final se mostrará.
+     * @throws PresentationException Si ocurre un error al obtener los datos de los personajes.
+     */
     private void printFinalInfo(Team team) throws PresentationException {
         ArrayList<String> finalInfo = new ArrayList<>();
         for (Member member : team.getMembers()) {
@@ -549,7 +598,12 @@ public class Controller {
         }
         view.mostrarFinal(finalInfo);
     }
-
+    /**
+     * Verifica la integridad de los archivos o datos relacionados con personajes,
+     * ítems, estadísticas y equipos, asegurando que todo esté en orden antes del combate.
+     *
+     * @throws PresentationException Si ocurre un error en la verificación de los datos.
+     */
     public void verificarFiles() throws PresentationException {
         try {
             charactermanager.verify();

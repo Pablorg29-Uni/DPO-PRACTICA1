@@ -78,18 +78,38 @@ public class Stats {
         this.name = name;
     }
 
+    /**
+     * Establece el número de combates jugados.
+     *
+     * @param i Número de combates jugados.
+     */
     public void setGames_played(int i) {
         this.games_played = i;
     }
 
+    /**
+     * Establece el número de combates ganados.
+     *
+     * @param i Número de combates ganados.
+     */
     public void setGames_won(int i) {
         this.games_won = i;
     }
 
+    /**
+     * Establece el número de KOs realizados.
+     *
+     * @param i Número de KOs realizados.
+     */
     public void setKO_done(int i) {
         this.KO_done = i;
     }
 
+    /**
+     * Establece el número de KOs recibidos.
+     *
+     * @param i Número de KOs recibidos.
+     */
     public void setKO_received(int i) {
         this.KO_received = i;
     }

@@ -101,6 +101,12 @@ public class StatsJsonDAO {
         throw new PersistenceException("No stats found for name " + name);
     }
 
+    /**
+     * Escribe la lista de estadísticas en un archivo JSON.
+     *
+     * @param stats Lista de objetos Stats que se guardarán en el archivo.
+     * @throws PersistenceException Si ocurre un error al escribir en el archivo.
+     */
     public void writeStatsToFile(List<Stats> stats) throws PersistenceException {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         try (FileWriter writer = new FileWriter(this.path)) {
