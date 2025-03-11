@@ -12,6 +12,8 @@ import Business.StatsManager;
 import Business.CombatManager;
 import Exceptions.BusinessException;
 import Exceptions.PresentationException;
+import Persistence.API.ConnectorAPIHelper;
+import edu.salle.url.api.exception.ApiException;
 
 
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ public class Controller {
     private final StatsManager statsmanager;
     private final ItemsManager itemmanager;
     private final CharacterManager charactermanager;
+    private ConnectorAPIHelper apiHelper;
 
     /**
      * Constructor que inicializa los gestores de negocio y la vista.
@@ -628,5 +631,9 @@ public class Controller {
         } catch (BusinessException e) {
             throw new PresentationException(e.getMessage());
         }
+    }
+
+    public void verificarAPI() throws ApiException {
+        this.apiHelper = new ConnectorAPIHelper();
     }
 }

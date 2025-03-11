@@ -1,4 +1,4 @@
-package Persistence;
+package Persistence.DAO;
 
 import Business.Entities.Character;
 import Exceptions.PersistenceException;

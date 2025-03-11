@@ -3,7 +3,7 @@ package Business;
 import Business.Entities.Character;
 import Exceptions.BusinessException;
 import Exceptions.PersistenceException;
-import Persistence.CharacterJsonDAO;
+import Persistence.DAO.CharacterJsonDAO;
 
 import java.util.List;
 /**

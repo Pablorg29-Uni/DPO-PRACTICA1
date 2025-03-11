@@ -4,7 +4,7 @@ import Business.Entities.Stats;
 import Business.Entities.Team;
 import Exceptions.BusinessException;
 import Exceptions.PersistenceException;
-import Persistence.StatsJsonDAO;
+import Persistence.DAO.StatsJsonDAO;
 import java.util.List;
 /**
  * Gestiona las estadísticas de los equipos y personajes.

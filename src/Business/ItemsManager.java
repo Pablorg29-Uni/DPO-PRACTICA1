@@ -3,7 +3,7 @@ package Business;
 import Business.Entities.Items;
 import Exceptions.BusinessException;
 import Exceptions.PersistenceException;
-import Persistence.ItemsJsonDAO;
+import Persistence.DAO.ItemsJsonDAO;
 
 import java.util.ArrayList;
 import java.util.List;

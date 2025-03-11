@@ -1,4 +1,4 @@
-package Persistence;
+package Persistence.DAO;
 
 import Exceptions.PersistenceException;
 import com.google.gson.Gson;
@@ -7,7 +7,6 @@ import com.google.gson.reflect.TypeToken;
 
 import Business.Entities.Stats;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;

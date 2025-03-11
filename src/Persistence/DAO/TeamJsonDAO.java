@@ -1,4 +1,4 @@
-package Persistence;
+package Persistence.DAO;
 
 import Exceptions.PersistenceException;
 import com.google.gson.Gson;

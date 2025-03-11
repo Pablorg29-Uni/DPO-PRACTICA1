@@ -1,6 +1,7 @@
 package Presentation;
 
 import Exceptions.PresentationException;
+import edu.salle.url.api.exception.ApiException;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -25,6 +26,13 @@ public class Menu {
      */
     public void mostrarMenu() throws PresentationException {
         mostrarTitol();
+        System.out.println("Checking API status...");
+        try {
+            controller.verificarAPI();
+            System.out.println("Starting program...\n");
+        } catch (ApiException e) {
+            System.out.println("Error: The API isn’t available.\n");
+        }
         System.out.println("Verifying local files...");
         try {
             controller.verificarFiles();
