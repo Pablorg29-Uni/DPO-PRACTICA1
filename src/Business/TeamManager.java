@@ -4,6 +4,7 @@ import Business.Entities.Member;
 import Business.Entities.Team;
 import Exceptions.BusinessException;
 import Exceptions.PersistenceException;
+import Persistence.API.ConnectorAPIHelper;
 import Persistence.DAO.TeamJsonDAO;
 
 import java.util.ArrayList;
@@ -127,5 +128,9 @@ public class TeamManager {
             }
         }
         return matchingTeams;
+    }
+
+    public void setApiHelper(ConnectorAPIHelper apiHelper) {
+        this.teamJsonDAO.setApiHelper(apiHelper);
     }
 }

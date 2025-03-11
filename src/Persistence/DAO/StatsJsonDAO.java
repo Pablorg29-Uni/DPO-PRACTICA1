@@ -1,6 +1,7 @@
 package Persistence.DAO;
 
 import Exceptions.PersistenceException;
+import Persistence.API.ConnectorAPIHelper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * Maneja la persistencia de las estadísticas en un archivo JSON.
  */
@@ -20,6 +22,7 @@ import java.util.List;
 public class StatsJsonDAO {
 
     private final String path = "./src/Files/stats.json";
+    private ConnectorAPIHelper apiHelper;
 
     /**
      * Verifica si el archivo JSON de estadísticas existe.
@@ -36,7 +39,7 @@ public class StatsJsonDAO {
 
     /**
      * Elimina una estadística del archivo JSON según el nombre del equipo.
-     *
+     * <p>
      * Busca y borra la estadística correspondiente, luego guarda la lista actualizada.
      * Lanza una excepción si ocurre un error al acceder o modificar el archivo.
      *
@@ -66,7 +69,8 @@ public class StatsJsonDAO {
         try {
             FileReader reader = new FileReader(this.path);
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            Type statsType = new TypeToken<ArrayList<Stats>>() {}.getType();
+            Type statsType = new TypeToken<ArrayList<Stats>>() {
+            }.getType();
             return gson.fromJson(reader, statsType);
         } catch (Exception e) {
             throw new PersistenceException(e.getMessage());
@@ -121,5 +125,9 @@ public class StatsJsonDAO {
         } catch (Exception e) {
             throw new PersistenceException(e.getMessage());
         }
+    }
+
+    public void setApiHelper(ConnectorAPIHelper apiHelper) {
+        this.apiHelper = apiHelper;
     }
 }

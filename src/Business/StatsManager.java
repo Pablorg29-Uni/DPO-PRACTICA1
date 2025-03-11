@@ -4,6 +4,7 @@ import Business.Entities.Stats;
 import Business.Entities.Team;
 import Exceptions.BusinessException;
 import Exceptions.PersistenceException;
+import Persistence.API.ConnectorAPIHelper;
 import Persistence.DAO.StatsJsonDAO;
 import java.util.List;
 /**
@@ -112,5 +113,9 @@ public class StatsManager {
         } catch (PersistenceException e) {
             throw new BusinessException(e.getMessage());
         }
+    }
+
+    public void setApiHelper(ConnectorAPIHelper apiHelper) {
+        this.statsJsonDAO.setApiHelper(apiHelper);
     }
 }

@@ -3,6 +3,7 @@ package Business;
 import Business.Entities.Items;
 import Exceptions.BusinessException;
 import Exceptions.PersistenceException;
+import Persistence.API.ConnectorAPIHelper;
 import Persistence.DAO.ItemsJsonDAO;
 
 import java.util.ArrayList;
@@ -97,5 +98,9 @@ public class ItemsManager {
         } catch (PersistenceException e) {
             throw new BusinessException(e.getMessage());
         }
+    }
+
+    public void setApiHelper(ConnectorAPIHelper apiHelper) {
+        this.itemsJsonDAO.setApiHelper(apiHelper);
     }
 }

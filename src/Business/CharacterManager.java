@@ -3,6 +3,7 @@ package Business;
 import Business.Entities.Character;
 import Exceptions.BusinessException;
 import Exceptions.PersistenceException;
+import Persistence.API.ConnectorAPIHelper;
 import Persistence.DAO.CharacterJsonDAO;
 
 import java.util.List;
@@ -75,5 +76,9 @@ public class CharacterManager {
         } catch (PersistenceException e) {
             throw new BusinessException(e.getMessage());
         }
+    }
+
+    public void setApiHelper(ConnectorAPIHelper apiHelper) {
+        this.characterJsonDAO.setApiHelper(apiHelper);
     }
 }

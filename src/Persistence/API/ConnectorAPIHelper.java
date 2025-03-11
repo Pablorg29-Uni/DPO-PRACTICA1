@@ -4,14 +4,12 @@ import edu.salle.url.api.ApiHelper;
 import edu.salle.url.api.exception.ApiException;
 
 public class ConnectorAPIHelper {
-    private static final String BASE_API_URL = "https://balandrau.salle.url.edu/dpoo/S1_grup_107/";   // URL base de la API.
-    private ApiHelper apiHelper;
+    private static final String BASE_API_URL = "https://balandrau.salle.url.edu/dpoo/";   // URL base de la API.
+    private final ApiHelper apiHelper;
 
     public ConnectorAPIHelper() throws ApiException {
-        ApiHelper helper = new ApiHelper();
+        this.apiHelper = new ApiHelper();
     }
-
-    //Se puede crear una funcion que devuelva la instancia
 
     public String getRequest(String url) throws ApiException {
         return apiHelper.getFromUrl(BASE_API_URL + url);

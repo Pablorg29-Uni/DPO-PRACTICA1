@@ -31,7 +31,6 @@ public class Controller {
     private final StatsManager statsmanager;
     private final ItemsManager itemmanager;
     private final CharacterManager charactermanager;
-    private ConnectorAPIHelper apiHelper;
 
     /**
      * Constructor que inicializa los gestores de negocio y la vista.
@@ -634,6 +633,10 @@ public class Controller {
     }
 
     public void verificarAPI() throws ApiException {
-        this.apiHelper = new ConnectorAPIHelper();
+        ConnectorAPIHelper apiHelper = new ConnectorAPIHelper();
+        charactermanager.setApiHelper(apiHelper);
+        itemmanager.setApiHelper(apiHelper);
+        statsmanager.setApiHelper(apiHelper);
+        teammanager.setApiHelper(apiHelper);
     }
 }

@@ -2,6 +2,7 @@ package Persistence.DAO;
 
 import Business.Entities.Character;
 import Exceptions.PersistenceException;
+import Persistence.API.ConnectorAPIHelper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -18,6 +19,7 @@ import java.util.List;
 public class CharacterJsonDAO {
 
     private final String path = "./src/Files/characters.json";
+    private ConnectorAPIHelper apiHelper;
 
     /**
      * Verifica si el archivo JSON de personajes existe.
@@ -86,5 +88,9 @@ public class CharacterJsonDAO {
             }
         }
         throw new PersistenceException("Error getting character!");
+    }
+
+    public void setApiHelper(ConnectorAPIHelper apiHelper) {
+        this.apiHelper = apiHelper;
     }
 }

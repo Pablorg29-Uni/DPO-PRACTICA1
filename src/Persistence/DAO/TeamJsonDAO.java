@@ -1,6 +1,7 @@
 package Persistence.DAO;
 
 import Exceptions.PersistenceException;
+import Persistence.API.ConnectorAPIHelper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -17,6 +18,7 @@ import java.util.List;
 public class TeamJsonDAO {
 
     private final String path = "./src/Files/teams.json";
+    private ConnectorAPIHelper apiHelper;
 
     /**
      * Verifica si el archivo JSON de equipos existe. Si no existe, lo crea con un contenido vacío.
@@ -113,5 +115,9 @@ public class TeamJsonDAO {
         } catch (IOException e) {
             throw new PersistenceException(e.getMessage());
         }
+    }
+
+    public void setApiHelper(ConnectorAPIHelper apiHelper) {
+        this.apiHelper = apiHelper;
     }
 }

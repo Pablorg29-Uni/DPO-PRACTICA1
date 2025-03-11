@@ -1,6 +1,7 @@
 package Persistence.DAO;
 
 import Exceptions.PersistenceException;
+import Persistence.API.ConnectorAPIHelper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -11,6 +12,7 @@ import java.io.FileReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * Maneja la persistencia de los ítems en formato JSON.
  * Se encarga de leer y escribir la información de los ítems en el archivo correspondiente.
@@ -18,6 +20,7 @@ import java.util.List;
 public class ItemsJsonDAO {
 
     private final String path = "./src/Files/items.json";
+    private ConnectorAPIHelper apiHelper;
 
     /**
      * Verifica la existencia del archivo JSON de items.
@@ -48,5 +51,9 @@ public class ItemsJsonDAO {
         } catch (Exception e) {
             throw new PersistenceException(e.getMessage());
         }
+    }
+
+    public void setApiHelper(ConnectorAPIHelper apiHelper) {
+        this.apiHelper = apiHelper;
     }
 }
