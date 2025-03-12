@@ -23,4 +23,8 @@ public class ConnectorAPIHelper {
         return apiHelper.deleteFromUrl(BASE_API_URL + url);
     }
 
+    public String getId() {
+        return "S1-Project_29";
+    }
+
 }

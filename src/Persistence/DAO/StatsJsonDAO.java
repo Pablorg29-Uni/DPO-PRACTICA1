@@ -1,12 +1,17 @@
 package Persistence.DAO;
 
+import Business.Entities.Member;
+import Business.Entities.Team;
 import Exceptions.PersistenceException;
 import Persistence.API.ConnectorAPIHelper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import Business.Entities.Stats;
+import edu.salle.url.api.exception.ApiException;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -46,16 +51,23 @@ public class StatsJsonDAO {
      * @param name Nombre del equipo cuya estadística será eliminada.
      * @throws PersistenceException Si hay un problema con el archivo JSON.
      */
-    public void deleteOneStats(String name) throws PersistenceException {
-        try {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            List<Stats> stats = getAllStats();
-            stats.removeIf(stat -> name.equals(stat.getName())); // Remueve la estadística por nombre
-            try (FileWriter writer = new FileWriter(this.path)) {
-                gson.toJson(stats, writer);
+    public void deleteOneStats(String name) throws PersistenceException, ApiException {
+        if (apiHelper == null) {
+            try {
+                Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                List<Stats> stats = getAllStats();
+                stats.removeIf(stat -> name.equals(stat.getName())); // Remueve la estadística por nombre
+                try (FileWriter writer = new FileWriter(this.path)) {
+                    gson.toJson(stats, writer);
+                }
+            } catch (Exception e) {
+                throw new PersistenceException(e.getMessage());
             }
-        } catch (Exception e) {
-            throw new PersistenceException(e.getMessage());
+        } else {
+            String a = apiHelper.deleteRequest(apiHelper.getId() + "/stats?name=" + name);
+            if (!a.equals("{\"result\":\"OK\"}")) {
+                throw new PersistenceException("Stat could not be deleted");
+            }
         }
     }
 
@@ -65,15 +77,23 @@ public class StatsJsonDAO {
      * @return Lista de estadísticas almacenadas.
      * @throws PersistenceException Si ocurre un error al leer el archivo.
      */
-    public List<Stats> getAllStats() throws PersistenceException {
-        try {
-            FileReader reader = new FileReader(this.path);
+    public List<Stats> getAllStats() throws PersistenceException, ApiException {
+        if (apiHelper == null) {
+            try {
+                FileReader reader = new FileReader(this.path);
+                Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                Type statsType = new TypeToken<ArrayList<Stats>>() {
+                }.getType();
+                return gson.fromJson(reader, statsType);
+            } catch (Exception e) {
+                throw new PersistenceException(e.getMessage());
+            }
+        } else {
+            String s = apiHelper.getRequest(apiHelper.getId() + "/stats");
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            Type statsType = new TypeToken<ArrayList<Stats>>() {
+            Type statsListType = new TypeToken<ArrayList<Stats>>() {
             }.getType();
-            return gson.fromJson(reader, statsType);
-        } catch (Exception e) {
-            throw new PersistenceException(e.getMessage());
+            return gson.fromJson(s, statsListType);
         }
     }
 
@@ -83,15 +103,22 @@ public class StatsJsonDAO {
      * @param teamName Nombre del equipo para el que se crea la estadística.
      * @throws PersistenceException si hay problemas de persistencia.
      */
-    public void createEmptyStats(String teamName) throws PersistenceException {
-        List<Stats> stats = getAllStats();
-        Stats s = new Stats(teamName, 0, 0, 0, 0);
-        stats.add(s);
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        try (FileWriter writer = new FileWriter(this.path)) {
-            gson.toJson(stats, writer);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    public void createEmptyStats(String teamName) throws PersistenceException, ApiException {
+        if (apiHelper == null) {
+            List<Stats> stats = getAllStats();
+            Stats s = new Stats(teamName, 0, 0, 0, 0);
+            stats.add(s);
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            try (FileWriter writer = new FileWriter(this.path)) {
+                gson.toJson(stats, writer);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            List<Stats> stats = getAllStats();
+            Stats s = new Stats(teamName, 0, 0, 0, 0);
+            stats.add(s);
+            writeStatsToFile(stats);
         }
     }
 
@@ -102,14 +129,23 @@ public class StatsJsonDAO {
      * @return Estadísticas del equipo.
      * @throws PersistenceException Si no se encuentran datos.
      */
-    public Stats getStat(String name) throws PersistenceException {
-        List<Stats> stats = getAllStats();
-        for (Stats stat : stats) {
-            if (stat.getName().equals(name)) {
-                return stat;
+    public Stats getStat(String name) throws PersistenceException, ApiException {
+        if (apiHelper == null) {
+            List<Stats> stats = getAllStats();
+            for (Stats stat : stats) {
+                if (stat.getName().equals(name)) {
+                    return stat;
+                }
             }
+            throw new PersistenceException("No stats found for name " + name);
+        } else {
+            String s = apiHelper.getRequest(apiHelper.getId() + "/stats?name=" + name);
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            Type teamListType = new TypeToken<ArrayList<Stats>>() {
+            }.getType();
+            List<Stats> stats = gson.fromJson(s, teamListType);
+            return stats.getFirst();
         }
-        throw new PersistenceException("No stats found for name " + name);
     }
 
     /**
@@ -118,12 +154,22 @@ public class StatsJsonDAO {
      * @param stats Lista de objetos Stats que se guardarán en el archivo.
      * @throws PersistenceException Si ocurre un error al escribir en el archivo.
      */
-    public void writeStatsToFile(List<Stats> stats) throws PersistenceException {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        try (FileWriter writer = new FileWriter(this.path)) {
-            gson.toJson(stats, writer);
-        } catch (Exception e) {
-            throw new PersistenceException(e.getMessage());
+    public void writeStatsToFile(List<Stats> stats) throws PersistenceException, ApiException {
+        if (apiHelper == null) {
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            try (FileWriter writer = new FileWriter(this.path)) {
+                gson.toJson(stats, writer);
+            } catch (Exception e) {
+                throw new PersistenceException(e.getMessage());
+            }
+        } else {
+            Gson gson = new Gson();
+            String body = gson.toJson(stats);
+
+            String a = apiHelper.postRequest(apiHelper.getId() + "/stats", body);
+            if (!a.equals("{\"result\":\"OK\"}")) {
+                throw new PersistenceException("Team could not be saved");
+            }
         }
     }
 

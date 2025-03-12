@@ -6,6 +6,7 @@ import Exceptions.BusinessException;
 import Exceptions.PersistenceException;
 import Persistence.API.ConnectorAPIHelper;
 import Persistence.DAO.TeamJsonDAO;
+import edu.salle.url.api.exception.ApiException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +71,7 @@ public class TeamManager {
             StatsManager statsManager = new StatsManager();
             statsManager.createStat(name);
             teamJsonDAO.saveTeam(team);
-        } catch (Exception e) {
+        } catch (PersistenceException | ApiException e) {
             throw new BusinessException(e.getMessage());
         }
     }
@@ -84,7 +85,7 @@ public class TeamManager {
     public List<Team> showTeams() throws BusinessException {
         try {
             return teamJsonDAO.getAllTeams();
-        } catch (PersistenceException e) {
+        } catch (PersistenceException | ApiException e) {
             throw new BusinessException(e.getMessage());
         }
     }
@@ -99,7 +100,7 @@ public class TeamManager {
     public Team getTeam(String name) throws BusinessException {
         try {
             return teamJsonDAO.getTeam(name);
-        } catch (PersistenceException e) {
+        } catch (PersistenceException | ApiException e) {
             throw new BusinessException(e.getMessage());
         }
     }
@@ -116,7 +117,7 @@ public class TeamManager {
         List<Team> teams;
         try {
             teams = teamJsonDAO.getAllTeams();
-        } catch (PersistenceException e) {
+        } catch (PersistenceException | ApiException e) {
             throw new BusinessException(e.getMessage());
         }
         for (Team team : teams) {

@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import Business.Entities.Items;
+import edu.salle.url.api.exception.ApiException;
 
 import java.io.FileReader;
 import java.lang.reflect.Type;
@@ -41,15 +42,22 @@ public class ItemsJsonDAO {
      * @return Lista de ítems disponibles.
      * @throws PersistenceException Si ocurre un error al leer el archivo o al parsear los datos.
      */
-    public List<Items> getAllItems() throws PersistenceException {
-        try {
-            FileReader reader = new FileReader(this.path);
+    public List<Items> getAllItems() throws PersistenceException, ApiException {
+        if (apiHelper == null) {
+            try {
+                FileReader reader = new FileReader(this.path);
+                Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                Type itemType = new TypeToken<ArrayList<Items>>() {
+                }.getType();
+                return gson.fromJson(reader, itemType);
+            } catch (Exception e) {
+                throw new PersistenceException(e.getMessage());
+            }
+        } else {
+            String items = apiHelper.getRequest("shared/items");
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            Type itemType = new TypeToken<ArrayList<Items>>() {
-            }.getType();
-            return gson.fromJson(reader, itemType);
-        } catch (Exception e) {
-            throw new PersistenceException(e.getMessage());
+            Type itemListType = new TypeToken<ArrayList<Items>>() {}.getType();
+            return gson.fromJson(items, itemListType);
         }
     }
 

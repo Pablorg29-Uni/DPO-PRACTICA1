@@ -6,6 +6,8 @@ import Exceptions.BusinessException;
 import Exceptions.PersistenceException;
 import Persistence.API.ConnectorAPIHelper;
 import Persistence.DAO.StatsJsonDAO;
+import edu.salle.url.api.exception.ApiException;
+
 import java.util.List;
 /**
  * Gestiona las estadísticas de los equipos y personajes.
@@ -29,7 +31,7 @@ public class StatsManager {
     public void deleteStat(String name) throws BusinessException {
         try {
             statsJsonDAO.deleteOneStats(name);
-        } catch (PersistenceException e) {
+        } catch (PersistenceException | ApiException e) {
             throw new BusinessException(e.getMessage());
         }
     }
@@ -44,7 +46,7 @@ public class StatsManager {
     public Stats getStat(String name) throws BusinessException {
         try {
             return statsJsonDAO.getStat(name);
-        } catch (PersistenceException e) {
+        } catch (PersistenceException | ApiException e) {
             throw new BusinessException(e.getMessage());
         }
     }
@@ -71,7 +73,7 @@ public class StatsManager {
     public void createStat(String name) throws BusinessException {
         try {
             statsJsonDAO.createEmptyStats(name);
-        } catch (PersistenceException e) {
+        } catch (PersistenceException | ApiException e) {
             throw new BusinessException(e.getMessage());
         }
     }
@@ -91,7 +93,7 @@ public class StatsManager {
         List<Stats> stats;
         try {
             stats = statsJsonDAO.getAllStats();
-        } catch (PersistenceException e) {
+        } catch (PersistenceException | ApiException e) {
             throw new BusinessException(e.getMessage());
         }
         for (Stats stat : stats) {
@@ -110,7 +112,7 @@ public class StatsManager {
         }
         try {
             statsJsonDAO.writeStatsToFile(stats);
-        } catch (PersistenceException e) {
+        } catch (PersistenceException | ApiException e) {
             throw new BusinessException(e.getMessage());
         }
     }

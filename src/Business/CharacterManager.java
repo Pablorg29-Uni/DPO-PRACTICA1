@@ -5,6 +5,7 @@ import Exceptions.BusinessException;
 import Exceptions.PersistenceException;
 import Persistence.API.ConnectorAPIHelper;
 import Persistence.DAO.CharacterJsonDAO;
+import edu.salle.url.api.exception.ApiException;
 
 import java.util.List;
 /**
@@ -30,7 +31,7 @@ public class CharacterManager {
     public List<Business.Entities.Character> getCharacters() throws BusinessException {
         try {
             return this.characterJsonDAO.getAllCharacters();
-        } catch (PersistenceException e) {
+        } catch (PersistenceException | ApiException e) {
             throw new BusinessException(e.getMessage());
         }
     }
@@ -45,7 +46,7 @@ public class CharacterManager {
     public Character getCharacter(long id) throws BusinessException {
         try {
             return this.characterJsonDAO.getCharacterById(id);
-        } catch (PersistenceException e) {
+        } catch (PersistenceException | ApiException e) {
             throw new BusinessException(e.getMessage());
         }
     }
@@ -60,7 +61,7 @@ public class CharacterManager {
     public Character getCharacter2(String name) throws BusinessException {
         try {
             return this.characterJsonDAO.getCharacterByName(name);
-        } catch (PersistenceException e) {
+        } catch (PersistenceException | ApiException e) {
             throw new BusinessException(e.getMessage());
         }
     }

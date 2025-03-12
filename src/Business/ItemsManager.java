@@ -5,6 +5,7 @@ import Exceptions.BusinessException;
 import Exceptions.PersistenceException;
 import Persistence.API.ConnectorAPIHelper;
 import Persistence.DAO.ItemsJsonDAO;
+import edu.salle.url.api.exception.ApiException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +36,7 @@ public class ItemsManager {
             List<Items> allItems;
             try {
                 allItems = itemsJsonDAO.getAllItems();
-            } catch (PersistenceException e) {
+            } catch (PersistenceException | ApiException e) {
                 throw new BusinessException(e.getMessage());
             }
             allItems.removeIf(i -> i.getDurability() < 1 || i.getClasse().equals("Armor"));
@@ -60,7 +61,7 @@ public class ItemsManager {
             List<Items> allItems;
             try {
                 allItems = itemsJsonDAO.getAllItems();
-            } catch (PersistenceException e) {
+            } catch (PersistenceException | ApiException e) {
                 throw new BusinessException(e.getMessage());
             }
             allItems.removeIf(i -> i.getDurability() < 1 || i.getClasse().equals("Weapon"));
@@ -82,7 +83,7 @@ public class ItemsManager {
     public ArrayList<Items> showItems() throws BusinessException {
         try {
             return (ArrayList<Items>) itemsJsonDAO.getAllItems();
-        } catch (PersistenceException e) {
+        } catch (PersistenceException | ApiException e) {
             throw new BusinessException(e.getMessage());
         }
     }

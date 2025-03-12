@@ -29,18 +29,17 @@ public class Menu {
         System.out.println("Checking API status...");
         try {
             controller.verificarAPI();
-            System.out.println("Starting program...\n");
         } catch (ApiException e) {
             System.out.println("Error: The API isn’t available.\n");
-        }
-        System.out.println("Verifying local files...");
-        try {
-            controller.verificarFiles();
-            System.out.println("Files OK.");
-        } catch (PresentationException e) {
-            System.out.println("Error: The json files can't be accessed");
-            System.out.println("Shutting down...");
-            return;
+            System.out.println("Verifying local files...");
+            try {
+                controller.verificarFiles();
+                System.out.println("Files OK.");
+            } catch (PresentationException error) {
+                System.out.println("Error: The json files can't be accessed");
+                System.out.println("Shutting down...");
+                return;
+            }
         }
 
         Scanner scanner = new Scanner(System.in);
