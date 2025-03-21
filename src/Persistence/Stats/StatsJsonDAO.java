@@ -1,13 +1,9 @@
-package Persistence.DAO;
+package Persistence.Stats;
 
-import Business.Entities.Member;
-import Business.Entities.Team;
 import Exceptions.PersistenceException;
 import Persistence.API.ConnectorAPIHelper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import Business.Entities.Stats;
@@ -24,7 +20,7 @@ import java.util.List;
  * Maneja la persistencia de las estadísticas en un archivo JSON.
  */
 
-public class StatsJsonDAO {
+public class StatsJsonDAO implements StatsDAO {
 
     private final String path = "./src/Files/stats.json";
     private ConnectorAPIHelper apiHelper;

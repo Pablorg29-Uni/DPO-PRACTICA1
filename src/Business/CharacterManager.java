@@ -4,7 +4,7 @@ import Business.Entities.Character;
 import Exceptions.BusinessException;
 import Exceptions.PersistenceException;
 import Persistence.API.ConnectorAPIHelper;
-import Persistence.DAO.CharacterJsonDAO;
+import Persistence.Character.CharacterJsonDAO;
 import edu.salle.url.api.exception.ApiException;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package Persistence.DAO;
+package Persistence.Items;
 
 import Exceptions.PersistenceException;
 import Persistence.API.ConnectorAPIHelper;
@@ -18,7 +18,7 @@ import java.util.List;
  * Maneja la persistencia de los ítems en formato JSON.
  * Se encarga de leer y escribir la información de los ítems en el archivo correspondiente.
  */
-public class ItemsJsonDAO {
+public class ItemsJsonDAO implements ItemsDAO {
 
     private final String path = "./src/Files/items.json";
     private ConnectorAPIHelper apiHelper;

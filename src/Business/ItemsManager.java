@@ -4,7 +4,7 @@ import Business.Entities.Items;
 import Exceptions.BusinessException;
 import Exceptions.PersistenceException;
 import Persistence.API.ConnectorAPIHelper;
-import Persistence.DAO.ItemsJsonDAO;
+import Persistence.Items.ItemsJsonDAO;
 import edu.salle.url.api.exception.ApiException;
 
 import java.util.ArrayList;

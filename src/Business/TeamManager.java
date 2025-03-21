@@ -5,7 +5,9 @@ import Business.Entities.Team;
 import Exceptions.BusinessException;
 import Exceptions.PersistenceException;
 import Persistence.API.ConnectorAPIHelper;
-import Persistence.DAO.TeamJsonDAO;
+import Persistence.Team.TeamApiDAO;
+import Persistence.Team.TeamDAO;
+import Persistence.Team.TeamJsonDAO;
 import edu.salle.url.api.exception.ApiException;
 
 import java.util.ArrayList;
@@ -16,14 +18,7 @@ import java.util.List;
  * recuperación y verificación en el sistema de persistencia.
  */
 public class TeamManager {
-    private final TeamJsonDAO teamJsonDAO;
-
-    /**
-     * Constructor de TeamManager. Inicializa el gestor de persistencia de equipos.
-     */
-    public TeamManager() {
-        this.teamJsonDAO = new TeamJsonDAO();
-    }
+    private TeamDAO teamDAO;
 
     /**
      * Verifica la integridad de los datos de los equipos en el sistema de persistencia.
@@ -31,10 +26,10 @@ public class TeamManager {
      * @throws BusinessException Si ocurre un error en la verificación.
      */
     public void verify() throws BusinessException {
-        try {
-            teamJsonDAO.verifyJsonTeams();
-        } catch (PersistenceException e) {
-            throw new BusinessException(e.getMessage());
+        if (!TeamJsonDAO.canConnect()) {
+            throw new BusinessException("No connection established");
+        } else {
+            teamDAO = new TeamJsonDAO();
         }
     }
 
@@ -49,7 +44,7 @@ public class TeamManager {
         try {
             StatsManager statsManager = new StatsManager();
             statsManager.deleteStat(name);
-            return teamJsonDAO.eliminateTeam(name);
+            return teamDAO.eliminateTeam(name);
         } catch (Exception e) {
             throw new BusinessException(e.getMessage());
         }
@@ -70,7 +65,7 @@ public class TeamManager {
             Team team = new Team(name, id1, id2, id3, id4);
             StatsManager statsManager = new StatsManager();
             statsManager.createStat(name);
-            teamJsonDAO.saveTeam(team);
+            teamDAO.saveTeam(team);
         } catch (PersistenceException | ApiException e) {
             throw new BusinessException(e.getMessage());
         }
@@ -84,7 +79,7 @@ public class TeamManager {
      */
     public List<Team> showTeams() throws BusinessException {
         try {
-            return teamJsonDAO.getAllTeams();
+            return teamDAO.getAllTeams();
         } catch (PersistenceException | ApiException e) {
             throw new BusinessException(e.getMessage());
         }
@@ -99,7 +94,7 @@ public class TeamManager {
      */
     public Team getTeam(String name) throws BusinessException {
         try {
-            return teamJsonDAO.getTeam(name);
+            return teamDAO.getTeam(name);
         } catch (PersistenceException | ApiException e) {
             throw new BusinessException(e.getMessage());
         }
@@ -116,7 +111,7 @@ public class TeamManager {
         ArrayList<Team> matchingTeams = new ArrayList<>();
         List<Team> teams;
         try {
-            teams = teamJsonDAO.getAllTeams();
+            teams = teamDAO.getAllTeams();
         } catch (PersistenceException | ApiException e) {
             throw new BusinessException(e.getMessage());
         }
@@ -132,6 +127,6 @@ public class TeamManager {
     }
 
     public void setApiHelper(ConnectorAPIHelper apiHelper) {
-        this.teamJsonDAO.setApiHelper(apiHelper);
+        this.teamDAO = new TeamApiDAO(apiHelper);
     }
 }

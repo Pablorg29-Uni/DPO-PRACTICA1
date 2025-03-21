@@ -5,7 +5,7 @@ import Business.Entities.Team;
 import Exceptions.BusinessException;
 import Exceptions.PersistenceException;
 import Persistence.API.ConnectorAPIHelper;
-import Persistence.DAO.StatsJsonDAO;
+import Persistence.Stats.StatsJsonDAO;
 import edu.salle.url.api.exception.ApiException;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package Persistence.DAO;
+package Persistence.Character;
 
 import Business.Entities.Character;
 import Exceptions.PersistenceException;
@@ -18,7 +18,7 @@ import java.util.List;
  * Maneja la persistencia de personajes en un archivo JSON.
  * Proporciona métodos para leer, guardar y modificar personajes.
  */
-public class CharacterJsonDAO {
+public class CharacterJsonDAO implements CharacterDAO {
 
     private final String path = "./src/Files/characters.json";
     private ConnectorAPIHelper apiHelper;
