@@ -4,24 +4,28 @@ import Business.Entities.Items;
 import Exceptions.BusinessException;
 import Exceptions.PersistenceException;
 import Persistence.API.ConnectorAPIHelper;
+import Persistence.Items.ItemsApiDAO;
+import Persistence.Items.ItemsDAO;
 import Persistence.Items.ItemsJsonDAO;
+import Persistence.Team.TeamJsonDAO;
 import edu.salle.url.api.exception.ApiException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
 /**
  * Gestiona la lógica de los ítems en el juego.
  * Actúa como intermediario entre la capa de persistencia y el resto de la aplicación.
  */
 public class ItemsManager {
-    private final ItemsJsonDAO itemsJsonDAO;
+    private ItemsDAO itemsDAO;
 
     /**
      * Constructor de ItemsManager. Inicializa el gestor de persistencia de ítems.
      */
     public ItemsManager() {
-        this.itemsJsonDAO = new ItemsJsonDAO();
+        this.itemsDAO = new ItemsJsonDAO();
     }
 
     /**
@@ -35,7 +39,7 @@ public class ItemsManager {
             Random rand = new Random();
             List<Items> allItems;
             try {
-                allItems = itemsJsonDAO.getAllItems();
+                allItems = itemsDAO.getAllItems();
             } catch (PersistenceException | ApiException e) {
                 throw new BusinessException(e.getMessage());
             }
@@ -60,7 +64,7 @@ public class ItemsManager {
             Random rand = new Random();
             List<Items> allItems;
             try {
-                allItems = itemsJsonDAO.getAllItems();
+                allItems = itemsDAO.getAllItems();
             } catch (PersistenceException | ApiException e) {
                 throw new BusinessException(e.getMessage());
             }
@@ -82,7 +86,7 @@ public class ItemsManager {
      */
     public ArrayList<Items> showItems() throws BusinessException {
         try {
-            return (ArrayList<Items>) itemsJsonDAO.getAllItems();
+            return (ArrayList<Items>) itemsDAO.getAllItems();
         } catch (PersistenceException | ApiException e) {
             throw new BusinessException(e.getMessage());
         }
@@ -94,14 +98,14 @@ public class ItemsManager {
      * @throws BusinessException Si ocurre un error al verificar la base de datos de ítems.
      */
     public void verify() throws BusinessException {
-        try {
-            itemsJsonDAO.verifyJsonItem();
-        } catch (PersistenceException e) {
-            throw new BusinessException(e.getMessage());
+        if (!ItemsJsonDAO.canConnect()) {
+            throw new BusinessException("No connection established");
+        } else {
+            itemsDAO = new ItemsJsonDAO();
         }
     }
 
     public void setApiHelper(ConnectorAPIHelper apiHelper) {
-        this.itemsJsonDAO.setApiHelper(apiHelper);
+        this.itemsDAO = new ItemsApiDAO(apiHelper);
     }
 }

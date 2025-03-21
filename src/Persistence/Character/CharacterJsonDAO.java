@@ -23,101 +23,61 @@ public class CharacterJsonDAO implements CharacterDAO {
     private final String path = "./src/Files/characters.json";
     private ConnectorAPIHelper apiHelper;
 
-    /**
-     * Verifica si el archivo JSON de personajes existe.
-     *
-     * @throws PersistenceException Si el archivo no se encuentra.
-     */
-    public void verifyJsonCharacter() throws PersistenceException {
+    public static boolean canConnect () {
         try {
-            new FileReader(this.path);
+            new FileReader("./src/Files/characters.json");
+            return true;
         } catch (Exception e) {
-            throw new PersistenceException(e.getMessage());
+            return false;
         }
     }
 
     /**
-     * Carga todos los personajes desde un archivo JSON y los devuelve en una lista.
+     * Obtiene todos los personajes almacenados en el archivo JSON.
      *
-     * @return Lista con los personajes cargados desde el archivo.
-     * @throws PersistenceException Si el archivo no existe o hay un problema al leerlo.
+     * @return Lista de personajes.
+     * @throws PersistenceException Si ocurre un error al leer el archivo.
      */
-    public List<Character> getAllCharacters() throws PersistenceException, ApiException {
-        if (this.apiHelper == null) {
-            try {
-                FileReader reader = new FileReader(this.path);
-                Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                Type characterListType = new TypeToken<ArrayList<Character>>() {
-                }.getType();
-                return gson.fromJson(reader, characterListType);
-            } catch (FileNotFoundException e) {
-                throw new PersistenceException(e.getMessage());
-            }
-        } else {
-            String characters = apiHelper.getRequest("shared/characters");
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            Type characterListType = new TypeToken<ArrayList<Character>>() {
-            }.getType();
-            return gson.fromJson(characters, characterListType);
-
-        }
-    }
-
-    /**
-     * Busca un personaje por su id.
-     *
-     * @param id Identificador del personaje que queremos encontrar.
-     * @return El personaje correspondiente si existe, de lo contrario lanza una excepción.
-     * @throws PersistenceException Si no se encuentra el personaje o hay un problema con la lectura de datos.
-     */
-    public Character getCharacterById(long id) throws PersistenceException, ApiException {
-        if (this.apiHelper == null) {
-            try {
-                List<Character> characters = getAllCharacters();
-                for (Character character : characters) {
-                    if (character.getId() == id) {
-                        return character;
-                    }
-                }
-                throw new PersistenceException("Character with id " + id + " not found");
-            } catch (PersistenceException | ApiException e) {
-                throw new PersistenceException(e.getMessage());
-            }
-        } else {
-            String c = apiHelper.getRequest("shared/characters?id=" + id);
+    @Override
+    public List<Character> getAllCharacters() throws PersistenceException {
+        try (FileReader reader = new FileReader(this.path)) {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             Type characterListType = new TypeToken<ArrayList<Character>>() {}.getType();
-            List<Character> characters = gson.fromJson(c, characterListType);
-            return characters.getFirst();
+            return gson.fromJson(reader, characterListType);
+        } catch (Exception e) {
+            throw new PersistenceException("Error reading characters from JSON: " + e.getMessage());
         }
     }
 
     /**
-     * Busca un personaje por su nombre en la lista de personajes almacenada.
+     * Busca un personaje por su ID en el archivo JSON.
      *
-     * @param name Nombre del personaje a buscar (ignorando mayúsculas y minúsculas).
-     * @return El personaje encontrado.
-     * @throws PersistenceException Si ocurre un error al obtener la lista o el personaje no existe.
+     * @param id Identificador del personaje.
+     * @return Personaje encontrado.
+     * @throws PersistenceException Si el personaje no existe.
      */
-    public Character getCharacterByName(String name) throws PersistenceException, ApiException {
-        if (this.apiHelper == null) {
-            List<Character> characters = getAllCharacters();
-            for (Character character : characters) {
-                if (character.getName().equalsIgnoreCase(name)) {
-                    return character;
-                }
-            }
-            throw new PersistenceException("Error getting character!");
-        } else {
-            String c = apiHelper.getRequest("shared/characters?name="+name);
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            Type characterListType = new TypeToken<ArrayList<Character>>() {}.getType();
-            List<Character> characters = gson.fromJson(c, characterListType);
-            return characters.getFirst();
-        }
+    @Override
+    public Character getCharacterById(long id) throws PersistenceException {
+        List<Character> characters = getAllCharacters();
+        return characters.stream()
+                .filter(c -> c.getId() == id)
+                .findFirst()
+                .orElseThrow(() -> new PersistenceException("Character with ID " + id + " not found"));
     }
 
-    public void setApiHelper(ConnectorAPIHelper apiHelper) {
-        this.apiHelper = apiHelper;
+    /**
+     * Busca un personaje por su nombre en el archivo JSON.
+     *
+     * @param name Nombre del personaje.
+     * @return Personaje encontrado.
+     * @throws PersistenceException Si el personaje no existe.
+     */
+    @Override
+    public Character getCharacterByName(String name) throws PersistenceException {
+        List<Character> characters = getAllCharacters();
+        return characters.stream()
+                .filter(c -> c.getName().equalsIgnoreCase(name))
+                .findFirst()
+                .orElseThrow(() -> new PersistenceException("Character with name '" + name + "' not found"));
     }
 }

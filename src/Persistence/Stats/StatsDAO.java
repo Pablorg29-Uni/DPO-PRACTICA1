@@ -8,8 +8,6 @@ import java.util.List;
 
 public interface StatsDAO {
 
-    void verifyJsonStats() throws PersistenceException;
-
 
     List<Stats> getAllStats() throws PersistenceException, ApiException;
 

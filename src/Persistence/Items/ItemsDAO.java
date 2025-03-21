@@ -8,7 +8,5 @@ import java.util.List;
 
 public interface ItemsDAO {
 
-    void verifyJsonItem() throws PersistenceException;
-
     List<Items> getAllItems() throws PersistenceException, ApiException;
 }

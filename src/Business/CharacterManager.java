@@ -4,7 +4,10 @@ import Business.Entities.Character;
 import Exceptions.BusinessException;
 import Exceptions.PersistenceException;
 import Persistence.API.ConnectorAPIHelper;
+import Persistence.Character.CharacterApiDAO;
+import Persistence.Character.CharacterDAO;
 import Persistence.Character.CharacterJsonDAO;
+import Persistence.Items.ItemsJsonDAO;
 import edu.salle.url.api.exception.ApiException;
 
 import java.util.List;
@@ -13,13 +16,13 @@ import java.util.List;
  * Utiliza CharacterJsonDAO para interactuar con el almacenamiento JSON.
  */
 public class CharacterManager {
-    private final CharacterJsonDAO characterJsonDAO;
+    private CharacterDAO characterDAO;
 
     /**
      * Constructor de CharacterManager. Inicializa el DAO de personajes.
      */
     public CharacterManager() {
-        this.characterJsonDAO = new CharacterJsonDAO();
+        this.characterDAO = new CharacterJsonDAO();
     }
 
     /**
@@ -30,7 +33,7 @@ public class CharacterManager {
      */
     public List<Business.Entities.Character> getCharacters() throws BusinessException {
         try {
-            return this.characterJsonDAO.getAllCharacters();
+            return this.characterDAO.getAllCharacters();
         } catch (PersistenceException | ApiException e) {
             throw new BusinessException(e.getMessage());
         }
@@ -45,7 +48,7 @@ public class CharacterManager {
      */
     public Character getCharacter(long id) throws BusinessException {
         try {
-            return this.characterJsonDAO.getCharacterById(id);
+            return this.characterDAO.getCharacterById(id);
         } catch (PersistenceException | ApiException e) {
             throw new BusinessException(e.getMessage());
         }
@@ -60,7 +63,7 @@ public class CharacterManager {
      */
     public Character getCharacter2(String name) throws BusinessException {
         try {
-            return this.characterJsonDAO.getCharacterByName(name);
+            return this.characterDAO.getCharacterByName(name);
         } catch (PersistenceException | ApiException e) {
             throw new BusinessException(e.getMessage());
         }
@@ -72,14 +75,14 @@ public class CharacterManager {
      * @throws BusinessException Si ocurre un error al verificar el archivo.
      */
     public void verify() throws BusinessException {
-        try {
-            characterJsonDAO.verifyJsonCharacter();
-        } catch (PersistenceException e) {
-            throw new BusinessException(e.getMessage());
+        if (!CharacterJsonDAO.canConnect()) {
+            throw new BusinessException("No connection established");
+        } else {
+            characterDAO = new CharacterJsonDAO();
         }
     }
 
     public void setApiHelper(ConnectorAPIHelper apiHelper) {
-        this.characterJsonDAO.setApiHelper(apiHelper);
+        characterDAO = new CharacterApiDAO(apiHelper);
     }
 }

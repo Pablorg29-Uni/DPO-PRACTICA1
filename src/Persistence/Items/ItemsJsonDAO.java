@@ -21,18 +21,13 @@ import java.util.List;
 public class ItemsJsonDAO implements ItemsDAO {
 
     private final String path = "./src/Files/items.json";
-    private ConnectorAPIHelper apiHelper;
 
-    /**
-     * Verifica la existencia del archivo JSON de items.
-     *
-     * @throws PersistenceException Si el archivo no se encuentra.
-     */
-    public void verifyJsonItem() throws PersistenceException {
+    public static boolean canConnect() {
         try {
-            FileReader fileReader = new FileReader(this.path);
+            new FileReader("./src/Files/items.json");
+            return true;
         } catch (Exception e) {
-            throw new PersistenceException(e.getMessage());
+            return false;
         }
     }
 
@@ -42,26 +37,16 @@ public class ItemsJsonDAO implements ItemsDAO {
      * @return Lista de ítems disponibles.
      * @throws PersistenceException Si ocurre un error al leer el archivo o al parsear los datos.
      */
-    public List<Items> getAllItems() throws PersistenceException, ApiException {
-        if (apiHelper == null) {
-            try {
-                FileReader reader = new FileReader(this.path);
-                Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                Type itemType = new TypeToken<ArrayList<Items>>() {
-                }.getType();
-                return gson.fromJson(reader, itemType);
-            } catch (Exception e) {
-                throw new PersistenceException(e.getMessage());
-            }
-        } else {
-            String items = apiHelper.getRequest("shared/items");
+    public List<Items> getAllItems() throws PersistenceException {
+        try {
+            FileReader reader = new FileReader(this.path);
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            Type itemListType = new TypeToken<ArrayList<Items>>() {}.getType();
-            return gson.fromJson(items, itemListType);
+            Type itemType = new TypeToken<ArrayList<Items>>() {
+            }.getType();
+            return gson.fromJson(reader, itemType);
+        } catch (Exception e) {
+            throw new PersistenceException(e.getMessage());
         }
     }
 
-    public void setApiHelper(ConnectorAPIHelper apiHelper) {
-        this.apiHelper = apiHelper;
-    }
 }

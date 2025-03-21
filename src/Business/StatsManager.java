@@ -5,22 +5,20 @@ import Business.Entities.Team;
 import Exceptions.BusinessException;
 import Exceptions.PersistenceException;
 import Persistence.API.ConnectorAPIHelper;
+import Persistence.Stats.StatsApiDAO;
+import Persistence.Stats.StatsDAO;
 import Persistence.Stats.StatsJsonDAO;
+import Persistence.Team.TeamJsonDAO;
 import edu.salle.url.api.exception.ApiException;
 
 import java.util.List;
+
 /**
  * Gestiona las estadísticas de los equipos y personajes.
  */
 public class StatsManager {
-    private final StatsJsonDAO statsJsonDAO;
+    private StatsDAO statsDAO;
 
-    /**
-     * Constructor de StatsManager. Inicializa el acceso a los datos de estadísticas.
-     */
-    public StatsManager() {
-        this.statsJsonDAO = new StatsJsonDAO();
-    }
 
     /**
      * Elimina las estadísticas de un equipo por su nombre.
@@ -30,7 +28,7 @@ public class StatsManager {
      */
     public void deleteStat(String name) throws BusinessException {
         try {
-            statsJsonDAO.deleteOneStats(name);
+            statsDAO.deleteOneStats(name);
         } catch (PersistenceException | ApiException e) {
             throw new BusinessException(e.getMessage());
         }
@@ -45,7 +43,7 @@ public class StatsManager {
      */
     public Stats getStat(String name) throws BusinessException {
         try {
-            return statsJsonDAO.getStat(name);
+            return statsDAO.getStat(name);
         } catch (PersistenceException | ApiException e) {
             throw new BusinessException(e.getMessage());
         }
@@ -57,10 +55,10 @@ public class StatsManager {
      * @throws BusinessException Si ocurre un error en la verificación.
      */
     public void verify() throws BusinessException {
-        try {
-            statsJsonDAO.verifyJsonStats();
-        } catch (PersistenceException e) {
-            throw new BusinessException(e.getMessage());
+        if (!StatsJsonDAO.canConnect()) {
+            throw new BusinessException("No connection established");
+        } else {
+            statsDAO = new StatsJsonDAO();
         }
     }
 
@@ -72,7 +70,7 @@ public class StatsManager {
      */
     public void createStat(String name) throws BusinessException {
         try {
-            statsJsonDAO.createEmptyStats(name);
+            statsDAO.createEmptyStats(name);
         } catch (PersistenceException | ApiException e) {
             throw new BusinessException(e.getMessage());
         }
@@ -81,18 +79,18 @@ public class StatsManager {
     /**
      * Actualiza las estadísticas de los equipos después de un combate.
      *
-     * @param team1 Equipo 1 participante en el combate.
-     * @param team2 Equipo 2 participante en el combate.
+     * @param team1     Equipo 1 participante en el combate.
+     * @param team2     Equipo 2 participante en el combate.
      * @param victoria1 Número de victorias obtenidas por el equipo 1 en este combate.
      * @param victoria2 Número de victorias obtenidas por el equipo 2 en este combate.
-     * @param ko1 Número de KOs recibidos por el equipo 1.
-     * @param ko2 Número de KOs recibidos por el equipo 2.
+     * @param ko1       Número de KOs recibidos por el equipo 1.
+     * @param ko2       Número de KOs recibidos por el equipo 2.
      * @throws BusinessException Si ocurre un error al actualizar los datos.
      */
     public void actualitzarFinalJoc(Team team1, Team team2, int victoria1, int victoria2, int ko1, int ko2) throws BusinessException {
         List<Stats> stats;
         try {
-            stats = statsJsonDAO.getAllStats();
+            stats = statsDAO.getAllStats();
         } catch (PersistenceException | ApiException e) {
             throw new BusinessException(e.getMessage());
         }
@@ -111,13 +109,13 @@ public class StatsManager {
             }
         }
         try {
-            statsJsonDAO.writeStatsToFile(stats);
+            statsDAO.writeStatsToFile(stats);
         } catch (PersistenceException | ApiException e) {
             throw new BusinessException(e.getMessage());
         }
     }
 
     public void setApiHelper(ConnectorAPIHelper apiHelper) {
-        this.statsJsonDAO.setApiHelper(apiHelper);
+        statsDAO = new StatsApiDAO(apiHelper);
     }
 }

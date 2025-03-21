@@ -8,8 +8,6 @@ import java.util.List;
 
 public interface CharacterDAO {
 
-    void verifyJsonCharacter() throws PersistenceException;
-
 
     List<Character> getAllCharacters() throws PersistenceException, ApiException;
 
