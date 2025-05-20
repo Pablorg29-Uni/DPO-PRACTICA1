@@ -36,11 +36,11 @@ public class Controller {
      * Constructor que inicializa los gestores de negocio y la vista.
      */
     public Controller() {
-        this.combatManager = new CombatManager();
         this.statsmanager = new StatsManager();
         this.itemmanager = new ItemsManager();
         this.charactermanager = new CharacterManager();
         this.teammanager = new TeamManager();
+        this.combatManager = new CombatManager(itemmanager, charactermanager);
         this.view = new View();
     }
 

@@ -24,7 +24,7 @@ public class StatsApiDAO implements StatsDAO {
     }
 
     @Override
-    public List<Stats> getAllStats() throws PersistenceException, ApiException {
+    public List<Stats> getAllStats() throws ApiException {
         String response = apiHelper.getRequest(apiHelper.getId() + "/stats");
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         Type statsListType = new TypeToken<ArrayList<Stats>>() {}.getType();

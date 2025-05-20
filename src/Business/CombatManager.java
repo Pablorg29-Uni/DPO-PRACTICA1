@@ -21,9 +21,9 @@ public class CombatManager {
     /**
      * Constructor de CombatManager. Inicializa los gestores de ítems y personajes.
      */
-    public CombatManager() {
-        this.itemsManager = new ItemsManager();
-        this.characterManager = new CharacterManager();
+    public CombatManager(ItemsManager itemmanager, CharacterManager charactermanager) {
+        this.itemsManager = itemmanager;
+        this.characterManager = charactermanager;
     }
 
     /**
@@ -89,9 +89,15 @@ public class CombatManager {
      * @return Valor de ataque calculado.
      */
     public float calcularAttack(Member member) {
-        float part1 = (member.getCharacter().getWeight() * (1 - member.getMalRebut()) / 10);
-        float part2 = (member.getArma() != null) ? (member.getArma().getPower() / 20.0f) : 0;
-        return Math.max(part1 + part2 + 18, 0);
+        if (member.getArma().getClasse().equals("Superweapon")) {
+            float part1 = (member.getCharacter().getWeight() * (1 - member.getMalRebut()) / 10);
+            float part2 = (member.getArma() != null) ? (member.getArma().getPower() * member.getCharacter().getWeight() / 20.0f) : 0;
+            return Math.max(part1 + part2 + 18, 0);
+        } else {
+            float part1 = (member.getCharacter().getWeight() * (1 - member.getMalRebut()) / 10);
+            float part2 = (member.getArma() != null) ? (member.getArma().getPower() / 20.0f) : 0;
+            return Math.max(part1 + part2 + 18, 0);
+        }
     }
 
     /**
@@ -102,21 +108,28 @@ public class CombatManager {
      * @return Daño final calculado, ajustado por la armadura y el peso del personaje.
      */
     public float calcularFinalDamage(Member member, float attack) {
-        float part1 = (200 * (1 - member.getMalRebut())) / member.getCharacter().getWeight();
-        float part2 = (member.getArmadura() != null) ? (member.getArmadura().getPower() / 20.0f) : 0;
-        float finalDmg = attack - ((part1 + part2) * 1.4f);
-        return finalDmg / 100;
+        if (member.getArmadura().getClasse().equals("Superarmor")) {
+            float part1 = (200 * (1 - member.getMalRebut())) / member.getCharacter().getWeight();
+            float part2 = (member.getArmadura() != null) ? (member.getArmadura().getPower()*member.getCharacter().getWeight() / 20.0f) : 0;
+            float finalDmg = attack - ((part1 + part2) * 1.4f);
+            return finalDmg / 100;
+        } else {
+            float part1 = (200 * (1 - member.getMalRebut())) / member.getCharacter().getWeight();
+            float part2 = (member.getArmadura() != null) ? (member.getArmadura().getPower() / 20.0f) : 0;
+            float finalDmg = attack - ((part1 + part2) * 1.4f);
+            return finalDmg / 100;
+        }
     }
 
     /**
      * Comprueba el estado actual del combate y determina si hay un equipo ganador.
      *
      * @return Código indicando el estado del combate:
-     *         0 - El combate sigue en curso.
-     *         1 - El equipo 1 ha ganado.
-     *         2 - El equipo 2 ha ganado.
-     *         3 - Empate (ambos equipos han sido eliminados).
-     *        -1 - Estado inválido (no debería ocurrir).
+     * 0 - El combate sigue en curso.
+     * 1 - El equipo 1 ha ganado.
+     * 2 - El equipo 2 ha ganado.
+     * 3 - Empate (ambos equipos han sido eliminados).
+     * -1 - Estado inválido (no debería ocurrir).
      */
     public int comprovarEstatCombat() {
         boolean team1KO = true;
@@ -151,17 +164,38 @@ public class CombatManager {
      */
     public void executarCombat() throws BusinessException {
         ArrayList<Boolean> team2isKo = new ArrayList<>();
+        int moreHPmemberTeam1 = -1;
+        int moreHPmemberTeam2 = -1;
 
-        // Registra el estado KO de los miembros del equipo 2 antes de iniciar los ataques
-        for (Member member : team2.getMembers()) {
+        for (int i = 0; i < team2.getMembers().size(); i++) {
+            Member member = team2.getMembers().get(i);
             team2isKo.add(member.isKO());
+            if (moreHPmemberTeam2 == -1 && !member.isKO()) {
+                moreHPmemberTeam2 = i;
+            } else if (moreHPmemberTeam2 != -1) {
+                if (team2.getMembers().get(moreHPmemberTeam2).getMalRebut() < member.getMalRebut() && !member.isKO()) {
+                    moreHPmemberTeam2 = i;
+                }
+            }
         }
+
+        for (int i = 0; i < team1.getMembers().size(); i++) {
+            Member member = team1.getMembers().get(i);
+            if (moreHPmemberTeam1 == -1 && !member.isKO()) {
+                moreHPmemberTeam1 = i;
+            } else if (moreHPmemberTeam1 != -1) {
+                if (team1.getMembers().get(moreHPmemberTeam1).getMalRebut() < member.getMalRebut() && !member.isKO()) {
+                    moreHPmemberTeam1 = i;
+                }
+            }
+        }
+
 
         // Turno de ataque del equipo 1 contra el equipo 2
         for (Member member : team1.getMembers()) {
             if (!member.isKO()) {
                 try {
-                    realitzarAtack(member, team2);
+                    realitzarAtack(member, team2, moreHPmemberTeam2);
                 } catch (BusinessException e) {
                     throw new BusinessException(e.getMessage());
                 }
@@ -175,7 +209,7 @@ public class CombatManager {
             Member member = team2.getMembers().get(i);
             if (!team2isKo.get(i)) {
                 try {
-                    realitzarAtack(member, team1);
+                    realitzarAtack(member, team1, moreHPmemberTeam1);
                 } catch (BusinessException e) {
                     throw new BusinessException(e.getMessage());
                 }
@@ -184,15 +218,17 @@ public class CombatManager {
             }
         }
     }
+
     /**
      * Realiza un ataque balanceado contra un miembro aleatorio del equipo defensor.
      * Se calcula el daño basado en el ataque del atacante y la reducción de daño del defensor.
      * Además, se reduce la durabilidad del arma y la armadura involucradas en el combate.
      *
-     * @param member Atacante que ejecuta el ataque.
+     * @param member       Atacante que ejecuta el ataque.
      * @param teamDefensor Equipo defensor que recibe el ataque.
+     * @param moreHPmember
      */
-    public void atacarBalanced(Member member, Team teamDefensor) {
+    public void atacar(Member member, Team teamDefensor, int moreHPmember) {
         Random rand = new Random();
         int r;
         boolean allKO = true;
@@ -208,6 +244,10 @@ public class CombatManager {
         do {
             r = rand.nextInt(teamDefensor.getMembers().size());
         } while (teamDefensor.getMembers().get(r).isKO());
+
+        if (moreHPmember != -1) {
+            r = moreHPmember;
+        }
 
         float attack = calcularAttack(member);
         float damageReduction = teamDefensor.getMembers().get(r).getDamageReduction();
@@ -272,15 +312,15 @@ public class CombatManager {
     }
 
     /**
-     * Ejecuta un ataque según la estrategia del miembro. Actualmente solo soporta la estrategia "balanced".
-     * Si el miembro no tiene arma, intentará obtener una nueva. Si tiene una armadura y ha recibido mucho daño,
-     * se defenderá en lugar de atacar. De lo contrario, realizará un ataque balanceado.
+     * Ejecuta un ataque según la estrategia del miembro
+     * Las diferentes estrategias son balanced, offensive, defensive o sniper
      *
-     * @param member Miembro que realiza el ataque.
+     * @param member       Miembro que realiza el ataque.
      * @param teamDefensor Equipo que recibe el ataque.
+     * @param moreHPmember Miembro del equipo rival con mas vida
      * @throws BusinessException Si hay un error al obtener un arma nueva.
      */
-    public void realitzarAtack(Member member, Team teamDefensor) throws BusinessException {
+    public void realitzarAtack(Member member, Team teamDefensor, int moreHPmember) throws BusinessException {
         if (member.getStrategy().equals("balanced")) {
             if (member.getArma() == null) {
                 member.setLastAttack(null);
@@ -294,12 +334,35 @@ public class CombatManager {
                     if (member.getMalRebut() >= 0.5 && member.getMalRebut() <= 1.0) {
                         defensarSeguentAtac(member);
                     } else {
-                        atacarBalanced(member, teamDefensor);
+                        atacar(member, teamDefensor, -1);
                     }
                 } else {
-                    atacarBalanced(member, teamDefensor);
+                    atacar(member, teamDefensor, -1);
                 }
             }
+        } else if (member.getStrategy().equals("offensive")) {
+            if (member.getArma() == null) {
+                member.setLastAttack(null);
+                try {
+                    member.setArma(itemsManager.obtenirArmaRandom());
+                } catch (BusinessException e) {
+                    throw new BusinessException(e.getMessage());
+                }
+            } else {
+                atacar(member, teamDefensor, -1);
+            }
+        } else if (member.getStrategy().equals("defensive")) {
+            if (member.getArmadura() != null) {
+                if (member.getMalRebut() <= 1.0) {
+                    defensarSeguentAtac(member);
+                } else {
+                    atacar(member, teamDefensor, -1);
+                }
+            } else {
+                atacar(member, teamDefensor, -1);
+            }
+        } else if (member.getStrategy().equals("sniper")) {
+            atacar(member, teamDefensor, moreHPmember);
         } else {
             System.out.println("Estratègia encara no implementada");
         }

@@ -21,7 +21,6 @@ import java.util.List;
 public class CharacterJsonDAO implements CharacterDAO {
 
     private final String path = "./src/Files/characters.json";
-    private ConnectorAPIHelper apiHelper;
 
     public static boolean canConnect () {
         try {

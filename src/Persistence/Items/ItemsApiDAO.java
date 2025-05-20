@@ -23,12 +23,6 @@ public class ItemsApiDAO implements ItemsDAO {
         this.apiHelper = apiHelper;
     }
 
-    /**
-     * Obtiene la lista de todos los ítems desde la API.
-     *
-     * @return Lista de ítems disponibles.
-     * @throws PersistenceException Si ocurre un error en la conexión con la API.
-     */
     @Override
     public List<Items> getAllItems() throws ApiException {
         String itemsJson = apiHelper.getRequest("shared/items");

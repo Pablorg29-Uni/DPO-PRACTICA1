@@ -19,13 +19,6 @@ public class CharacterManager {
     private CharacterDAO characterDAO;
 
     /**
-     * Constructor de CharacterManager. Inicializa el DAO de personajes.
-     */
-    public CharacterManager() {
-        this.characterDAO = new CharacterJsonDAO();
-    }
-
-    /**
      * Obtiene la lista de todos los personajes.
      *
      * @return Lista de personajes.

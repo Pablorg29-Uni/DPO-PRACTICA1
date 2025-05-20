@@ -5,7 +5,6 @@ import Persistence.API.ConnectorAPIHelper;
 import Exceptions.PersistenceException;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
-import edu.salle.url.api.ApiHelper;
 import edu.salle.url.api.exception.ApiException;
 
 import java.lang.reflect.Type;
@@ -17,20 +16,30 @@ public class TeamApiDAO implements TeamDAO {
 
     private final ConnectorAPIHelper apiHelper;
 
-    public TeamApiDAO(ConnectorAPIHelper  apiHelper) {
+    public TeamApiDAO(ConnectorAPIHelper apiHelper) {
         this.apiHelper = apiHelper;
     }
 
     @Override
-    public List<Team> getAllTeams() throws PersistenceException, ApiException {
+    public List<Team> getAllTeams() throws ApiException {
         String response = apiHelper.getRequest(apiHelper.getId() + "/teams");
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        Type teamListType = new TypeToken<ArrayList<Team>>() {}.getType();
-        return gson.fromJson(response, teamListType);
+        JsonElement jsonElement = JsonParser.parseString(response);
+        JsonArray jsonArray = jsonElement.getAsJsonArray();
+        List<Team> teams = new ArrayList<>();
+        for (JsonElement element : jsonArray) {
+            if (element.isJsonObject()) {
+                Team team = gson.fromJson(element, Team.class);
+                teams.add(team);
+            } else {
+                System.out.println("Skipping unexpected array element: " + element);
+            }
+        }
+        return teams;
     }
 
     @Override
-    public Team getTeam(String name) throws PersistenceException, ApiException {
+    public Team getTeam(String name) throws ApiException {
         String response = apiHelper.getRequest(apiHelper.getId() + "/teams?name=" + name);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         Type teamListType = new TypeToken<ArrayList<Team>>() {}.getType();

@@ -22,13 +22,6 @@ public class ItemsManager {
     private ItemsDAO itemsDAO;
 
     /**
-     * Constructor de ItemsManager. Inicializa el gestor de persistencia de ítems.
-     */
-    public ItemsManager() {
-        this.itemsDAO = new ItemsJsonDAO();
-    }
-
-    /**
      * Obtiene un arma aleatoria de la base de datos de ítems.
      *
      * @return Un objeto {@link Items} representando el arma seleccionada aleatoriamente, o null si no hay armas disponibles.
@@ -43,7 +36,7 @@ public class ItemsManager {
             } catch (PersistenceException | ApiException e) {
                 throw new BusinessException(e.getMessage());
             }
-            allItems.removeIf(i -> i.getDurability() < 1 || i.getClasse().equals("Armor"));
+            allItems.removeIf(i -> i.getDurability() < 1 || i.getClasse().equals("Armor") || i.getClasse().equals("Superarmor"));
             if (allItems.isEmpty()) {
                 return null;
             } else {
@@ -68,7 +61,7 @@ public class ItemsManager {
             } catch (PersistenceException | ApiException e) {
                 throw new BusinessException(e.getMessage());
             }
-            allItems.removeIf(i -> i.getDurability() < 1 || i.getClasse().equals("Weapon"));
+            allItems.removeIf(i -> i.getDurability() < 1 || i.getClasse().equals("Weapon") || i.getClasse().equals("Armor") || i.getClasse().equals("Superarmor"));
             if (allItems.isEmpty()) {
                 return null;
             } else {

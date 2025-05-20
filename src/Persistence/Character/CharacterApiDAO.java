@@ -1,7 +1,6 @@
 package Persistence.Character;
 
 import Business.Entities.Character;
-import Exceptions.PersistenceException;
 import Persistence.API.ConnectorAPIHelper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
