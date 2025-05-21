@@ -25,7 +25,6 @@ public class Member {
         this.character = null;
         this.armadura = null;
         this.arma = null;
-        this.strategy = null;
         this.role = null;
         this.lastAttack = null;
     }
@@ -35,9 +34,10 @@ public class Member {
      *
      * @param id Identificador del miembro.
      */
-    public Member(long id) {
+    public Member(long id, String strategy) {
         this();
         this.id = id;
+        this.strategy = strategy;
     }
 
     /**

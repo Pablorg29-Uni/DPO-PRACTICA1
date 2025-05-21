@@ -24,15 +24,18 @@ public class TeamApiDAO implements TeamDAO {
     public List<Team> getAllTeams() throws ApiException {
         String response = apiHelper.getRequest(apiHelper.getId() + "/teams");
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        JsonElement jsonElement = JsonParser.parseString(response);
-        JsonArray jsonArray = jsonElement.getAsJsonArray();
+        JsonArray jsonArray = JsonParser.parseString(response).getAsJsonArray();
+
         List<Team> teams = new ArrayList<>();
-        for (JsonElement element : jsonArray) {
-            if (element.isJsonObject()) {
-                Team team = gson.fromJson(element, Team.class);
-                teams.add(team);
+        for (JsonElement elt : jsonArray) {
+            if (elt.isJsonArray()) {
+                for (JsonElement inner : elt.getAsJsonArray()) {
+                    teams.add(gson.fromJson(inner, Team.class));
+                }
+            } else if (elt.isJsonObject()) {
+                teams.add(gson.fromJson(elt, Team.class));
             } else {
-                System.out.println("Skipping unexpected array element: " + element);
+                System.out.println("Skipping unexpected element: " + elt);
             }
         }
         return teams;
@@ -42,7 +45,8 @@ public class TeamApiDAO implements TeamDAO {
     public Team getTeam(String name) throws ApiException {
         String response = apiHelper.getRequest(apiHelper.getId() + "/teams?name=" + name);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        Type teamListType = new TypeToken<ArrayList<Team>>() {}.getType();
+        Type teamListType = new TypeToken<ArrayList<Team>>() {
+        }.getType();
         List<Team> teams = gson.fromJson(response, teamListType);
         return teams.get(0);
     }

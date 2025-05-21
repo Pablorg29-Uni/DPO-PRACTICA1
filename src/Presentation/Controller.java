@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
+
 /**
  * Controlador principal del programa.
  * Se encarga de coordinar la lógica del programa y la interacción con los datos.
@@ -105,6 +106,7 @@ public class Controller {
         String teamName = scanner.nextLine();
 
         long[] ids = new long[4];
+        String[] strats = new String[4];
         for (int i = 0; i < 4; i++) {
             System.out.print("\nPlease enter name or id for character #" + (i + 1) + ": ");
             String input = scanner.nextLine();
@@ -120,15 +122,18 @@ public class Controller {
                     throw new PresentationException(ex.getMessage());
                 }
             }
+            System.out.print("|Please enter the strategy for character #" + (i + 1) + " (balanced | offensive | defensive | sniper): ");
+            strats[i] = scanner.nextLine();
         }
         try {
-            teammanager.createTeam(teamName, ids[0], ids[1], ids[2], ids[3]);
+            teammanager.createTeam(teamName, ids[0], ids[1], ids[2], ids[3], strats);
             System.out.println("\nTeam " + teamName + " has been successfully created!");
         } catch (BusinessException e) {
             throw new PresentationException(e.getMessage());
         }
 
     }
+
     /**
      * Muestra la lista de equipos disponibles y permite al usuario seleccionar uno
      * para ver sus detalles, incluyendo sus miembros y estadísticas.
@@ -138,7 +143,7 @@ public class Controller {
     public void mostrarEquipos() throws PresentationException {
         Scanner scanner = new Scanner(System.in);
 
-        List<Team> teams = null;
+        List<Team> teams;
         try {
             teams = teammanager.showTeams();
         } catch (BusinessException e) {
@@ -191,6 +196,7 @@ public class Controller {
             System.out.println("\nInvalid option. Returning to the previous menu...");
         }
     }
+
     /**
      * Permite eliminar un equipo por su nombre. Solicita confirmación antes de proceder con la eliminación.
      *
@@ -219,6 +225,7 @@ public class Controller {
             System.out.println("\nTeam deletion cancelled.");
         }
     }
+
     /**
      * Muestra la lista de ítems disponibles y permite al usuario seleccionar uno para ver sus detalles.
      * Si no hay ítems disponibles, informa al usuario.
@@ -285,6 +292,7 @@ public class Controller {
 
         System.out.println("Returning to the previous menu...");
     }
+
     /**
      * Simula un combate entre dos equipos seleccionados por el usuario.
      * Se presentan los equipos disponibles, se eligen dos equipos, y luego se ejecutan rondas de combate
@@ -349,11 +357,11 @@ public class Controller {
             long id1 = selectedTeam2.getMembers().get(1).getId();
             long id2 = selectedTeam2.getMembers().get(2).getId();
             long id3 = selectedTeam2.getMembers().get(3).getId();
-            selectedTeam2 = new Team(selectedTeam2.getName(), id0, id1, id2, id3);
-            selectedTeam2.getMembers().get(0).setStrategy(selectedTeam1.getMembers().get(0).getStrategy());
-            selectedTeam2.getMembers().get(1).setStrategy(selectedTeam1.getMembers().get(1).getStrategy());
-            selectedTeam2.getMembers().get(2).setStrategy(selectedTeam1.getMembers().get(2).getStrategy());
-            selectedTeam2.getMembers().get(3).setStrategy(selectedTeam1.getMembers().get(3).getStrategy());
+            String s1 = selectedTeam1.getMembers().get(0).getStrategy();
+            String s2 = selectedTeam2.getMembers().get(1).getStrategy();
+            String s3 = selectedTeam2.getMembers().get(2).getStrategy();
+            String s4 = selectedTeam2.getMembers().get(3).getStrategy();
+            selectedTeam2 = new Team(selectedTeam2.getName(), id0, id1, id2, id3, s1, s2, s3, s4);
         }
 
         try {
@@ -448,6 +456,7 @@ public class Controller {
         scanner.nextLine();
         System.out.println();
     }
+
     /**
      * Muestra los miembros de un equipo, asignándoles un personaje, un arma y una armadura aleatoria.
      *
@@ -469,6 +478,7 @@ public class Controller {
             System.out.println("\tArmor: " + (member.getArmadura() != null ? member.getArmadura().getName() : "None"));
         }
     }
+
     /**
      * Actualiza las estadísticas del combate tras su finalización.
      *
@@ -505,6 +515,7 @@ public class Controller {
         }
 
     }
+
     /**
      * Muestra el resumen de los ataques realizados por un equipo en la ronda actual.
      *
@@ -524,6 +535,7 @@ public class Controller {
             }
         }
     }
+
     /**
      * Muestra los objetos rotos (armas y armaduras) de los miembros de un equipo tras la ronda actual.
      *
@@ -543,6 +555,7 @@ public class Controller {
         }
         view.mostrarItems(brokenItems);
     }
+
     /**
      * Muestra los miembros que han quedado fuera de combate (KO) en ambos equipos.
      *
@@ -591,6 +604,7 @@ public class Controller {
         }
         view.mostrarTeam(teamInfo);
     }
+
     /**
      * Muestra la información final del equipo después del combate,
      * incluyendo el estado de cada miembro y el porcentaje de daño recibido.
@@ -615,6 +629,7 @@ public class Controller {
         }
         view.mostrarFinal(finalInfo);
     }
+
     /**
      * Verifica la integridad de los archivos o datos relacionados con personajes,
      * ítems, estadísticas y equipos, asegurando que todo esté en orden antes del combate.
@@ -637,6 +652,6 @@ public class Controller {
         charactermanager.setApiHelper(apiHelper);
         itemmanager.setApiHelper(apiHelper);
         statsmanager.setApiHelper(apiHelper);
-        teammanager.setApiHelper(apiHelper);
+        teammanager.setApiHelper(apiHelper, statsmanager);
     }
 }

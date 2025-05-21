@@ -11,19 +11,19 @@ public class Team {
     /**
      * Constructor de la clase Team.
      *
-     * @param name Nombre del equipo.
-     * @param id1 ID del primer miembro.
-     * @param id2 ID del segundo miembro.
-     * @param id3 ID del tercer miembro.
-     * @param id4 ID del cuarto miembro.
+     * @param name   Nombre del equipo.
+     * @param id1    ID del primer miembro.
+     * @param id2    ID del segundo miembro.
+     * @param id3    ID del tercer miembro.
+     * @param id4    ID del cuarto miembro.
      */
-    public Team(String name, long id1, long id2, long id3, long id4) {
+    public Team(String name, long id1, long id2, long id3, long id4, String s1, String s2, String s3, String s4) {
         this.name = name;
         members = new ArrayList<>();
-        members.add(new Member(id1));
-        members.add(new Member(id2));
-        members.add(new Member(id3));
-        members.add(new Member(id4));
+        members.add(new Member(id1, s1));
+        members.add(new Member(id2, s2));
+        members.add(new Member(id3, s3));
+        members.add(new Member(id4, s4));
     }
 
     /**

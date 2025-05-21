@@ -19,6 +19,7 @@ import java.util.List;
  */
 public class TeamManager {
     private TeamDAO teamDAO;
+    private StatsManager statsManager;
 
     /**
      * Verifica la integridad de los datos de los equipos en el sistema de persistencia.
@@ -42,7 +43,6 @@ public class TeamManager {
      */
     public boolean eliminateTeam(String name) throws BusinessException {
         try {
-            StatsManager statsManager = new StatsManager();
             statsManager.deleteStat(name);
             return teamDAO.eliminateTeam(name);
         } catch (Exception e) {
@@ -53,17 +53,17 @@ public class TeamManager {
     /**
      * Crea un nuevo equipo con los jugadores especificados.
      *
-     * @param name Nombre del equipo.
-     * @param id1 ID del primer jugador.
-     * @param id2 ID del segundo jugador.
-     * @param id3 ID del tercer jugador.
-     * @param id4 ID del cuarto jugador.
+     * @param name   Nombre del equipo.
+     * @param id1    ID del primer jugador.
+     * @param id2    ID del segundo jugador.
+     * @param id3    ID del tercer jugador.
+     * @param id4    ID del cuarto jugador.
+     * @param strats
      * @throws BusinessException Si ocurre un error durante la creación.
      */
-    public void createTeam(String name, long id1, long id2, long id3, long id4) throws BusinessException {
+    public void createTeam(String name, long id1, long id2, long id3, long id4, String[] strats) throws BusinessException {
         try {
-            Team team = new Team(name, id1, id2, id3, id4);
-            StatsManager statsManager = new StatsManager();
+            Team team = new Team(name, id1, id2, id3, id4, strats[0], strats[1], strats[2], strats[3]);
             statsManager.createStat(name);
             teamDAO.saveTeam(team);
         } catch (PersistenceException | ApiException e) {
@@ -126,7 +126,9 @@ public class TeamManager {
         return matchingTeams;
     }
 
-    public void setApiHelper(ConnectorAPIHelper apiHelper) {
+
+    public void setApiHelper(ConnectorAPIHelper apiHelper, StatsManager statsManager) {
         this.teamDAO = new TeamApiDAO(apiHelper);
+        this.statsManager = statsManager;
     }
 }

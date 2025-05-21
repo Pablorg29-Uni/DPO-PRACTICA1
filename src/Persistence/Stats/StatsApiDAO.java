@@ -24,11 +24,17 @@ public class StatsApiDAO implements StatsDAO {
     }
 
     @Override
-    public List<Stats> getAllStats() throws ApiException {
+    public List<Stats> getAllStats() throws ApiException, PersistenceException {
         String response = apiHelper.getRequest(apiHelper.getId() + "/stats");
+        System.out.println(response);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        Type statsListType = new TypeToken<ArrayList<Stats>>() {}.getType();
-        return gson.fromJson(response, statsListType);
+        Type nestedType = new TypeToken<List<List<Stats>>>() {}.getType();
+        List<List<Stats>> nested = gson.fromJson(response, nestedType);
+        if (nested == null || nested.isEmpty()) {
+            throw new PersistenceException("NO HI HA RESULTATS");
+        } else {
+            return nested.getFirst();
+        }
     }
 
     @Override
