@@ -89,7 +89,7 @@ public class CombatManager {
      * @return Valor de ataque calculado.
      */
     public float calcularAttack(Member member) {
-        if (member.getArma().getClasse().equals("Superweapon")) {
+        if (member.getArma() != null && member.getArma().getClasse().equals("Superweapon")) {
             float part1 = (member.getCharacter().getWeight() * (1 - member.getMalRebut()) / 10);
             float part2 = (member.getArma() != null) ? (member.getArma().getPower() * member.getCharacter().getWeight() / 20.0f) : 0;
             return Math.max(part1 + part2 + 18, 0);
@@ -108,7 +108,7 @@ public class CombatManager {
      * @return Daño final calculado, ajustado por la armadura y el peso del personaje.
      */
     public float calcularFinalDamage(Member member, float attack) {
-        if (member.getArmadura().getClasse().equals("Superarmor")) {
+        if (member.getArmadura() != null && member.getArmadura().getClasse().equals("Superarmor")) {
             float part1 = (200 * (1 - member.getMalRebut())) / member.getCharacter().getWeight();
             float part2 = (member.getArmadura() != null) ? (member.getArmadura().getPower()*member.getCharacter().getWeight() / 20.0f) : 0;
             float finalDmg = attack - ((part1 + part2) * 1.4f);

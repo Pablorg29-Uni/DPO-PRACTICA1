@@ -70,8 +70,8 @@ public class View {
      */
     public void equipo(ArrayList<Member> members, Character character, int i) {
         if (character != null) {
-            String role = members.get(i).getRole() != null ? members.get(i).getRole() : "Balanced";
-            System.out.printf("Character #%d: %-30s (%s)%n", (i + 1), character.getName(), role);
+            String strategy = members.get(i).getStrategy() != null ? members.get(i).getStrategy() : "Balanced";
+            System.out.printf("Character #%d: %-30s (%s)%n", (i + 1), character.getName(), strategy);
         } else {
             System.out.println("Character #" + (i + 1) + ": Unknown Character (ID: " + members.get(i).getCharacter().getId() + ")");
         }

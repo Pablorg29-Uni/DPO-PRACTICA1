@@ -1,18 +1,26 @@
 package Business.Entities;
+
+import com.google.gson.annotations.Expose;
+
 /**
  * Representa a un miembro dentro del sistema.
  *
  * Contiene información relevante sobre el miembro, como su nombre, rol, etc.
  */
 public class Member {
+    @Expose
     private long id;
     private Character character;
     private Items armadura;
     private Items arma;
+    @Expose
     private String strategy;
+    @Expose(serialize = false, deserialize = false)
     private float malRebut;
     private String role;
+    @Expose(serialize = false, deserialize = false)
     private boolean isKO;
+    @Expose(serialize = false, deserialize = false)
     private float damageReduction;
     private LastAttack lastAttack;
     private String nameArma;

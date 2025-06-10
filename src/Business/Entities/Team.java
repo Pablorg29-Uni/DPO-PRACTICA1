@@ -8,6 +8,10 @@ public class Team {
     private String name;
     private ArrayList<Member> members;
 
+    public Team() {
+        this.members = new ArrayList<>();
+    }
+
     /**
      * Constructor de la clase Team.
      *
