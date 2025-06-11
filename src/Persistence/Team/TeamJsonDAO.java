@@ -33,7 +33,7 @@ public class TeamJsonDAO implements TeamDAO {
     @Override
     public List<Team> getAllTeams() throws PersistenceException {
         try (FileReader reader = new FileReader(this.path)) {
-            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
             Type teamListType = new TypeToken<ArrayList<Team>>() {}.getType();
             return gson.fromJson(reader, teamListType);
         } catch (Exception e) {

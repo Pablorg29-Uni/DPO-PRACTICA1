@@ -27,57 +27,28 @@ public class StatsApiDAO implements StatsDAO {
     }
 
     @Override
-    public List<Stats> getAllStats() throws ApiException, PersistenceException {
+    public List<Stats> getAllStats() throws ApiException {
         String response = apiHelper.getRequest(apiHelper.getId() + "/stats");
-        System.out.println(response);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
-        List<Stats> stats = new ArrayList<>();
-
-        try {
-            // First, try to parse as a List
-            Type statsListType = new TypeToken<List<Stats>>() {}.getType();
-            stats = gson.fromJson(response, statsListType);
-        } catch (JsonSyntaxException e) {
-            try {
-                // If that fails, try to parse as a single Stats object
-                Stats singleStat = gson.fromJson(response, Stats.class);
-                if (singleStat != null) {
-                    stats.add(singleStat);
-                }
-            } catch (JsonSyntaxException e2) {
-                // If both fail, try the original nested array approach
-                try {
-                    Type nestedType = new TypeToken<List<List<Stats>>>() {}.getType();
-                    List<List<Stats>> nested = gson.fromJson(response, nestedType);
-                    if (nested != null && !nested.isEmpty()) {
-                        stats = nested.get(0);
-                    }
-                } catch (Exception e3) {
-                    throw new PersistenceException("Unable to parse stats response: " + response);
-                }
-            }
-        }
-
-        if (stats == null || stats.isEmpty()) {
-            // Return empty list instead of throwing exception
-            return new ArrayList<>();
-        }
-        return stats;
+        Type statsListType = new TypeToken<ArrayList<Stats>>() {
+        }.getType();
+        return gson.fromJson(response, statsListType);
     }
 
     @Override
     public void deleteOneStats(String name) throws PersistenceException, ApiException {
-        String response = apiHelper.deleteRequest(apiHelper.getId() + "/stats?name=" + name);
+        String encodedName = URLEncoder.encode(name, StandardCharsets.UTF_8);
+        String response = apiHelper.deleteRequest(apiHelper.getId() + "/stats?name=" + encodedName);
         if (!response.equals("{\"result\":\"OK\"}")) {
             throw new PersistenceException("Stat could not be deleted.");
         }
     }
 
+
     @Override
     public void createEmptyStats(String teamName) throws PersistenceException, ApiException {
         Stats newStat = new Stats(teamName, 0, 0, 0, 0);
-        List<Stats> stats = new ArrayList<>();
+        List<Stats> stats = getAllStats();
         stats.add(newStat);
         writeStatsToFile(stats);
     }
@@ -87,7 +58,8 @@ public class StatsApiDAO implements StatsDAO {
         String encodedName = URLEncoder.encode(name, StandardCharsets.UTF_8);
         String response = apiHelper.getRequest(apiHelper.getId() + "/stats?name=" + encodedName);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        Type statsListType = new TypeToken<ArrayList<Stats>>() {}.getType();
+        Type statsListType = new TypeToken<ArrayList<Stats>>() {
+        }.getType();
         List<Stats> stats = gson.fromJson(response, statsListType);
 
         if (stats.isEmpty()) {
@@ -99,15 +71,18 @@ public class StatsApiDAO implements StatsDAO {
     @Override
     public void writeStatsToFile(List<Stats> stats) throws PersistenceException, ApiException {
         Gson gson = new Gson();
-        String body;
-        if (stats.size() == 1) {
-            body = gson.toJson(stats.getFirst());
-        } else {
-            body = gson.toJson(stats);
+
+        List<Stats> existingStats = getAllStats();
+        for (Stats stat : existingStats) {
+            deleteOneStats(stat.getName());
         }
-        String response = apiHelper.postRequest(apiHelper.getId() + "/stats", body);
-        if (!response.equals("{\"result\":\"OK\"}")) {
-            throw new PersistenceException("Stats could not be saved.");
+
+        for (Stats stat : stats) {
+            String body = gson.toJson(stat);  // Individual stat object
+            String response = apiHelper.postRequest(apiHelper.getId() + "/stats", body);
+            if (!response.equals("{\"result\":\"OK\"}")) {
+                throw new PersistenceException("Stats could not be saved for: " + stat.getName());
+            }
         }
     }
 }

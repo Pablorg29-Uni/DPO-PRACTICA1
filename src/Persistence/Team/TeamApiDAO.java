@@ -69,16 +69,9 @@ public class TeamApiDAO implements TeamDAO {
     }
 
     @Override
-    public Team getTeam(String name) throws ApiException {
+    public Team getTeam(String name) throws ApiException, PersistenceException {
         String encodedName = URLEncoder.encode(name, StandardCharsets.UTF_8);
         String response = apiHelper.getRequest(apiHelper.getId() + "/teams?name=" + encodedName);
-        System.out.println("DEBUG getTeam(" + name + ") response: " + response);
-
-        if (response == null || response.isEmpty() || response.equals("[]")) {
-            System.out.println("DEBUG: Empty response for team: " + name);
-            return null;
-        }
-
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
         try {
@@ -89,7 +82,6 @@ public class TeamApiDAO implements TeamDAO {
 
             if (teams != null && !teams.isEmpty()) {
                 Team team = teams.get(0);
-                System.out.println("DEBUG: Found team: " + team.getName());
                 return team;
             }
         } catch (JsonSyntaxException e) {
@@ -97,15 +89,13 @@ public class TeamApiDAO implements TeamDAO {
             try {
                 Team team = gson.fromJson(response, Team.class);
                 if (team != null) {
-                    System.out.println("DEBUG: Found single team: " + team.getName());
                     return team;
                 }
             } catch (JsonSyntaxException e2) {
-                System.out.println("DEBUG: Failed to parse team response: " + e2.getMessage());
+                throw new PersistenceException(e2.getMessage());
             }
         }
 
-        System.out.println("DEBUG: No team found for: " + name);
         return null;
     }
 
