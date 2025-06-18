@@ -1,9 +1,9 @@
 package Business.Entities;
 
 import com.google.gson.annotations.SerializedName;
+
 /**
- * Representa un objeto dentro del juego.
- * Contiene toda la información necesaria sobre el ítem.
+ * Modelo que representa un ítem del juego con sus propiedades básicas.
  */
 public class Items {
     private long id;

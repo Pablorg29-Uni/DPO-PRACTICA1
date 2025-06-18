@@ -5,34 +5,35 @@ import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 
-
 /**
- * Clase principal que inicia la aplicación.
- * <p>
- * Se encarga de ejecutar el menú principal y manejar posibles errores de inicio.
+ * Clase principal que inicia la aplicación ejecutando el menú principal.
+ * Maneja errores críticos de inicio, como la inaccesibilidad del archivo characters.json.
  */
 public class Main {
+
     /**
-     * Punto de entrada principal de la aplicación.
-     * <p>
-     * Se encarga de inicializar el menú y manejar posibles errores de presentación.
-     * Si el archivo `characters.json` no se puede acceder, se muestra un mensaje de error
-     * y la aplicación se detiene de manera segura.
+     * Punto de entrada de la aplicación.
+     * Inicializa y ejecuta el menú; en caso de error muestra mensaje y termina la ejecución.
      *
-     * @param args Argumentos de la línea de comandos (no utilizados en esta aplicación).
+     * @param args Argumentos de línea de comandos (no usados).
      */
     public static void main(String[] args) {
         Menu menu = new Menu();
-        //try {restoreBroApiData("S1-Project_29");} catch (Exception _) {}
         try {
             menu.mostrarMenu();
         } catch (PresentationException e) {
             System.out.println("Error: The characters.json file can’t be accessed.");
             System.out.println("Shutting down...");
         }
-
     }
 
+    /**
+     * Restaura datos en la API para un grupo dado, eliminando equipos y estadísticas actuales
+     * y creando equipos y estadísticas predefinidas.
+     *
+     * @param groupId Identificador del grupo para la URL de la API.
+     * @throws Exception Si ocurre un error en las conexiones o peticiones HTTP.
+     */
     public static void restoreBroApiData(String groupId) throws Exception {
         final String API = "https://balandrau.salle.url.edu/dpoo/" + groupId;
 
@@ -113,16 +114,29 @@ public class Main {
         System.out.println("Restoration done!");
     }
 
+    /**
+     * Obtiene la cantidad de objetos (equipos o stats) en la URL dada consultando la API.
+     *
+     * @param url URL para obtener la cantidad de elementos.
+     * @return Número de objetos en la respuesta JSON.
+     * @throws Exception Si ocurre un error en la conexión o lectura.
+     */
     private static int getCount(String url) throws Exception {
         HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
         con.setRequestMethod("GET");
         int status = con.getResponseCode();
         if (status != 200) return 0;
         String resp = new String(con.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
-        // crude array count: splits on "{" (since each object starts with {), and subtracts 1 for the opening [
+        // Cuenta básica de objetos JSON: divide por "{" y resta 1 (por el [ inicial)
         return resp.split("\\{").length - 1;
     }
 
+    /**
+     * Envía una petición DELETE a la URL especificada.
+     *
+     * @param url URL destino para la petición DELETE.
+     * @throws Exception Si ocurre un error en la conexión.
+     */
     private static void sendDelete(String url) throws Exception {
         HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
         con.setRequestMethod("DELETE");
@@ -130,6 +144,13 @@ public class Main {
         System.out.println("DELETE " + url + " HTTP " + status);
     }
 
+    /**
+     * Envía una petición POST con contenido JSON a la URL especificada.
+     *
+     * @param url  URL destino para la petición POST.
+     * @param json Contenido JSON que se enviará en el cuerpo de la petición.
+     * @throws Exception Si ocurre un error en la conexión o escritura.
+     */
     private static void sendPost(String url, String json) throws Exception {
         HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
         con.setRequestMethod("POST");
@@ -141,5 +162,4 @@ public class Main {
         int status = con.getResponseCode();
         System.out.println("POST " + url + " HTTP " + status);
     }
-
 }

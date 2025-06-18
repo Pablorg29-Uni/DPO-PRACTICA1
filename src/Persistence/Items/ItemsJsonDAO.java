@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Maneja la persistencia de los ítems en formato JSON.
- * Se encarga de leer y escribir la información de los ítems en el archivo correspondiente.
+ * DAO para persistencia de ítems en archivo JSON.
+ * Permite leer la lista completa de ítems desde un archivo local.
  */
 public class ItemsJsonDAO implements ItemsDAO {
 
@@ -32,17 +32,16 @@ public class ItemsJsonDAO implements ItemsDAO {
     }
 
     /**
-     * Obtiene la lista de todos los ítems almacenados en el archivo JSON.
+     * Lee todos los ítems del archivo JSON.
      *
-     * @return Lista de ítems disponibles.
-     * @throws PersistenceException Si ocurre un error al leer el archivo o al parsear los datos.
+     * @return lista de ítems.
+     * @throws PersistenceException si falla la lectura o parseo.
      */
     public List<Items> getAllItems() throws PersistenceException {
         try {
             FileReader reader = new FileReader(this.path);
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            Type itemType = new TypeToken<ArrayList<Items>>() {
-            }.getType();
+            Type itemType = new TypeToken<ArrayList<Items>>() {}.getType();
             return gson.fromJson(reader, itemType);
         } catch (Exception e) {
             throw new PersistenceException(e.getMessage());

@@ -58,7 +58,7 @@ public class TeamManager {
      * @param id2    ID del segundo jugador.
      * @param id3    ID del tercer jugador.
      * @param id4    ID del cuarto jugador.
-     * @param strats
+     * @param strats Estrategias del equipo, un array de 4 strings.
      * @throws BusinessException Si ocurre un error durante la creación.
      */
     public void createTeam(String name, long id1, long id2, long id3, long id4, String[] strats) throws BusinessException {
@@ -126,7 +126,12 @@ public class TeamManager {
         return matchingTeams;
     }
 
-
+    /**
+     * Establece el helper para conectar con la API externa y el manejador de estadísticas.
+     *
+     * @param apiHelper    Instancia de {@link ConnectorAPIHelper} para la conexión con la API.
+     * @param statsManager Instancia de {@link StatsManager} para manejar estadísticas.
+     */
     public void setApiHelper(ConnectorAPIHelper apiHelper, StatsManager statsManager) {
         this.teamDAO = new TeamApiDAO(apiHelper);
         this.statsManager = statsManager;

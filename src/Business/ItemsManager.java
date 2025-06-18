@@ -7,7 +7,6 @@ import Persistence.API.ConnectorAPIHelper;
 import Persistence.Items.ItemsApiDAO;
 import Persistence.Items.ItemsDAO;
 import Persistence.Items.ItemsJsonDAO;
-import Persistence.Team.TeamJsonDAO;
 import edu.salle.url.api.exception.ApiException;
 
 import java.util.ArrayList;
@@ -98,6 +97,11 @@ public class ItemsManager {
         }
     }
 
+    /**
+     * Establece el helper para conectar con la API externa de ítems.
+     *
+     * @param apiHelper Instancia de {@link ConnectorAPIHelper} utilizada para establecer la conexión con la API.
+     */
     public void setApiHelper(ConnectorAPIHelper apiHelper) {
         this.itemsDAO = new ItemsApiDAO(apiHelper);
     }

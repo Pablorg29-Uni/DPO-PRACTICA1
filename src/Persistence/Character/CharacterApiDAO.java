@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Maneja la persistencia de personajes a través de la API.
+ * DAO para manejar la persistencia de personajes vía API.
  */
 public class CharacterApiDAO implements CharacterDAO {
 
@@ -26,7 +26,7 @@ public class CharacterApiDAO implements CharacterDAO {
      * Obtiene todos los personajes desde la API.
      *
      * @return Lista de personajes.
-     * @throws ApiException Si ocurre un error en la API.
+     * @throws ApiException en caso de fallo en la API.
      */
     @Override
     public List<Character> getAllCharacters() throws ApiException {
@@ -39,9 +39,9 @@ public class CharacterApiDAO implements CharacterDAO {
     /**
      * Obtiene un personaje por su ID desde la API.
      *
-     * @param id Identificador del personaje.
-     * @return Personaje obtenido.
-     * @throws ApiException Si ocurre un error en la API.
+     * @param id ID del personaje.
+     * @return Personaje encontrado.
+     * @throws ApiException en caso de fallo en la API.
      */
     @Override
     public Character getCharacterById(long id) throws ApiException {
@@ -49,15 +49,15 @@ public class CharacterApiDAO implements CharacterDAO {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         Type characterListType = new TypeToken<ArrayList<Character>>() {}.getType();
         List<Character> characters = gson.fromJson(response, characterListType);
-        return characters.getFirst();
+        return characters.isEmpty() ? null : characters.get(0);
     }
 
     /**
      * Obtiene un personaje por su nombre desde la API.
      *
      * @param name Nombre del personaje.
-     * @return Personaje obtenido.
-     * @throws ApiException Si ocurre un error en la API.
+     * @return Personaje encontrado.
+     * @throws ApiException en caso de fallo en la API.
      */
     @Override
     public Character getCharacterByName(String name) throws ApiException {
@@ -65,6 +65,6 @@ public class CharacterApiDAO implements CharacterDAO {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         Type characterListType = new TypeToken<ArrayList<Character>>() {}.getType();
         List<Character> characters = gson.fromJson(response, characterListType);
-        return characters.getFirst();
+        return characters.isEmpty() ? null : characters.get(0);
     }
 }

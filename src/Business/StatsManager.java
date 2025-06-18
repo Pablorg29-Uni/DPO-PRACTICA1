@@ -8,7 +8,6 @@ import Persistence.API.ConnectorAPIHelper;
 import Persistence.Stats.StatsApiDAO;
 import Persistence.Stats.StatsDAO;
 import Persistence.Stats.StatsJsonDAO;
-import Persistence.Team.TeamJsonDAO;
 import edu.salle.url.api.exception.ApiException;
 
 import java.util.List;
@@ -18,7 +17,6 @@ import java.util.List;
  */
 public class StatsManager {
     private StatsDAO statsDAO;
-
 
     /**
      * Elimina las estadísticas de un equipo por su nombre.
@@ -38,7 +36,7 @@ public class StatsManager {
      * Recupera las estadísticas de un equipo por su nombre.
      *
      * @param name Nombre del equipo cuyas estadísticas se desean obtener.
-     * @return Objeto Stats con las estadísticas del equipo.
+     * @return Objeto {@link Stats} con las estadísticas del equipo.
      * @throws BusinessException Si ocurre un error al recuperar los datos.
      */
     public Stats getStat(String name) throws BusinessException {
@@ -115,6 +113,11 @@ public class StatsManager {
         }
     }
 
+    /**
+     * Establece el helper para conectar con la API externa de estadísticas.
+     *
+     * @param apiHelper Instancia de {@link ConnectorAPIHelper} para la conexión con la API.
+     */
     public void setApiHelper(ConnectorAPIHelper apiHelper) {
         statsDAO = new StatsApiDAO(apiHelper);
     }

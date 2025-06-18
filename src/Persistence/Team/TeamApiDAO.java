@@ -14,15 +14,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
+/**
+ * DAO para la persistencia de equipos mediante la API.
+ * Proporciona métodos para obtener, guardar y eliminar equipos.
+ */
 public class TeamApiDAO implements TeamDAO {
 
     private final ConnectorAPIHelper apiHelper;
 
+    /**
+     * Constructor que recibe un helper para la conexión con la API.
+     *
+     * @param apiHelper Helper para realizar las llamadas a la API.
+     */
     public TeamApiDAO(ConnectorAPIHelper apiHelper) {
         this.apiHelper = apiHelper;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Team> getAllTeams() throws ApiException {
         String response = apiHelper.getRequest(apiHelper.getId() + "/teams");
@@ -36,13 +47,11 @@ public class TeamApiDAO implements TeamDAO {
 
             for (JsonElement element : jsonArray) {
                 if (element.isJsonObject()) {
-                    // It's a team object
                     Team team = gson.fromJson(element, Team.class);
                     if (team != null && team.getName() != null && !team.getName().isEmpty()) {
                         teams.add(team);
                     }
                 } else if (element.isJsonArray()) {
-                    // It's a nested array - process its contents
                     JsonArray nestedArray = element.getAsJsonArray();
                     for (JsonElement nestedElement : nestedArray) {
                         if (nestedElement.isJsonObject()) {
@@ -56,7 +65,7 @@ public class TeamApiDAO implements TeamDAO {
             }
         }
 
-        // Remove duplicates based on team name
+        // Eliminar duplicados por nombre de equipo
         return teams.stream()
                 .collect(Collectors.toMap(
                         Team::getName,
@@ -68,6 +77,9 @@ public class TeamApiDAO implements TeamDAO {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Team getTeam(String name) throws ApiException, PersistenceException {
         String encodedName = URLEncoder.encode(name, StandardCharsets.UTF_8);
@@ -75,17 +87,13 @@ public class TeamApiDAO implements TeamDAO {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
         try {
-            // Try parsing as array first
-            Type teamListType = new TypeToken<ArrayList<Team>>() {
-            }.getType();
+            Type teamListType = new TypeToken<ArrayList<Team>>() {}.getType();
             List<Team> teams = gson.fromJson(response, teamListType);
 
             if (teams != null && !teams.isEmpty()) {
-                Team team = teams.get(0);
-                return team;
+                return teams.get(0);
             }
         } catch (JsonSyntaxException e) {
-            // Try parsing as single object
             try {
                 Team team = gson.fromJson(response, Team.class);
                 if (team != null) {
@@ -95,15 +103,18 @@ public class TeamApiDAO implements TeamDAO {
                 throw new PersistenceException(e2.getMessage());
             }
         }
-
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void saveTeam(Team team) throws PersistenceException, ApiException {
-        // Try sending just the new team
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String body = gson.toJson(team); // Just the single team, not an array
+        String body = gson.toJson(team);
+
+        // Limpiar propiedades específicas no necesarias antes de enviar
         String pattern = ",\\s*\"malRebut\": 0\\.0,\\s*\"isKO\": false,\\s*\"damageReduction\": 0\\.0";
         body = body.replaceAll(pattern, "");
 
@@ -114,11 +125,14 @@ public class TeamApiDAO implements TeamDAO {
         }
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean eliminateTeam(String name) throws PersistenceException, ApiException {
         String encodedName = URLEncoder.encode(name, StandardCharsets.UTF_8);
         String response = apiHelper.deleteRequest(apiHelper.getId() + "/teams?name=" + encodedName);
+
         if (response.equals("{\"result\":\"OK\"}")) {
             return true;
         } else {

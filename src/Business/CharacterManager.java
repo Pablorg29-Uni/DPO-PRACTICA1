@@ -7,13 +7,14 @@ import Persistence.API.ConnectorAPIHelper;
 import Persistence.Character.CharacterApiDAO;
 import Persistence.Character.CharacterDAO;
 import Persistence.Character.CharacterJsonDAO;
-import Persistence.Items.ItemsJsonDAO;
 import edu.salle.url.api.exception.ApiException;
 
 import java.util.List;
+
 /**
  * Gestiona las operaciones relacionadas con los personajes.
- * Utiliza CharacterJsonDAO para interactuar con el almacenamiento JSON.
+ * Utiliza diferentes implementaciones de CharacterDAO para interactuar con los datos,
+ * ya sea a través de almacenamiento JSON o una API externa.
  */
 public class CharacterManager {
     private CharacterDAO characterDAO;
@@ -63,9 +64,11 @@ public class CharacterManager {
     }
 
     /**
-     * Verifica la existencia del archivo JSON de personajes.
+     * Verifica la existencia y accesibilidad del archivo JSON de personajes.
+     * Si no se puede conectar, lanza una excepción de negocio.
+     * En caso contrario, inicializa el DAO para usar almacenamiento JSON.
      *
-     * @throws BusinessException Si ocurre un error al verificar el archivo.
+     * @throws BusinessException Si no se puede establecer conexión con el archivo JSON.
      */
     public void verify() throws BusinessException {
         if (!CharacterJsonDAO.canConnect()) {
@@ -75,6 +78,11 @@ public class CharacterManager {
         }
     }
 
+    /**
+     * Configura el DAO para utilizar una API externa como fuente de datos.
+     *
+     * @param apiHelper Helper para la conexión con la API.
+     */
     public void setApiHelper(ConnectorAPIHelper apiHelper) {
         characterDAO = new CharacterApiDAO(apiHelper);
     }

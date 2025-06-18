@@ -15,13 +15,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Maneja la persistencia de los equipos en un archivo JSON.
+ * DAO para la persistencia de equipos en un archivo JSON.
+ * Implementa los métodos para obtener, guardar y eliminar equipos localmente.
  */
 public class TeamJsonDAO implements TeamDAO {
 
     private final String path = "./src/Files/teams.json";
 
-    public static boolean canConnect () {
+    /**
+     * Comprueba si el archivo de persistencia de equipos está accesible.
+     *
+     * @return true si se puede acceder al archivo, false en caso contrario.
+     */
+    public static boolean canConnect() {
         try {
             new FileReader("./src/Files/teams.json");
             return true;
@@ -30,6 +36,9 @@ public class TeamJsonDAO implements TeamDAO {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Team> getAllTeams() throws PersistenceException {
         try (FileReader reader = new FileReader(this.path)) {
@@ -41,6 +50,9 @@ public class TeamJsonDAO implements TeamDAO {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Team getTeam(String name) throws PersistenceException {
         List<Team> teams = getAllTeams();
@@ -52,6 +64,9 @@ public class TeamJsonDAO implements TeamDAO {
         throw new PersistenceException("No team found for name " + name);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void saveTeam(Team team) throws PersistenceException {
         try {
@@ -63,6 +78,9 @@ public class TeamJsonDAO implements TeamDAO {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean eliminateTeam(String name) throws PersistenceException {
         try {
@@ -75,6 +93,12 @@ public class TeamJsonDAO implements TeamDAO {
         }
     }
 
+    /**
+     * Escribe la lista completa de equipos al archivo JSON.
+     *
+     * @param teams Lista de equipos a guardar.
+     * @throws PersistenceException Si ocurre un error al escribir en el archivo.
+     */
     private void writeTeamsToFile(List<Team> teams) throws PersistenceException {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
         try (FileWriter writer = new FileWriter(this.path)) {
@@ -83,5 +107,4 @@ public class TeamJsonDAO implements TeamDAO {
             throw new PersistenceException(e.getMessage());
         }
     }
-
 }

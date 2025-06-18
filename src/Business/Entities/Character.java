@@ -1,6 +1,8 @@
 package Business.Entities;
+
 /**
- * Representa un personaje con sus atributos y características.
+ * Representa un personaje con ID, nombre y peso.
+ * Se usa como estructura de datos para manejar personajes obtenidos desde la API.
  */
 public class Character {
 

@@ -5,7 +5,7 @@ import com.google.gson.annotations.Expose;
 /**
  * Representa a un miembro dentro del sistema.
  *
- * Contiene información relevante sobre el miembro, como su nombre, rol, etc.
+ * Contiene información relevante sobre el miembro, como su nombre, rol, equipamiento y estado de combate.
  */
 public class Member {
     @Expose
@@ -28,6 +28,7 @@ public class Member {
 
     /**
      * Constructor de la clase Member.
+     * Inicializa los atributos con valores por defecto.
      */
     public Member() {
         this.character = null;
@@ -38,9 +39,10 @@ public class Member {
     }
 
     /**
-     * Constructor de la clase Member con un ID.
+     * Constructor de la clase Member con un ID y estrategia.
      *
-     * @param id Identificador del miembro.
+     * @param id Identificador único del miembro.
+     * @param strategy Estrategia asignada al miembro.
      */
     public Member(long id, String strategy) {
         this();
@@ -49,18 +51,18 @@ public class Member {
     }
 
     /**
-     * Obtiene el malRebut.
+     * Obtiene el valor de malRebut.
      *
-     * @return de malRebut.
+     * @return Valor actual de malRebut.
      */
     public float getMalRebut() {
         return malRebut;
     }
 
     /**
-     * Establece el malRebut.
+     * Establece el valor de malRebut.
      *
-     * @param malRebut Nuevo malRebut.
+     * @param malRebut Nuevo valor de malRebut.
      */
     public void setMalRebut(float malRebut) {
         this.malRebut = malRebut;
@@ -85,7 +87,7 @@ public class Member {
     }
 
     /**
-     * Obtiene la armadura equipada.
+     * Obtiene la armadura equipada por el miembro.
      *
      * @return Armadura equipada.
      */
@@ -94,7 +96,7 @@ public class Member {
     }
 
     /**
-     * Establece la armadura equipada.
+     * Establece la armadura equipada por el miembro.
      *
      * @param armadura Nueva armadura equipada.
      */
@@ -106,7 +108,7 @@ public class Member {
     }
 
     /**
-     * Obtiene el arma equipada.
+     * Obtiene el arma equipada por el miembro.
      *
      * @return Arma equipada.
      */
@@ -115,7 +117,7 @@ public class Member {
     }
 
     /**
-     * Establece el arma equipada.
+     * Establece el arma equipada por el miembro.
      *
      * @param arma Nueva arma equipada.
      */
@@ -127,25 +129,34 @@ public class Member {
     }
 
     /**
-     * Obtiene la estrategia del miembro.
+     * Obtiene la estrategia asignada al miembro.
      *
-     * @return Estrategia del miembro.
+     * @return Estrategia actual.
      */
     public String getStrategy() {
         return strategy;
     }
 
     /**
-     * Obtiene el rol del miembro.
+     * Establece la estrategia asignada al miembro.
      *
-     * @return Rol del miembro.
+     * @param strategy Nueva estrategia.
+     */
+    public void setStrategy(String strategy) {
+        this.strategy = strategy;
+    }
+
+    /**
+     * Obtiene el rol del miembro dentro del sistema.
+     *
+     * @return Rol actual.
      */
     public String getRole() {
         return role;
     }
 
     /**
-     * Indica si el miembro está KO.
+     * Indica si el miembro está en estado KO (noqueado).
      *
      * @return true si está KO, false en caso contrario.
      */
@@ -163,9 +174,9 @@ public class Member {
     }
 
     /**
-     * Obtiene la reducción de daño del miembro.
+     * Obtiene la reducción de daño que tiene el miembro.
      *
-     * @return Reducción de daño.
+     * @return Valor de reducción de daño.
      */
     public float getDamageReduction() {
         return damageReduction;
@@ -181,7 +192,7 @@ public class Member {
     }
 
     /**
-     * Obtiene el identificador del miembro.
+     * Obtiene el identificador único del miembro.
      *
      * @return Identificador del miembro.
      */
@@ -190,7 +201,7 @@ public class Member {
     }
 
     /**
-     * Establece el identificador del miembro.
+     * Establece el identificador único del miembro.
      *
      * @param id Nuevo identificador.
      */
@@ -199,7 +210,7 @@ public class Member {
     }
 
     /**
-     * Obtiene la última información de ataque del miembro.
+     * Obtiene la información del último ataque realizado por el miembro.
      *
      * @return Último ataque registrado.
      */
@@ -208,7 +219,7 @@ public class Member {
     }
 
     /**
-     * Establece la última información de ataque del miembro.
+     * Establece la información del último ataque realizado por el miembro.
      *
      * @param lastAttack Nueva información del último ataque.
      */
@@ -232,14 +243,5 @@ public class Member {
      */
     public String getNameArmadura() {
         return nameArmadura;
-    }
-
-    /**
-     * Establece la estrategia del miembro.
-     *
-     * @param strategy Nombre de la estrategia.
-     */
-    public void setStrategy(String strategy) {
-        this.strategy = strategy;
     }
 }

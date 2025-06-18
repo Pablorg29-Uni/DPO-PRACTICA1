@@ -17,13 +17,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Maneja la persistencia de las estadísticas en un archivo JSON.
+ * DAO para persistencia de estadísticas en archivo JSON.
  */
-
 public class StatsJsonDAO implements StatsDAO {
 
     private final String path = "./src/Files/stats.json";
 
+    /**
+     * Verifica si el archivo JSON es accesible.
+     * @return true si puede leerse, false si no.
+     */
     public static boolean canConnect () {
         try {
             new FileReader("./src/Files/stats.json");
@@ -33,6 +36,9 @@ public class StatsJsonDAO implements StatsDAO {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Stats> getAllStats() throws PersistenceException {
         try (FileReader reader = new FileReader(this.path)) {
@@ -44,6 +50,9 @@ public class StatsJsonDAO implements StatsDAO {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void deleteOneStats(String name) throws PersistenceException {
         List<Stats> stats = getAllStats();
@@ -51,6 +60,9 @@ public class StatsJsonDAO implements StatsDAO {
         writeStatsToFile(stats);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void createEmptyStats(String teamName) throws PersistenceException {
         List<Stats> stats = getAllStats();
@@ -58,6 +70,9 @@ public class StatsJsonDAO implements StatsDAO {
         writeStatsToFile(stats);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Stats getStat(String name) throws PersistenceException {
         List<Stats> stats = getAllStats();
@@ -67,6 +82,9 @@ public class StatsJsonDAO implements StatsDAO {
                 .orElseThrow(() -> new PersistenceException("No stats found for team: " + name));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void writeStatsToFile(List<Stats> stats) throws PersistenceException {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();

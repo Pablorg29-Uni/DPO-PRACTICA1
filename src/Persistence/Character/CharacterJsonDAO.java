@@ -2,27 +2,29 @@ package Persistence.Character;
 
 import Business.Entities.Character;
 import Exceptions.PersistenceException;
-import Persistence.API.ConnectorAPIHelper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import edu.salle.url.api.exception.ApiException;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Maneja la persistencia de personajes en un archivo JSON.
- * Proporciona métodos para leer, guardar y modificar personajes.
+ * DAO para manejar personajes persistidos en un archivo JSON.
+ * Proporciona métodos para obtener personajes y buscar por ID o nombre.
  */
 public class CharacterJsonDAO implements CharacterDAO {
 
     private final String path = "./src/Files/characters.json";
 
-    public static boolean canConnect () {
+    /**
+     * Verifica si se puede acceder al archivo JSON.
+     *
+     * @return true si el archivo es accesible, false en caso contrario.
+     */
+    public static boolean canConnect() {
         try {
             new FileReader("./src/Files/characters.json");
             return true;
@@ -31,12 +33,6 @@ public class CharacterJsonDAO implements CharacterDAO {
         }
     }
 
-    /**
-     * Obtiene todos los personajes almacenados en el archivo JSON.
-     *
-     * @return Lista de personajes.
-     * @throws PersistenceException Si ocurre un error al leer el archivo.
-     */
     @Override
     public List<Character> getAllCharacters() throws PersistenceException {
         try (FileReader reader = new FileReader(this.path)) {
@@ -48,13 +44,6 @@ public class CharacterJsonDAO implements CharacterDAO {
         }
     }
 
-    /**
-     * Busca un personaje por su ID en el archivo JSON.
-     *
-     * @param id Identificador del personaje.
-     * @return Personaje encontrado.
-     * @throws PersistenceException Si el personaje no existe.
-     */
     @Override
     public Character getCharacterById(long id) throws PersistenceException {
         List<Character> characters = getAllCharacters();
@@ -64,13 +53,6 @@ public class CharacterJsonDAO implements CharacterDAO {
                 .orElseThrow(() -> new PersistenceException("Character with ID " + id + " not found"));
     }
 
-    /**
-     * Busca un personaje por su nombre en el archivo JSON.
-     *
-     * @param name Nombre del personaje.
-     * @return Personaje encontrado.
-     * @throws PersistenceException Si el personaje no existe.
-     */
     @Override
     public Character getCharacterByName(String name) throws PersistenceException {
         List<Character> characters = getAllCharacters();

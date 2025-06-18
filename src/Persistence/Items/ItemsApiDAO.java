@@ -13,7 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Maneja la persistencia de los ítems a través de la API.
+ * DAO para manejar la persistencia de ítems mediante la API.
+ * Proporciona método para obtener la lista completa de ítems.
  */
 public class ItemsApiDAO implements ItemsDAO {
 

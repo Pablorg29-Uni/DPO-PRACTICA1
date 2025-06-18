@@ -1,6 +1,7 @@
 package Business.Entities;
 
 import java.util.ArrayList;
+
 /**
  * Representa un equipo dentro del juego.
  */
@@ -15,11 +16,15 @@ public class Team {
     /**
      * Constructor de la clase Team.
      *
-     * @param name   Nombre del equipo.
-     * @param id1    ID del primer miembro.
-     * @param id2    ID del segundo miembro.
-     * @param id3    ID del tercer miembro.
-     * @param id4    ID del cuarto miembro.
+     * @param name Nombre del equipo.
+     * @param id1 ID del primer miembro.
+     * @param id2 ID del segundo miembro.
+     * @param id3 ID del tercer miembro.
+     * @param id4 ID del cuarto miembro.
+     * @param s1 Estrategia del primer miembro.
+     * @param s2 Estrategia del segundo miembro.
+     * @param s3 Estrategia del tercer miembro.
+     * @param s4 Estrategia del cuarto miembro.
      */
     public Team(String name, long id1, long id2, long id3, long id4, String s1, String s2, String s3, String s4) {
         this.name = name;

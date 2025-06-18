@@ -15,7 +15,6 @@ import Exceptions.PresentationException;
 import Persistence.API.ConnectorAPIHelper;
 import edu.salle.url.api.exception.ApiException;
 
-
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
@@ -85,7 +84,6 @@ public class Controller {
                 throw new PresentationException(e.getMessage());
             }
 
-
             System.out.println("\n<Press any key to continue...>");
             scanner.nextLine();
             scanner.nextLine();
@@ -131,7 +129,6 @@ public class Controller {
         } catch (BusinessException e) {
             throw new PresentationException(e.getMessage());
         }
-
     }
 
     /**
@@ -166,7 +163,6 @@ public class Controller {
             opcion = teams.size() + 1;
             scanner.nextLine();
         }
-
 
         if (opcion == 0) {
             System.out.println("Returning to the previous menu...");
@@ -218,6 +214,7 @@ public class Controller {
         if (confirmation.equalsIgnoreCase("yes")) {
             try {
                 teammanager.eliminateTeam(teamName);
+                System.out.println("\nTeam \"" + teamName + "\" has been successfully removed.");
             } catch (BusinessException e) {
                 throw new PresentationException(e.getMessage());
             }
@@ -246,7 +243,6 @@ public class Controller {
             System.out.println("\nNo items available.");
             return;
         }
-
 
         int posicion = 1;
         System.out.println();
@@ -647,6 +643,15 @@ public class Controller {
         }
     }
 
+    /**
+     * Inicializa y configura el helper para conectar con la API en los gestores relacionados.
+     *
+     * <p>Este método crea una instancia de {@code ConnectorAPIHelper} y la asigna
+     * a los gestores de personajes, ítems, estadísticas y equipos para que puedan
+     * interactuar con la API externa.</p>
+     *
+     * @throws ApiException Si ocurre un error al configurar la conexión con la API.
+     */
     public void verificarAPI() throws ApiException {
         ConnectorAPIHelper apiHelper = new ConnectorAPIHelper();
         charactermanager.setApiHelper(apiHelper);

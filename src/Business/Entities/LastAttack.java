@@ -1,7 +1,8 @@
 package Business.Entities;
+
 /**
- * Representa el último ataque realizado en un combate.
- * Contiene información sobre el atacante, el objetivo y el daño infligido.
+ * Guarda los detalles del último ataque hecho en combate.
+ * Incluye el daño, el objetivo y si se rompió el arma o la armadura.
  */
 public class LastAttack {
     private float lastAttack;
