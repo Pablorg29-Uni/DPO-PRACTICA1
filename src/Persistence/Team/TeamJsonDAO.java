@@ -100,7 +100,7 @@ public class TeamJsonDAO implements TeamDAO {
      * @throws PersistenceException Si ocurre un error al escribir en el archivo.
      */
     private void writeTeamsToFile(List<Team> teams) throws PersistenceException {
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
         try (FileWriter writer = new FileWriter(this.path)) {
             gson.toJson(teams, writer);
         } catch (IOException e) {

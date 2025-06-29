@@ -4,19 +4,31 @@
     "members": [
       {
         "id": 5431512,
-        "strategy": "balanced"
+        "strategy": "balanced",
+        "malRebut": 0.0,
+        "isKO": false,
+        "damageReduction": 0.0
       },
       {
         "id": 467416287,
-        "strategy": "balanced"
+        "strategy": "balanced",
+        "malRebut": 0.0,
+        "isKO": false,
+        "damageReduction": 0.0
       },
       {
         "id": 4264041,
-        "strategy": "balanced"
+        "strategy": "balanced",
+        "malRebut": 0.0,
+        "isKO": false,
+        "damageReduction": 0.0
       },
       {
         "id": 748738,
-        "strategy": "balanced"
+        "strategy": "balanced",
+        "malRebut": 0.0,
+        "isKO": false,
+        "damageReduction": 0.0
       }
     ]
   },
@@ -25,19 +37,31 @@
     "members": [
       {
         "id": 68053,
-        "strategy": "balanced"
+        "strategy": "balanced",
+        "malRebut": 0.0,
+        "isKO": false,
+        "damageReduction": 0.0
       },
       {
         "id": 68053,
-        "strategy": "balanced"
+        "strategy": "balanced",
+        "malRebut": 0.0,
+        "isKO": false,
+        "damageReduction": 0.0
       },
       {
         "id": 68053,
-        "strategy": "balanced"
+        "strategy": "balanced",
+        "malRebut": 0.0,
+        "isKO": false,
+        "damageReduction": 0.0
       },
       {
         "id": 68053,
-        "strategy": "balanced"
+        "strategy": "balanced",
+        "malRebut": 0.0,
+        "isKO": false,
+        "damageReduction": 0.0
       }
     ]
   },
@@ -46,19 +70,64 @@
     "members": [
       {
         "id": 467416287,
-        "strategy": "balanced"
+        "strategy": "balanced",
+        "malRebut": 0.0,
+        "isKO": false,
+        "damageReduction": 0.0
       },
       {
         "id": 4115637091,
-        "strategy": "balanced"
+        "strategy": "balanced",
+        "malRebut": 0.0,
+        "isKO": false,
+        "damageReduction": 0.0
       },
       {
         "id": 73237806,
-        "strategy": "balanced"
+        "strategy": "balanced",
+        "malRebut": 0.0,
+        "isKO": false,
+        "damageReduction": 0.0
       },
       {
         "id": 748738,
-        "strategy": "balanced"
+        "strategy": "balanced",
+        "malRebut": 0.0,
+        "isKO": false,
+        "damageReduction": 0.0
+      }
+    ]
+  },
+  {
+    "name": "2527",
+    "members": [
+      {
+        "id": 2527,
+        "strategy": "balanced",
+        "malRebut": 0.0,
+        "isKO": false,
+        "damageReduction": 0.0
+      },
+      {
+        "id": 2527,
+        "strategy": "offensive",
+        "malRebut": 0.0,
+        "isKO": false,
+        "damageReduction": 0.0
+      },
+      {
+        "id": 2527,
+        "strategy": "defensive",
+        "malRebut": 0.0,
+        "isKO": false,
+        "damageReduction": 0.0
+      },
+      {
+        "id": 2527,
+        "strategy": "sniper",
+        "malRebut": 0.0,
+        "isKO": false,
+        "damageReduction": 0.0
       }
     ]
   }

@@ -637,7 +637,7 @@ public class Controller {
             charactermanager.verify();
             itemmanager.verify();
             statsmanager.verify();
-            teammanager.verify();
+            teammanager.verify(statsmanager);
         } catch (BusinessException e) {
             throw new PresentationException(e.getMessage());
         }

@@ -26,11 +26,12 @@ public class TeamManager {
      *
      * @throws BusinessException Si ocurre un error en la verificación.
      */
-    public void verify() throws BusinessException {
+    public void verify(StatsManager statsmanager) throws BusinessException {
         if (!TeamJsonDAO.canConnect()) {
             throw new BusinessException("No connection established");
         } else {
-            teamDAO = new TeamJsonDAO();
+            this.teamDAO = new TeamJsonDAO();
+            this.statsManager = statsmanager;
         }
     }
 
