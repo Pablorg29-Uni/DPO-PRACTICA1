@@ -1,6 +1,7 @@
 package Persistence.Items;
 
-import Business.Entities.Items;
+import Business.Entities.Armor;
+import Business.Entities.Weapon;
 import Exceptions.PersistenceException;
 import edu.salle.url.api.exception.ApiException;
 
@@ -12,12 +13,7 @@ import java.util.List;
  */
 public interface ItemsDAO {
 
-    /**
-     * Obtiene la lista completa de ítems.
-     *
-     * @return Lista de ítems.
-     * @throws PersistenceException en caso de error de persistencia.
-     * @throws ApiException en caso de error en la API.
-     */
-    List<Items> getAllItems() throws PersistenceException, ApiException;
+    List<Weapon> getAllWeapons() throws PersistenceException, ApiException;
+    List<Armor> getAllArmors() throws PersistenceException, ApiException;
+
 }

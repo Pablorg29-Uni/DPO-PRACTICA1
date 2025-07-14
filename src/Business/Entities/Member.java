@@ -1,20 +1,29 @@
 package Business.Entities;
 
+import Business.Entities.Weapon;
+import Business.Entities.Armor;
+import Business.Entities.AttackStrategy;
+import Business.Entities.BalancedStrategy;
+import Business.Entities.OffensiveStrategy;
+import Business.Entities.DefensiveStrategy;
+import Business.Entities.SniperStrategy;
+
 import com.google.gson.annotations.Expose;
 
 /**
  * Representa a un miembro dentro del sistema.
- *
+ * <p>
  * Contiene información relevante sobre el miembro, como su nombre, rol, equipamiento y estado de combate.
  */
 public class Member {
     @Expose
     private long id;
     private Character character;
-    private Items armadura;
-    private Items arma;
+    private Items items;
     @Expose
-    private String strategy;
+    private String strategyName;
+    @Expose(serialize = false, deserialize = false)
+    private AttackStrategy strategy;
     @Expose(serialize = false, deserialize = false)
     private float malRebut;
     private String role;
@@ -23,8 +32,6 @@ public class Member {
     @Expose(serialize = false, deserialize = false)
     private float damageReduction;
     private LastAttack lastAttack;
-    private String nameArma;
-    private String nameArmadura;
 
     /**
      * Constructor de la clase Member.
@@ -32,22 +39,24 @@ public class Member {
      */
     public Member() {
         this.character = null;
-        this.armadura = null;
-        this.arma = null;
+        this.items = null;
         this.role = null;
         this.lastAttack = null;
+        this.strategyName = "balanced";
+        setStrategyByName(this.strategyName);
     }
 
     /**
      * Constructor de la clase Member con un ID y estrategia.
      *
-     * @param id Identificador único del miembro.
+     * @param id       Identificador único del miembro.
      * @param strategy Estrategia asignada al miembro.
      */
-    public Member(long id, String strategy) {
+    public Member(long id, String strategyName) {
         this();
         this.id = id;
-        this.strategy = strategy;
+        this.strategyName = strategyName;
+        setStrategyByName(strategyName);
     }
 
     /**
@@ -91,8 +100,8 @@ public class Member {
      *
      * @return Armadura equipada.
      */
-    public Items getArmadura() {
-        return armadura;
+    public Armor getArmadura() {
+        return items.getArmor();
     }
 
     /**
@@ -100,11 +109,8 @@ public class Member {
      *
      * @param armadura Nueva armadura equipada.
      */
-    public void setArmadura(Items armadura) {
-        if (armadura != null) {
-            this.nameArmadura = armadura.getName();
-        }
-        this.armadura = armadura;
+    public void setArmadura(Armor armadura) {
+        this.items.setArmor(armadura);
     }
 
     /**
@@ -112,8 +118,26 @@ public class Member {
      *
      * @return Arma equipada.
      */
-    public Items getArma() {
-        return arma;
+    public Weapon getArma() {
+        return items.getWeapon();
+    }
+
+    public float getAttackDmg () {
+        if (getArma() != null) {
+            return getArma().getAttackDmg(this);
+        } else {
+            float part1 = (getCharacter().getWeight() * (1 - getMalRebut()) / 10);
+            return Math.max(part1 + 18, 0);
+        }
+    }
+
+    public float getFinalDmg (float attack) {
+        if (getArma() != null) {
+            return getArmadura().getFinalDmg(this, attack);
+        } else {
+            float part1 = (200 * (1 - getMalRebut())) / getCharacter().getWeight();
+            return (attack - (part1 * 1.4f) / 100);
+        }
     }
 
     /**
@@ -121,11 +145,8 @@ public class Member {
      *
      * @param arma Nueva arma equipada.
      */
-    public void setArma(Items arma) {
-        if (arma != null) {
-            this.nameArma = arma.getName();
-        }
-        this.arma = arma;
+    public void setArma(Weapon arma) {
+        this.items.setWeapon(arma);
     }
 
     /**
@@ -133,7 +154,7 @@ public class Member {
      *
      * @return Estrategia actual.
      */
-    public String getStrategy() {
+    public AttackStrategy getStrategy() {
         return strategy;
     }
 
@@ -142,8 +163,28 @@ public class Member {
      *
      * @param strategy Nueva estrategia.
      */
-    public void setStrategy(String strategy) {
+    public void setStrategy(AttackStrategy strategy) {
         this.strategy = strategy;
+    }
+
+    public void setStrategyByName(String strategyName) {
+        this.strategyName = strategyName;
+        switch (strategyName.toLowerCase()) {
+            case "balanced":
+                this.strategy = new BalancedStrategy();
+                break;
+            case "offensive":
+                this.strategy = new OffensiveStrategy();
+                break;
+            case "defensive":
+                this.strategy = new DefensiveStrategy();
+                break;
+            case "sniper":
+                this.strategy = new SniperStrategy();
+                break;
+            default:
+                this.strategy = new BalancedStrategy();
+        }
     }
 
     /**
@@ -227,21 +268,24 @@ public class Member {
         this.lastAttack = lastAttack;
     }
 
-    /**
-     * Obtiene el nombre del arma equipada.
-     *
-     * @return Nombre del arma.
-     */
-    public String getNameArma() {
-        return nameArma;
+
+    public void setItems(Items items) {
+        this.items = items;
     }
 
-    /**
-     * Obtiene el nombre de la armadura equipada.
-     *
-     * @return Nombre de la armadura.
-     */
-    public String getNameArmadura() {
-        return nameArmadura;
+    public Items getItems() {
+        return items;
+    }
+
+    public String getStrategyName() {
+        if (strategy instanceof BalancedStrategy) return "balanced";
+        if (strategy instanceof OffensiveStrategy) return "offensive";
+        if (strategy instanceof DefensiveStrategy) return "defensive";
+        if (strategy instanceof SniperStrategy) return "sniper";
+        return "balanced";
+    }
+
+    public void postDeserialize() {
+        setStrategyByName(this.strategyName);
     }
 }

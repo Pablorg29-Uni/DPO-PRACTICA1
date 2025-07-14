@@ -1,13 +1,10 @@
 package Presentation;
 
-import Business.Entities.Character;
+import Business.Entities.*;
 import Business.CharacterManager;
-import Business.Entities.Items;
+import Business.Entities.Character;
 import Business.ItemsManager;
-import Business.Entities.Member;
-import Business.Entities.Team;
 import Business.TeamManager;
-import Business.Entities.Stats;
 import Business.StatsManager;
 import Business.CombatManager;
 import Exceptions.BusinessException;
@@ -232,38 +229,52 @@ public class Controller {
     public void mostrarItems() throws PresentationException {
         Scanner scanner = new Scanner(System.in);
 
-        List<Items> items;
+        List<Weapon> weapons;
+        List<Armor> armors;
         try {
-            items = itemmanager.showItems();
+            weapons = itemmanager.showWeapons();
+            armors = itemmanager.showArmors();
         } catch (BusinessException e) {
             throw new PresentationException(e.getMessage());
         }
 
-        if (items.isEmpty()) {
-            System.out.println("\nNo items available.");
+        if ((weapons == null || weapons.isEmpty()) && (armors == null || armors.isEmpty())) {
+            System.out.println("\nNo weapons or armors available.");
             return;
         }
 
         int posicion = 1;
-        System.out.println();
-        for (Items item : items) {
-            System.out.println("\t" + posicion + ") " + item.getName());
+        System.out.println("\n--- AVAILABLE WEAPONS ---");
+        for (Weapon weapon : weapons) {
+            System.out.println("\t" + posicion + ") " + weapon.getName());
             posicion++;
         }
+        int armasCount = weapons.size();
+        System.out.println("\n--- AVAILABLE ARMORS ---");
+        for (Armor armor : armors) {
+            System.out.println("\t" + posicion + ") " + armor.getName());
+            posicion++;
+        }
+        int totalCount = armasCount + armors.size();
         System.out.println("\n\t0) Back\n\nChoose an option: ");
 
         int opcion;
         try {
             opcion = scanner.nextInt();
         } catch (InputMismatchException e) {
-            opcion = items.size() + 1;
+            opcion = totalCount + 1;
             scanner.nextLine();
         }
 
         while (opcion != 0) {
-            if (opcion > 0 && opcion <= items.size()) {
-                Items selectedItem = items.get(opcion - 1);
-                view.itemdetalle(selectedItem);
+            if (opcion > 0 && opcion <= totalCount) {
+                if (opcion <= armasCount) {
+                    Weapon selectedWeapon = weapons.get(opcion - 1);
+                    view.itemdetalleArma(selectedWeapon);
+                } else {
+                    Armor selectedArmor = armors.get(opcion - armasCount - 1);
+                    view.itemdetalleArmadura(selectedArmor);
+                }
                 System.out.println("\n<Press any key to continue...>");
                 scanner.nextLine();
                 scanner.nextLine();
@@ -271,17 +282,22 @@ public class Controller {
                 System.out.println("\nInvalid option. Please choose again.");
             }
 
-            System.out.println("\nAvailable Items:");
             posicion = 1;
-            for (Items item : items) {
-                System.out.println("\t" + posicion + ") " + item.getName());
+            System.out.println("\nAvailable Weapons:");
+            for (Weapon weapon : weapons) {
+                System.out.println("\t" + posicion + ") " + weapon.getName());
+                posicion++;
+            }
+            System.out.println("\nAvailable Armors:");
+            for (Armor armor : armors) {
+                System.out.println("\t" + posicion + ") " + armor.getName());
                 posicion++;
             }
             System.out.println("\n\t0) Back\n\nChoose an option: ");
             try {
                 opcion = scanner.nextInt();
             } catch (InputMismatchException e) {
-                opcion = items.size() + 1;
+                opcion = totalCount + 1;
                 scanner.nextLine();
             }
         }
@@ -353,10 +369,10 @@ public class Controller {
             long id1 = selectedTeam2.getMembers().get(1).getId();
             long id2 = selectedTeam2.getMembers().get(2).getId();
             long id3 = selectedTeam2.getMembers().get(3).getId();
-            String s1 = selectedTeam1.getMembers().get(0).getStrategy();
-            String s2 = selectedTeam2.getMembers().get(1).getStrategy();
-            String s3 = selectedTeam2.getMembers().get(2).getStrategy();
-            String s4 = selectedTeam2.getMembers().get(3).getStrategy();
+            String s1 = selectedTeam1.getMembers().get(0).getStrategyName();
+            String s2 = selectedTeam2.getMembers().get(1).getStrategyName();
+            String s3 = selectedTeam2.getMembers().get(2).getStrategyName();
+            String s4 = selectedTeam2.getMembers().get(3).getStrategyName();
             selectedTeam2 = new Team(selectedTeam2.getName(), id0, id1, id2, id3, s1, s2, s3, s4);
         }
 
@@ -464,14 +480,15 @@ public class Controller {
             Character character = charactermanager.getCharacter(member.getId());
             member.setCharacter(character);
 
-
-            member.setArma(itemmanager.obtenirArmaRandom());
-            member.setArmadura(itemmanager.obtenirArmaduraRandom());
-
+            // Obtener arma y armadura aleatorias
+            Weapon weapon = itemmanager.obtenirArmaRandom();
+            Armor armor = itemmanager.obtenirArmaduraRandom();
+            Items items = new Items(weapon, armor);
+            member.setItems(items);
 
             System.out.println("- " + member.getCharacter().getName());
-            System.out.println("\tWeapon: " + (member.getArma() != null ? member.getArma().getName() : "None"));
-            System.out.println("\tArmor: " + (member.getArmadura() != null ? member.getArmadura().getName() : "None"));
+            System.out.println("\tWeapon: " + (weapon != null ? weapon.getName() : "None"));
+            System.out.println("\tArmor: " + (armor != null ? armor.getName() : "None"));
         }
     }
 
@@ -520,12 +537,10 @@ public class Controller {
     private void roundStats(Team team) {
         for (Member member : team.getMembers()) {
             if (member.getLastAttack() != null) {
-                Items a = member.getArma();
-                if (a == null) {
-                    a = new Items("");
-                }
+                Weapon weapon = (member.getItems() != null && member.getItems().getWeapon() != null) ? member.getItems().getWeapon() : null;
+                String weaponName = (weapon != null) ? weapon.getName() : "";
                 String attackDetails = member.getCharacter().getName() + " ATTACKS " + member.getLastAttack().getLastObjective() +
-                        " WITH " + a.getName() + " FOR " + String.format("%.2f", member.getLastAttack().getLastAttack()) + " DAMAGE!";
+                        " WITH " + weaponName + " FOR " + String.format("%.2f", member.getLastAttack().getLastAttack()) + " DAMAGE!";
                 String recievedDetails = "\t" + member.getLastAttack().getLastObjective() + " RECEIVES " + String.format("%.2f", member.getLastAttack().getLastDamage()) + " DAMAGE.";
                 view.printAttackDetails(attackDetails, recievedDetails);
             }
@@ -542,10 +557,10 @@ public class Controller {
         for (Member teamMember : team.getMembers()) {
             if (teamMember.getLastAttack() != null) {
                 if (teamMember.getLastAttack().isWeaponBroke()) {
-                    brokenItems.add("Oh no! " + teamMember.getCharacter().getName() + "'s " + teamMember.getNameArma() + " breaks! (Weapon)");
+                    brokenItems.add("Oh no! " + teamMember.getCharacter().getName() + "'s " + teamMember.getItems().getWeaponName() + " breaks! (Weapon)");
                 }
                 if (teamMember.getLastAttack().isArmorBroke()) {
-                    brokenItems.add("Oh no! " + teamMember.getCharacter().getName() + "'s " + teamMember.getNameArmadura() + " breaks! (Armor)");
+                    brokenItems.add("Oh no! " + teamMember.getCharacter().getName() + "'s " + teamMember.getItems().getArmorName() + " breaks! (Armor)");
                 }
             }
         }
@@ -589,13 +604,15 @@ public class Controller {
             } catch (BusinessException e) {
                 throw new PresentationException(e.getMessage());
             }
-            Items weapon = member.getArma() != null ? member.getArma() : new Items("None");
-            Items armor = member.getArmadura() != null ? member.getArmadura() : new Items("None");
+            Weapon weapon = (member.getItems() != null && member.getItems().getWeapon() != null) ? member.getItems().getWeapon() : null;
+            Armor armor = (member.getItems() != null && member.getItems().getArmor() != null) ? member.getItems().getArmor() : null;
+            String weaponName = (weapon != null) ? weapon.getName() : "None";
+            String armorName = (armor != null) ? armor.getName() : "None";
             if (member.isKO()) {
                 teamInfo.add("\t- " + character.getName() + " (KO)");
             } else {
                 teamInfo.add("\t- " + character.getName() + " (" + String.format("%.2f", member.getMalRebut() * 100) + " %) "
-                        + weapon.getName() + " - " + armor.getName());
+                        + weaponName + " - " + armorName);
             }
         }
         view.mostrarTeam(teamInfo);
@@ -625,6 +642,8 @@ public class Controller {
         }
         view.mostrarFinal(finalInfo);
     }
+
+
 
     /**
      * Verifica la integridad de los archivos o datos relacionados con personajes,

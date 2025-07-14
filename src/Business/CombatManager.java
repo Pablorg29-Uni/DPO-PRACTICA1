@@ -82,44 +82,6 @@ public class CombatManager {
         }
     }
 
-    /**
-     * Calcula el valor de ataque de un miembro en función de su peso, daño recibido y arma equipada.
-     *
-     * @param member Miembro que realiza el ataque.
-     * @return Valor de ataque calculado.
-     */
-    public float calcularAttack(Member member) {
-        if (member.getArma() != null && member.getArma().getClasse().equals("Superweapon")) {
-            float part1 = (member.getCharacter().getWeight() * (1 - member.getMalRebut()) / 10);
-            float part2 = (member.getArma() != null) ? (member.getArma().getPower() * member.getCharacter().getWeight() / 20.0f) : 0;
-            return Math.max(part1 + part2 + 18, 0);
-        } else {
-            float part1 = (member.getCharacter().getWeight() * (1 - member.getMalRebut()) / 10);
-            float part2 = (member.getArma() != null) ? (member.getArma().getPower() / 20.0f) : 0;
-            return Math.max(part1 + part2 + 18, 0);
-        }
-    }
-
-    /**
-     * Calcula el daño final recibido por un miembro del equipo defensor tras aplicar la reducción de daño.
-     *
-     * @param member Miembro que recibe el daño.
-     * @param attack Valor de ataque recibido.
-     * @return Daño final calculado, ajustado por la armadura y el peso del personaje.
-     */
-    public float calcularFinalDamage(Member member, float attack) {
-        if (member.getArmadura() != null && member.getArmadura().getClasse().equals("Superarmor")) {
-            float part1 = (200 * (1 - member.getMalRebut())) / member.getCharacter().getWeight();
-            float part2 = (member.getArmadura() != null) ? (member.getArmadura().getPower()*member.getCharacter().getWeight() / 20.0f) : 0;
-            float finalDmg = attack - ((part1 + part2) * 1.4f);
-            return finalDmg / 100;
-        } else {
-            float part1 = (200 * (1 - member.getMalRebut())) / member.getCharacter().getWeight();
-            float part2 = (member.getArmadura() != null) ? (member.getArmadura().getPower() / 20.0f) : 0;
-            float finalDmg = attack - ((part1 + part2) * 1.4f);
-            return finalDmg / 100;
-        }
-    }
 
     /**
      * Comprueba el estado actual del combate y determina si hay un equipo ganador.
@@ -249,9 +211,10 @@ public class CombatManager {
             r = moreHPmember;
         }
 
-        float attack = calcularAttack(member);
-        float damageReduction = teamDefensor.getMembers().get(r).getDamageReduction();
-        float calculatedDamage = calcularFinalDamage(teamDefensor.getMembers().get(r), attack);
+        float attack = member.getAttackDmg();
+        Member memberDefensor = teamDefensor.getMembers().get(r);
+        float damageReduction = memberDefensor.getDamageReduction();
+        float calculatedDamage = memberDefensor.getFinalDmg(attack);
         float finalDamage;
         boolean arma = false;
         boolean armadura = false;
@@ -321,50 +284,10 @@ public class CombatManager {
      * @throws BusinessException Si hay un error al obtener un arma nueva.
      */
     public void realitzarAtack(Member member, Team teamDefensor, int moreHPmember) throws BusinessException {
-        if (member.getStrategy().equals("balanced")) {
-            if (member.getArma() == null) {
-                member.setLastAttack(null);
-                try {
-                    member.setArma(itemsManager.obtenirArmaRandom()); // Obtener arma nueva
-                } catch (BusinessException e) {
-                    throw new BusinessException(e.getMessage());
-                }
-            } else {
-                if (member.getArmadura() != null) {
-                    if (member.getMalRebut() >= 0.5 && member.getMalRebut() <= 1.0) {
-                        defensarSeguentAtac(member);
-                    } else {
-                        atacar(member, teamDefensor, -1);
-                    }
-                } else {
-                    atacar(member, teamDefensor, -1);
-                }
-            }
-        } else if (member.getStrategy().equals("offensive")) {
-            if (member.getArma() == null) {
-                member.setLastAttack(null);
-                try {
-                    member.setArma(itemsManager.obtenirArmaRandom());
-                } catch (BusinessException e) {
-                    throw new BusinessException(e.getMessage());
-                }
-            } else {
-                atacar(member, teamDefensor, -1);
-            }
-        } else if (member.getStrategy().equals("defensive")) {
-            if (member.getArmadura() != null) {
-                if (member.getMalRebut() <= 1.0) {
-                    defensarSeguentAtac(member);
-                } else {
-                    atacar(member, teamDefensor, -1);
-                }
-            } else {
-                atacar(member, teamDefensor, -1);
-            }
-        } else if (member.getStrategy().equals("sniper")) {
-            atacar(member, teamDefensor, moreHPmember);
-        } else {
-            System.out.println("Estratègia encara no implementada");
-        }
+        member.getStrategy().executeAttack(member, teamDefensor, moreHPmember, this);
+    }
+
+    public ItemsManager getItemsManager() {
+        return itemsManager;
     }
 }

@@ -1,10 +1,7 @@
 package Presentation;
 
+import Business.Entities.*;
 import Business.Entities.Character;
-import Business.Entities.Items;
-import Business.Entities.Member;
-import Business.Entities.Team;
-import Business.Entities.Stats;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +67,18 @@ public class View {
      */
     public void equipo(ArrayList<Member> members, Character character, int i) {
         if (character != null) {
-            String strategy = members.get(i).getStrategy() != null ? members.get(i).getStrategy() : "Balanced";
+            String strategy = "";
+            if (members.get(i).getStrategy() != null) {
+                if (members.get(i).getStrategy() instanceof BalancedStrategy) {
+                    strategy = "Balanced";
+                } else if (members.get(i).getStrategy() instanceof OffensiveStrategy) {
+                    strategy = "Offensive";
+                } else if (members.get(i).getStrategy() instanceof DefensiveStrategy) {
+                    strategy = "Defensive";
+                } else if (members.get(i).getStrategy() instanceof SniperStrategy) {
+                    strategy = "Sniper";
+                }
+            }
             System.out.printf("Character #%d: %-30s (%s)%n", (i + 1), character.getName(), strategy);
         } else {
             System.out.println("Character #" + (i + 1) + ": Unknown Character (ID: " + members.get(i).getCharacter().getId() + ")");
@@ -100,15 +108,35 @@ public class View {
     }
 
     /**
-     * Muestra los detalles de un objeto.
+     * Muestra los detalles de una arma.
      *
      * @param selectedItem Objeto seleccionado.
      */
-    public void itemdetalle(Items selectedItem) {
+    public void itemdetalleArma(Weapon selectedItem) {
         System.out.println("\n");
-        System.out.println("\tID: " + selectedItem.getId());
         System.out.println("\tNAME: " + selectedItem.getName());
-        System.out.println("\tCLASS: " + selectedItem.getClasse());
+        if (selectedItem instanceof SuperWeapon) {
+            System.out.println("\tTYPE: Super Weapon");
+        } else {
+            System.out.println("\tTYPE: Normal Weapon");
+        }
+        System.out.println("\tPOWER: " + selectedItem.getPower());
+        System.out.println("\tDURABILITY: " + selectedItem.getDurability());
+    }
+
+    /**
+     * Muestra los detalles de una armadura.
+     *
+     * @param selectedItem Objeto seleccionado.
+     */
+    public void itemdetalleArmadura(Armor selectedItem) {
+        System.out.println("\n");
+        System.out.println("\tNAME: " + selectedItem);
+        if (selectedItem instanceof SuperArmor) {
+            System.out.println("\tTYPE: Super Armor");
+        } else {
+            System.out.println("\tTYPE: Normal Armor");
+        }
         System.out.println("\tPOWER: " + selectedItem.getPower());
         System.out.println("\tDURABILITY: " + selectedItem.getDurability());
     }

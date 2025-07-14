@@ -1,16 +1,17 @@
 package Persistence.Items;
 
-import Business.Entities.Items;
-import Exceptions.PersistenceException;
+import Business.Entities.Armor;
+import Business.Entities.Item;
+import Business.Entities.Weapon;
 import Persistence.API.ConnectorAPIHelper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
+import com.google.gson.JsonParser;
 import edu.salle.url.api.exception.ApiException;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * DAO para manejar la persistencia de ítems mediante la API.
@@ -24,11 +25,21 @@ public class ItemsApiDAO implements ItemsDAO {
         this.apiHelper = apiHelper;
     }
 
-    @Override
-    public List<Items> getAllItems() throws ApiException {
-        String itemsJson = apiHelper.getRequest("shared/items");
+    public List<Armor> getAllArmors() throws ApiException {
+        String json = apiHelper.getRequest("shared/items");
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        Type itemListType = new TypeToken<ArrayList<Items>>() {}.getType();
-        return gson.fromJson(itemsJson, itemListType);
+        return StreamSupport.stream(JsonParser.parseString(json).getAsJsonArray().spliterator(), false)
+                .filter(e -> "Armor".equals(e.getAsJsonObject().get("class").getAsString()))
+                .map(e -> gson.fromJson(e, Armor.class))
+                .collect(Collectors.toList());
+    }
+
+    public List<Weapon> getAllWeapons() throws ApiException {
+        String json = apiHelper.getRequest("shared/items");
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        return StreamSupport.stream(JsonParser.parseString(json).getAsJsonArray().spliterator(), false)
+                .filter(e -> "Weapon".equals(e.getAsJsonObject().get("class").getAsString()))
+                .map(e -> gson.fromJson(e, Weapon.class))
+                .collect(Collectors.toList());
     }
 }

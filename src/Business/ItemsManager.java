@@ -1,6 +1,9 @@
 package Business;
 
+import Business.Entities.Armor;
+import Business.Entities.Item;
 import Business.Entities.Items;
+import Business.Entities.Weapon;
 import Exceptions.BusinessException;
 import Exceptions.PersistenceException;
 import Persistence.API.ConnectorAPIHelper;
@@ -26,16 +29,16 @@ public class ItemsManager {
      * @return Un objeto {@link Items} representando el arma seleccionada aleatoriamente, o null si no hay armas disponibles.
      * @throws BusinessException Si ocurre un error al acceder a la base de datos de ítems.
      */
-    public Items obtenirArmaRandom() throws BusinessException {
+    public Weapon obtenirArmaRandom() throws BusinessException {
         do {
             Random rand = new Random();
-            List<Items> allItems;
+            List<Weapon> allItems;
             try {
-                allItems = itemsDAO.getAllItems();
+                allItems = itemsDAO.getAllWeapons();
             } catch (PersistenceException | ApiException e) {
                 throw new BusinessException(e.getMessage());
             }
-            allItems.removeIf(i -> i.getDurability() < 1 || i.getClasse().equals("Armor") || i.getClasse().equals("Superarmor"));
+            allItems.removeIf(i -> i.getDurability() < 1);
             if (allItems.isEmpty()) {
                 return null;
             } else {
@@ -51,16 +54,16 @@ public class ItemsManager {
      * @return Un objeto {@link Items} representando la armadura seleccionada aleatoriamente, o null si no hay armaduras disponibles.
      * @throws BusinessException Si ocurre un error al acceder a la base de datos de ítems.
      */
-    public Items obtenirArmaduraRandom() throws BusinessException {
+    public Armor obtenirArmaduraRandom() throws BusinessException {
         do {
             Random rand = new Random();
-            List<Items> allItems;
+            List<Armor> allItems;
             try {
-                allItems = itemsDAO.getAllItems();
+                allItems = itemsDAO.getAllArmors();
             } catch (PersistenceException | ApiException e) {
                 throw new BusinessException(e.getMessage());
             }
-            allItems.removeIf(i -> i.getDurability() < 1 || i.getClasse().equals("Weapon") || i.getClasse().equals("Armor") || i.getClasse().equals("Superarmor"));
+            allItems.removeIf(i -> i.getDurability() < 1);
             if (allItems.isEmpty()) {
                 return null;
             } else {
@@ -68,20 +71,6 @@ public class ItemsManager {
                 return allItems.get(ind);
             }
         } while (true);
-    }
-
-    /**
-     * Muestra todos los ítems disponibles en la base de datos.
-     *
-     * @return Una lista de objetos {@link Items} con todos los ítems disponibles.
-     * @throws BusinessException Si ocurre un error al recuperar los ítems.
-     */
-    public ArrayList<Items> showItems() throws BusinessException {
-        try {
-            return (ArrayList<Items>) itemsDAO.getAllItems();
-        } catch (PersistenceException | ApiException e) {
-            throw new BusinessException(e.getMessage());
-        }
     }
 
     /**
@@ -97,6 +86,22 @@ public class ItemsManager {
         }
     }
 
+    public List<Weapon> showWeapons() throws BusinessException {
+        try {
+            return itemsDAO.getAllWeapons();
+        } catch (PersistenceException | ApiException e) {
+            throw new BusinessException(e.getMessage());
+        }
+    }
+
+    public List<Armor> showArmors() throws BusinessException {
+        try {
+            return itemsDAO.getAllArmors();
+        } catch (PersistenceException | ApiException e) {
+            throw new BusinessException(e.getMessage());
+        }
+    }
+
     /**
      * Establece el helper para conectar con la API externa de ítems.
      *
@@ -105,4 +110,5 @@ public class ItemsManager {
     public void setApiHelper(ConnectorAPIHelper apiHelper) {
         this.itemsDAO = new ItemsApiDAO(apiHelper);
     }
+
 }

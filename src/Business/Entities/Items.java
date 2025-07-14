@@ -6,73 +6,49 @@ import com.google.gson.annotations.SerializedName;
  * Modelo que representa un ítem del juego con sus propiedades básicas.
  */
 public class Items {
-    private long id;
-    private String name;
-    private int power;
-    private int durability;
-    @SerializedName("class")
-    private String classe;
+    private Weapon weapon;
+    private Armor armor;
+    private String weaponName;
+    private String armorName;
 
-    /**
-     * Constructor de la clase Items.
-     *
-     * @param name Nombre del ítem.
-     */
-    public Items(String name) {
-        this.name = name;
+    public Items(Weapon weapon, Armor armor) {
+        this.weapon = weapon;
+        this.armor = armor;
+        this.weaponName = weapon.getName();
+        this.armorName = armor.getName();
     }
 
-    /**
-     * Obtiene el identificador del ítem.
-     *
-     * @return Identificador del ítem.
-     */
-    public long getId() {
-        return id;
+    public Weapon getWeapon() {
+        return weapon;
     }
 
-    /**
-     * Obtiene el nombre del ítem.
-     *
-     * @return Nombre del ítem.
-     */
-    public String getName() {
-        return name;
+    public void setWeapon(Weapon weapon) {
+        this.weapon = weapon;
+        if (weapon !=null) {
+            this.weaponName = weapon.getName();
+        } else {
+            this.weaponName = "No weapon";
+        }
     }
 
-    /**
-     * Obtiene el poder del ítem.
-     *
-     * @return Poder del ítem.
-     */
-    public int getPower() {
-        return power;
+    public Armor getArmor() {
+        return armor;
     }
 
-    /**
-     * Obtiene la durabilidad del ítem.
-     *
-     * @return Durabilidad del ítem.
-     */
-    public int getDurability() {
-        return durability;
+    public void setArmor(Armor armor) {
+        this.armor = armor;
+        if (armor != null) {
+            this.armorName = armor.getName();
+        } else {
+            this.armorName = "No armor";
+        }
     }
 
-    /**
-     * Establece la durabilidad del ítem.
-     *
-     * @param durability Nueva durabilidad del ítem.
-     */
-    public void setDurability(int durability) {
-        this.durability = durability;
+    public String getWeaponName() {
+        return weaponName;
     }
 
-    /**
-     * Obtiene la clase del ítem.
-     *
-     * @return Clase del ítem.
-     */
-    public String getClasse() {
-        return classe;
+    public String getArmorName() {
+        return armorName;
     }
 }

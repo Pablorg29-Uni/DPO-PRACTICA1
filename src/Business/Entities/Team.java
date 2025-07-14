@@ -29,10 +29,14 @@ public class Team {
     public Team(String name, long id1, long id2, long id3, long id4, String s1, String s2, String s3, String s4) {
         this.name = name;
         members = new ArrayList<>();
-        members.add(new Member(id1, s1));
-        members.add(new Member(id2, s2));
-        members.add(new Member(id3, s3));
-        members.add(new Member(id4, s4));
+        Member m1 = new Member(id1, s1);
+        Member m2 = new Member(id2, s2);
+        Member m3 = new Member(id3, s3);
+        Member m4 = new Member(id4, s4);
+        members.add(m1);
+        members.add(m2);
+        members.add(m3);
+        members.add(m4);
     }
 
     /**
