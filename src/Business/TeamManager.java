@@ -80,7 +80,11 @@ public class TeamManager {
      */
     public List<Team> showTeams() throws BusinessException {
         try {
-            return teamDAO.getAllTeams();
+            List<Team> teams = teamDAO.getAllTeams();
+            for (Team team : teams) {
+                team.postDeserialize();
+            }
+            return teams;
         } catch (PersistenceException | ApiException e) {
             throw new BusinessException(e.getMessage());
         }
@@ -95,7 +99,9 @@ public class TeamManager {
      */
     public Team getTeam(String name) throws BusinessException {
         try {
-            return teamDAO.getTeam(name);
+            Team team = teamDAO.getTeam(name);
+            team.postDeserialize();
+            return team;
         } catch (PersistenceException | ApiException e) {
             throw new BusinessException(e.getMessage());
         }

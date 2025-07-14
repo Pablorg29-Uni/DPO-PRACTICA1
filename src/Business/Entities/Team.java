@@ -65,4 +65,10 @@ public class Team {
     public void setName(String name) {
         this.name = name;
     }
+
+    public void postDeserialize() {
+        for (Member member : members) {
+            member.postDeserialize();
+        }
+    }
 }

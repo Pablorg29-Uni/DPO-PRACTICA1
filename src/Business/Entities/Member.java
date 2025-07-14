@@ -1,63 +1,65 @@
-package Business.Entities;
+    package Business.Entities;
 
-import Business.Entities.Weapon;
-import Business.Entities.Armor;
-import Business.Entities.AttackStrategy;
-import Business.Entities.BalancedStrategy;
-import Business.Entities.OffensiveStrategy;
-import Business.Entities.DefensiveStrategy;
-import Business.Entities.SniperStrategy;
+    import Business.Entities.Weapon;
+    import Business.Entities.Armor;
+    import Business.Entities.AttackStrategy;
+    import Business.Entities.BalancedStrategy;
+    import Business.Entities.OffensiveStrategy;
+    import Business.Entities.DefensiveStrategy;
+    import Business.Entities.SniperStrategy;
 
-import com.google.gson.annotations.Expose;
-
-/**
- * Representa a un miembro dentro del sistema.
- * <p>
- * Contiene información relevante sobre el miembro, como su nombre, rol, equipamiento y estado de combate.
- */
-public class Member {
-    @Expose
-    private long id;
-    private Character character;
-    private Items items;
-    @Expose
-    private String strategyName;
-    @Expose(serialize = false, deserialize = false)
-    private AttackStrategy strategy;
-    @Expose(serialize = false, deserialize = false)
-    private float malRebut;
-    private String role;
-    @Expose(serialize = false, deserialize = false)
-    private boolean isKO;
-    @Expose(serialize = false, deserialize = false)
-    private float damageReduction;
-    private LastAttack lastAttack;
+    import com.google.gson.annotations.Expose;
+    import com.google.gson.annotations.SerializedName;
 
     /**
-     * Constructor de la clase Member.
-     * Inicializa los atributos con valores por defecto.
+     * Representa a un miembro dentro del sistema.
+     * <p>
+     * Contiene información relevante sobre el miembro, como su nombre, rol, equipamiento y estado de combate.
      */
-    public Member() {
-        this.character = null;
-        this.items = null;
-        this.role = null;
-        this.lastAttack = null;
-        this.strategyName = "balanced";
-        setStrategyByName(this.strategyName);
-    }
+    public class Member {
+        @Expose
+        private long id;
+        private Character character;
+        private Items items;
+        @Expose
+        @SerializedName("strategy")
+        private String strategyName;
+        @Expose(serialize = false, deserialize = false)
+        private AttackStrategy attackStrategy;
+        @Expose(serialize = false, deserialize = false)
+        private float malRebut;
+        private String role;
+        @Expose(serialize = false, deserialize = false)
+        private boolean isKO;
+        @Expose(serialize = false, deserialize = false)
+        private float damageReduction;
+        private LastAttack lastAttack;
 
-    /**
-     * Constructor de la clase Member con un ID y estrategia.
-     *
-     * @param id       Identificador único del miembro.
-     * @param strategy Estrategia asignada al miembro.
-     */
-    public Member(long id, String strategyName) {
-        this();
-        this.id = id;
-        this.strategyName = strategyName;
-        setStrategyByName(strategyName);
-    }
+        /**
+         * Constructor de la clase Member.
+         * Inicializa los atributos con valores por defecto.
+         */
+        public Member() {
+            this.character = null;
+            this.items = null;
+            this.role = null;
+            this.lastAttack = null;
+            this.strategyName = "balanced";
+            setStrategyByName(this.strategyName);
+        }
+
+        /**
+         * Constructor de la clase Member con un ID y estrategia.
+         *
+         * @param id       Identificador único del miembro.
+         * @param strategyName Estrategia asignada al miembro.
+         */
+        public Member(long id, String strategyName) {
+            this();
+            this.id = id;
+            this.strategyName = strategyName;
+            setStrategyByName(strategyName);
+        }
 
     /**
      * Obtiene el valor de malRebut.
@@ -155,7 +157,7 @@ public class Member {
      * @return Estrategia actual.
      */
     public AttackStrategy getStrategy() {
-        return strategy;
+        return attackStrategy;
     }
 
     /**
@@ -164,26 +166,26 @@ public class Member {
      * @param strategy Nueva estrategia.
      */
     public void setStrategy(AttackStrategy strategy) {
-        this.strategy = strategy;
+        this.attackStrategy = strategy;
     }
 
     public void setStrategyByName(String strategyName) {
         this.strategyName = strategyName;
         switch (strategyName.toLowerCase()) {
             case "balanced":
-                this.strategy = new BalancedStrategy();
+                this.attackStrategy = new BalancedStrategy();
                 break;
             case "offensive":
-                this.strategy = new OffensiveStrategy();
+                this.attackStrategy = new OffensiveStrategy();
                 break;
             case "defensive":
-                this.strategy = new DefensiveStrategy();
+                this.attackStrategy = new DefensiveStrategy();
                 break;
             case "sniper":
-                this.strategy = new SniperStrategy();
+                this.attackStrategy = new SniperStrategy();
                 break;
             default:
-                this.strategy = new BalancedStrategy();
+                this.attackStrategy = new BalancedStrategy();
         }
     }
 
@@ -278,14 +280,16 @@ public class Member {
     }
 
     public String getStrategyName() {
-        if (strategy instanceof BalancedStrategy) return "balanced";
-        if (strategy instanceof OffensiveStrategy) return "offensive";
-        if (strategy instanceof DefensiveStrategy) return "defensive";
-        if (strategy instanceof SniperStrategy) return "sniper";
+        if (attackStrategy instanceof BalancedStrategy) return "balanced";
+        if (attackStrategy instanceof OffensiveStrategy) return "offensive";
+        if (attackStrategy instanceof DefensiveStrategy) return "defensive";
+        if (attackStrategy instanceof SniperStrategy) return "sniper";
         return "balanced";
     }
 
     public void postDeserialize() {
         setStrategyByName(this.strategyName);
     }
+
+
 }
